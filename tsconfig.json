@@ -5,6 +5,21 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@domain/*": [
+        "./src/domain/*"
+      ],
+      "@data/*": [
+        "./src/data/*"
+      ],
+      "@infrastructure/*": [
+        "./src/infrastructure/*"
+      ],
+      "@presentation/*": [
+        "./src/presentation/*"
+      ],
+      "@shared/*": [
+        "./src/shared/*"
       ]
     }
   },
