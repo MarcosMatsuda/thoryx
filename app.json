@@ -39,11 +39,25 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your camera to scan credit cards.",
+          "enableCodeScanner": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3df49629-4f1b-4c3f-998a-1ac3d61ddf54"
+      }
+    },
+    "owner": "marcos.matsuda"
   }
 }
