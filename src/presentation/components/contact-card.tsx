@@ -6,6 +6,8 @@ interface ContactCardProps {
   phoneNumber: string;
   onCall?: () => void;
   onEdit?: () => void;
+  onRemove?: () => void;
+  isPrimary?: boolean;
 }
 
 export function ContactCard({
@@ -14,11 +16,20 @@ export function ContactCard({
   phoneNumber,
   onCall,
   onEdit,
+  onRemove,
+  isPrimary = false,
 }: ContactCardProps) {
   return (
     <View className="bg-background-secondary rounded-xl p-4 mb-3">
       <View className="flex-row items-start justify-between mb-3">
         <View className="flex-1">
+          {isPrimary && (
+            <View className="bg-primary-main/20 px-2 py-1 rounded mb-2 self-start">
+              <Text className="text-xs font-bold text-primary-main tracking-wide">
+                PRIMARY CONTACT
+              </Text>
+            </View>
+          )}
           <Text className="text-xs font-semibold text-text-secondary mb-1 tracking-wide">
             FULL NAME
           </Text>
@@ -26,6 +37,14 @@ export function ContactCard({
             {fullName}
           </Text>
         </View>
+        {onRemove && (
+          <Pressable 
+            className="w-8 h-8 items-center justify-center"
+            onPress={onRemove}
+          >
+            <Text className="text-lg text-status-error">✕</Text>
+          </Pressable>
+        )}
       </View>
 
       <View className="flex-row items-center justify-between">
