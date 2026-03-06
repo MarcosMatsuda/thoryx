@@ -15,6 +15,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="home" options={{ headerShown: false }} />
         <Stack.Screen name="emergency" options={{ headerShown: false }} />
+        <Stack.Screen name="emergency-details" options={{ headerShown: false }} />
         <Stack.Screen name="add-credit-card" options={{ headerShown: false }} />
         <Stack.Screen name="document-details" options={{ headerShown: false }} />
         <Stack.Screen name="add-document" options={{ headerShown: false }} />
