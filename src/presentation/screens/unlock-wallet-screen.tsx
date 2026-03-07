@@ -132,9 +132,12 @@ export function UnlockWalletScreen() {
         </View>
 
         <View className="items-center pb-8">
-          <Pressable className="py-3">
+          <Pressable 
+            className="py-3"
+            onPress={() => navigation.navigate('emergency-details' as never)}
+          >
             <Text className="text-base md:text-lg text-primary-main font-semibold">
-              Forgot PIN?
+              Emergency Details
             </Text>
           </Pressable>
         </View>
