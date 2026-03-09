@@ -4,11 +4,10 @@ import { DocumentPhotoCarousel } from '@presentation/components/document-photo-c
 import { DetailRow } from '@presentation/components/detail-row';
 import { ActionButtonLarge } from '@presentation/components/action-button-large';
 import { InfoBanner } from '@presentation/components/info-banner';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, NavigationProp } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
 import { DocumentRepositoryImpl } from '@data/repositories/document.repository.impl';
 import { Document } from '@domain/entities/document.entity';
-import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '@presentation/types/navigation';
 
 export function DocumentDetailsScreen() {

@@ -10,6 +10,7 @@ export type RootStackParamList = {
   'index': undefined;
   'modal': undefined;
   '(tabs)': undefined;
+  'profile-setup': undefined;
 };
 
 declare global {

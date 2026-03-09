@@ -1,95 +1,109 @@
-import { ActionCard } from "@presentation/components/action-card";
-import { useCreditCards } from "@presentation/hooks/use-credit-cards";
-import { useDocuments } from "@presentation/hooks/use-documents";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { Pressable, ScrollView, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { SvgIcon } from "@presentation/components/svg-icon";
-import { RootStackParamList } from "@presentation/types/navigation";
+import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActionCard } from '@presentation/components/action-card';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useDocuments } from '@presentation/hooks/use-documents';
+import { useCreditCards } from '@presentation/hooks/use-credit-cards';
+import { useUserProfile } from '@presentation/hooks/use-user-profile';
+import { RootStackParamList } from '@presentation/types/navigation';
+import { SvgIcon } from '@presentation/components/svg-icon';
+import { useEffect } from 'react';
 
 export function WalletHomeScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { documents } = useDocuments();
-  const { cards } = useCreditCards();
+  const { documents, isLoading: documentsLoading } = useDocuments();
+  const { cards, isLoading: cardsLoading } = useCreditCards();
+  const { profile, isLoading: profileLoading } = useUserProfile();
+  
+  const isLoading = profileLoading || documentsLoading || cardsLoading;
+
+  // Redirect to profile setup if no profile exists
+  useEffect(() => {
+    if (!profileLoading && !profile) {
+      navigation.navigate('profile-setup');
+    }
+  }, [profile, profileLoading, navigation]);
 
   const getDocumentIcon = (type: string) => {
     switch (type) {
-      case "CNH":
-        return "🚗";
-      case "RG":
-        return "🆔";
+      case 'CNH':
+        return '🚗';
+      case 'RG':
+        return '🆔';
       default:
-        return "📄";
+        return '📄';
     }
   };
 
   const getDocumentLabel = (type: string) => {
     switch (type) {
-      case "CNH":
+      case 'CNH':
         return "Driver's License";
-      case "RG":
-        return "National ID";
+      case 'RG':
+        return 'National ID';
       default:
-        return "Document";
+        return 'Document';
     }
   };
 
   const getCardLabel = () => {
     if (cards.length === 0) {
-      return "New Card";
+      return 'New Card';
     } else if (cards.length === 1) {
-      return "Card";
+      return 'Card';
     } else {
-      return "Cards";
+      return 'Cards';
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pt-4">
           <View className="flex-row items-center justify-between mb-6">
             <View className="flex-row items-center">
               <View className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden mr-3">
                 <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-                  <Text className="text-xl md:text-2xl text-text-primary">
-                    👤
-                  </Text>
+                  <Text className="text-xl md:text-2xl text-text-primary">👤</Text>
                 </View>
               </View>
               <View>
-                <Text className="text-xs md:text-sm text-text-secondary mb-1">
-                  Welcome back,
-                </Text>
-                <Text className="text-lg md:text-xl font-bold text-text-primary">
-                  Alex Rivera
-                </Text>
+                <Text className="text-xs md:text-sm text-text-secondary mb-1">Welcome back,</Text>
+                {profileLoading ? (
+                  <ActivityIndicator size="small" color="#3B82F6" />
+                ) : (
+                  <Text className="text-lg md:text-xl font-bold text-text-primary">
+                    {profile?.name || 'Guest'}
+                  </Text>
+                )}
               </View>
             </View>
+            <Pressable className="w-10 h-10 items-center justify-center">
+              <View className="w-2 h-2 rounded-full bg-status-error absolute top-2 right-2" />
+              <Text className="text-2xl">🔔</Text>
+            </Pressable>
           </View>
 
           <View className="mb-6">
-            <Text className="text-xs md:text-sm font-semibold text-text-secondary mb-3 tracking-wider">
-              QUICK ACTIONS
-            </Text>
+            <Text className="text-xs md:text-sm font-semibold text-text-secondary mb-3 tracking-wider">QUICK ACTIONS</Text>
             <View className="flex-row gap-3 md:gap-4 justify-between md:justify-start">
-              <ActionCard
+              <ActionCard 
                 icon={<SvgIcon name="new-card" width={28} height={28} />}
-                label={getCardLabel()}
+                label={getCardLabel()} 
                 variant="primary"
-                onPress={() => navigation.navigate("add-credit-card" as never)}
+                onPress={() => navigation.navigate('add-credit-card')}
               />
-              <ActionCard
+              <ActionCard 
                 icon={<SvgIcon name="triangle-allergies" width={28} height={28} />}
-                label="Emergency"
+                label="Emergency" 
                 variant="danger"
-                onPress={() => navigation.navigate("emergency" as never)}
+                onPress={() => navigation.navigate('emergency')}
               />
-              <ActionCard
+              <ActionCard 
                 icon={<SvgIcon name="add-doc" width={28} height={28} />}
-                label="Add Doc"
+                label="Add Doc" 
                 variant="secondary"
-                onPress={() => navigation.navigate("add-document" as never)}
+                onPress={() => navigation.navigate('add-document')}
               />
             </View>
           </View>
@@ -99,54 +113,51 @@ export function WalletHomeScreen() {
               <View className="mr-2">
                 <SvgIcon name="verified-shield" width={24} height={24} />
               </View>
-              <Text className="text-lg md:text-xl font-bold text-text-primary">
-                Secure Sharing Mode
-              </Text>
+              <Text className="text-lg md:text-xl font-bold text-text-primary">Secure Sharing Mode</Text>
             </View>
             <Text className="text-sm md:text-base text-text-primary/80 mb-5 leading-5">
-              Select documents to share for check-ins or verification. Others
-              will be locked and hidden from view.
+              Select documents to share for check-ins or verification. Others will be locked and hidden from view.
             </Text>
-            <Pressable
+            <Pressable 
               className="bg-white rounded-xl py-3.5 items-center active:opacity-90"
-              onPress={() => navigation.navigate("select-documents" as never)}
+              onPress={() => navigation.navigate('select-documents')}
             >
-              <Text className="text-base md:text-lg font-bold text-primary-main">
-                Start Sharing
-              </Text>
+              <Text className="text-base md:text-lg font-bold text-primary-main">Start Sharing</Text>
             </Pressable>
           </View>
 
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-4">
-              <Text className="text-xs md:text-sm font-semibold text-text-secondary tracking-wider">
-                MY DOCUMENTS
-              </Text>
+              <Text className="text-xs md:text-sm font-semibold text-text-secondary tracking-wider">MY DOCUMENTS</Text>
               <Pressable>
-                <Text className="text-sm md:text-base font-semibold text-primary-main">
-                  See All
-                </Text>
+                <Text className="text-sm md:text-base font-semibold text-primary-main">See All</Text>
               </Pressable>
             </View>
 
             <View className="gap-3">
-              {documents.map((doc) => (
-                <Pressable
+              {documentsLoading ? (
+                <View className="bg-background-secondary rounded-2xl p-6 items-center justify-center">
+                  <ActivityIndicator size="large" color="#3B82F6" />
+                  <Text className="text-text-secondary mt-3">Loading documents...</Text>
+                </View>
+              ) : documents.length === 0 ? (
+                <View className="bg-background-secondary rounded-2xl p-6 items-center">
+                  <Text className="text-4xl mb-3">📄</Text>
+                  <Text className="text-text-secondary text-center">
+                    No documents yet. Add your first document!
+                  </Text>
+                </View>
+              ) : (
+                documents.map((doc) => (
+                <Pressable 
                   key={doc.id}
                   className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
-                  onPress={() =>
-                    navigation.navigate(
-                      "document-details",
-                      { documentId: doc.id }
-                    )
-                  }
+                  onPress={() => navigation.navigate('document-details', { documentId: doc.id })}
                 >
                   <View className="flex-row items-start justify-between">
                     <View className="flex-row flex-1">
                       <View className="w-12 h-12 md:w-14 md:h-14 bg-primary-main/10 rounded-xl items-center justify-center mr-3">
-                        <Text className="text-2xl md:text-3xl">
-                          {getDocumentIcon(doc.type)}
-                        </Text>
+                        <Text className="text-2xl md:text-3xl">{getDocumentIcon(doc.type)}</Text>
                       </View>
                       <View className="flex-1">
                         <Text className="text-base md:text-lg font-bold text-text-primary mb-1">
@@ -156,9 +167,7 @@ export function WalletHomeScreen() {
                           {doc.fullName}
                         </Text>
                         <View className="flex-row items-center">
-                          <Text className="text-xs md:text-sm text-text-secondary">
-                            DOCUMENT NUMBER
-                          </Text>
+                          <Text className="text-xs md:text-sm text-text-secondary">DOCUMENT NUMBER</Text>
                         </View>
                         <Text className="text-sm md:text-base text-text-secondary">
                           •••• •••• {doc.documentNumber.slice(-4)}
@@ -170,7 +179,8 @@ export function WalletHomeScreen() {
                     </View>
                   </View>
                 </Pressable>
-              ))}
+                ))
+              )}
             </View>
           </View>
 
@@ -185,9 +195,7 @@ export function WalletHomeScreen() {
         </Pressable>
         <Pressable className="flex-1 items-center py-3">
           <Text className="text-2xl mb-1">🕐</Text>
-          <Text className="text-xs font-medium text-text-secondary">
-            History
-          </Text>
+          <Text className="text-xs font-medium text-text-secondary">History</Text>
         </Pressable>
         <Pressable className="flex-1 items-center py-3">
           <View className="w-14 h-14 bg-primary-main rounded-full items-center justify-center absolute -top-7">
@@ -196,15 +204,11 @@ export function WalletHomeScreen() {
         </Pressable>
         <Pressable className="flex-1 items-center py-3">
           <Text className="text-2xl mb-1">🛡️</Text>
-          <Text className="text-xs font-medium text-text-secondary">
-            Security
-          </Text>
+          <Text className="text-xs font-medium text-text-secondary">Security</Text>
         </Pressable>
         <Pressable className="flex-1 items-center py-3">
           <Text className="text-2xl mb-1">⚙️</Text>
-          <Text className="text-xs font-medium text-text-secondary">
-            Settings
-          </Text>
+          <Text className="text-xs font-medium text-text-secondary">Settings</Text>
         </Pressable>
       </View>
     </SafeAreaView>
