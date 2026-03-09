@@ -1,14 +1,27 @@
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ActionCard } from '@presentation/components/action-card';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useDocuments } from '@presentation/hooks/use-documents';
 import { useCreditCards } from '@presentation/hooks/use-credit-cards';
+import { useUserProfile } from '@presentation/hooks/use-user-profile';
+import { RootStackParamList } from '@presentation/types/navigation';
+import { useEffect } from 'react';
 
 export function WalletHomeScreen() {
-  const navigation = useNavigation();
-  const { documents } = useDocuments();
-  const { cards } = useCreditCards();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { documents, isLoading: documentsLoading } = useDocuments();
+  const { cards, isLoading: cardsLoading } = useCreditCards();
+  const { profile, isLoading: profileLoading } = useUserProfile();
+  
+  const isLoading = profileLoading || documentsLoading || cardsLoading;
+
+  // Redirect to profile setup if no profile exists
+  useEffect(() => {
+    if (!profileLoading && !profile) {
+      navigation.navigate('profile-setup');
+    }
+  }, [profile, profileLoading, navigation]);
 
   const getDocumentIcon = (type: string) => {
     switch (type) {
@@ -55,7 +68,13 @@ export function WalletHomeScreen() {
               </View>
               <View>
                 <Text className="text-xs md:text-sm text-text-secondary mb-1">Welcome back,</Text>
-                <Text className="text-lg md:text-xl font-bold text-text-primary">Alex Rivera</Text>
+                {profileLoading ? (
+                  <ActivityIndicator size="small" color="#3B82F6" />
+                ) : (
+                  <Text className="text-lg md:text-xl font-bold text-text-primary">
+                    {profile?.name || 'Guest'}
+                  </Text>
+                )}
               </View>
             </View>
             <Pressable className="w-10 h-10 items-center justify-center">
@@ -113,11 +132,24 @@ export function WalletHomeScreen() {
             </View>
 
             <View className="gap-3">
-              {documents.map((doc) => (
+              {documentsLoading ? (
+                <View className="bg-background-secondary rounded-2xl p-6 items-center justify-center">
+                  <ActivityIndicator size="large" color="#3B82F6" />
+                  <Text className="text-text-secondary mt-3">Loading documents...</Text>
+                </View>
+              ) : documents.length === 0 ? (
+                <View className="bg-background-secondary rounded-2xl p-6 items-center">
+                  <Text className="text-4xl mb-3">📄</Text>
+                  <Text className="text-text-secondary text-center">
+                    No documents yet. Add your first document!
+                  </Text>
+                </View>
+              ) : (
+                documents.map((doc) => (
                 <Pressable 
                   key={doc.id}
                   className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
-                  onPress={() => navigation.navigate('document-details' as never, { documentId: doc.id } as never)}
+                  onPress={() => navigation.navigate('document-details', { documentId: doc.id })}
                 >
                   <View className="flex-row items-start justify-between">
                     <View className="flex-row flex-1">
@@ -144,7 +176,8 @@ export function WalletHomeScreen() {
                     </View>
                   </View>
                 </Pressable>
-              ))}
+                ))
+              )}
             </View>
           </View>
 

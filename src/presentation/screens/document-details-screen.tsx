@@ -4,13 +4,14 @@ import { DocumentPhotoCarousel } from '@presentation/components/document-photo-c
 import { DetailRow } from '@presentation/components/detail-row';
 import { ActionButtonLarge } from '@presentation/components/action-button-large';
 import { InfoBanner } from '@presentation/components/info-banner';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, NavigationProp } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
 import { DocumentRepositoryImpl } from '@data/repositories/document.repository.impl';
 import { Document } from '@domain/entities/document.entity';
+import { RootStackParamList } from '@presentation/types/navigation';
 
 export function DocumentDetailsScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute();
   const { documentId } = route.params as { documentId?: string };
   
@@ -95,7 +96,7 @@ export function DocumentDetailsScreen() {
           </Text>
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.navigate('add-document' as never, { documentId: document.id } as never)}
+            onPress={() => navigation.navigate('add-document', { documentId: document.id })}
           >
             <Text className="text-xl text-primary-main">✏️</Text>
           </Pressable>
