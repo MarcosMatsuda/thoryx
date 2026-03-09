@@ -6,6 +6,7 @@ import { useDocuments } from '@presentation/hooks/use-documents';
 import { useCreditCards } from '@presentation/hooks/use-credit-cards';
 import { useUserProfile } from '@presentation/hooks/use-user-profile';
 import { RootStackParamList } from '@presentation/types/navigation';
+import { SvgIcon } from '@presentation/components/svg-icon';
 import { useEffect } from 'react';
 
 export function WalletHomeScreen() {
@@ -87,29 +88,31 @@ export function WalletHomeScreen() {
             <Text className="text-xs md:text-sm font-semibold text-text-secondary mb-3 tracking-wider">QUICK ACTIONS</Text>
             <View className="flex-row gap-3 md:gap-4 justify-between md:justify-start">
               <ActionCard 
-                icon="💳" 
+                icon={<SvgIcon name="new-card" width={28} height={28} />}
                 label={getCardLabel()} 
                 variant="primary"
-                onPress={() => navigation.navigate('add-credit-card' as never)}
+                onPress={() => navigation.navigate('add-credit-card')}
               />
               <ActionCard 
-                icon="⚠️" 
+                icon={<SvgIcon name="triangle-allergies" width={28} height={28} />}
                 label="Emergency" 
                 variant="danger"
-                onPress={() => navigation.navigate('emergency' as never)}
+                onPress={() => navigation.navigate('emergency')}
               />
               <ActionCard 
-                icon="📄" 
+                icon={<SvgIcon name="add-doc" width={28} height={28} />}
                 label="Add Doc" 
                 variant="secondary"
-                onPress={() => navigation.navigate('add-document' as never)}
+                onPress={() => navigation.navigate('add-document')}
               />
             </View>
           </View>
 
           <View className="bg-primary-main rounded-2xl p-5 md:p-6 mb-6">
             <View className="flex-row items-center mb-3">
-              <Text className="text-xl md:text-2xl mr-2">🛡️</Text>
+              <View className="mr-2">
+                <SvgIcon name="verified-shield" width={24} height={24} />
+              </View>
               <Text className="text-lg md:text-xl font-bold text-text-primary">Secure Sharing Mode</Text>
             </View>
             <Text className="text-sm md:text-base text-text-primary/80 mb-5 leading-5">
@@ -117,7 +120,7 @@ export function WalletHomeScreen() {
             </Text>
             <Pressable 
               className="bg-white rounded-xl py-3.5 items-center active:opacity-90"
-              onPress={() => navigation.navigate('select-documents' as never)}
+              onPress={() => navigation.navigate('select-documents')}
             >
               <Text className="text-base md:text-lg font-bold text-primary-main">Start Sharing</Text>
             </Pressable>
