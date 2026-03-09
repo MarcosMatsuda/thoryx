@@ -28,6 +28,13 @@ Comprehensive SVG icon library for the Thoryx Wallet App design system.
 - `pill-meds.svg` - Pill/meds icon
 - `triangle-allergies.svg` - Triangle allergies warning icon
 
+### 6. Security & Authentication
+- `lock-unlock.svg` - Lock/unlock icon for wallet authentication
+- `verified-shield.svg` - Verified shield icon for secure sharing
+
+### 7. Document Management
+- `add-doc.svg` - Add document icon
+
 ## Usage
 
 ```typescript

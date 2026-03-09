@@ -15,3 +15,6 @@ export { default as BloodDropType } from './blood-drop-type.svg';
 export { default as PhoneCallIce } from './phone-call-ice.svg';
 export { default as PillMeds } from './pill-meds.svg';
 export { default as TriangleAllergies } from './triangle-allergies.svg';
+export { default as LockUnlock } from './lock-unlock.svg';
+export { default as AddDoc } from './add-doc.svg';
+export { default as VerifiedShield } from './verified-shield.svg';

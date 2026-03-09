@@ -1,11 +1,12 @@
+import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
+import { VerifyPinUseCase } from "@domain/use-cases/verify-pin.use-case";
 import { NumericKeypad } from "@presentation/components/numeric-keypad";
 import { PinDot } from "@presentation/components/pin-dot";
-import { useState, useEffect } from "react";
+import { SvgIcon } from "@presentation/components/svg-icon";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from '@react-navigation/native';
-import { PinRepositoryImpl } from '@data/repositories/pin.repository.impl';
-import { VerifyPinUseCase } from '@domain/use-cases/verify-pin.use-case';
 
 const PIN_LENGTH = 6;
 
@@ -24,12 +25,12 @@ export function UnlockWalletScreen() {
     try {
       const repository = new PinRepositoryImpl();
       const verifyPinUseCase = new VerifyPinUseCase(repository);
-      
+
       const result = await verifyPinUseCase.execute(pin);
-      
+
       if (result.success) {
         setError(false);
-        navigation.navigate('home' as never);
+        navigation.navigate("home" as never);
       } else {
         setError(true);
         setTimeout(() => {
@@ -38,7 +39,7 @@ export function UnlockWalletScreen() {
         }, 1000);
       }
     } catch (error) {
-      console.error('Error verifying PIN:', error);
+      console.error("Error verifying PIN:", error);
       setError(true);
       setTimeout(() => {
         setPin("");
@@ -60,11 +61,10 @@ export function UnlockWalletScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top", "bottom"]}>
-      <Pressable className="absolute top-4 left-6 w-10 h-10 md:w-12 md:h-12 justify-center items-center z-10">
-        <Text className="text-2xl md:text-3xl text-text-secondary">✕</Text>
-      </Pressable>
-
+    <SafeAreaView
+      className="flex-1 bg-background-primary"
+      edges={["top", "bottom"]}
+    >
       <View className="flex-1 w-full max-w-[500px] self-center">
         <View className="px-4 md:px-8 pt-8">
           <View className="items-center">
@@ -72,10 +72,7 @@ export function UnlockWalletScreen() {
               <View className="w-[120px] h-[120px] md:w-[160px] md:h-[160px] rounded-full bg-primary-main/5 justify-center items-center">
                 <View className="w-[90px] h-[90px] md:w-[120px] md:h-[120px] rounded-full bg-primary-main/10 justify-center items-center">
                   <View className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] rounded-full bg-primary-main justify-center items-center">
-                    <View className="w-6 h-6 justify-end items-center">
-                      <View className="w-4 h-2.5 bg-text-primary rounded-[3px]" />
-                      <View className="absolute top-0 w-2.5 h-3 border-2 border-text-primary rounded-t-md border-b-0" />
-                    </View>
+                    <SvgIcon name="lock-unlock" width={32} height={32} />
                   </View>
                 </View>
               </View>
@@ -83,7 +80,6 @@ export function UnlockWalletScreen() {
 
             <View className="mb-3">
               <View className="flex-row items-center gap-1 px-3 py-1 md:px-4 md:py-1.5 bg-primary-main/15 rounded-md">
-                <Text className="text-xs md:text-sm">🔒</Text>
                 <Text className="text-xs md:text-sm font-semibold text-primary-main tracking-wider">
                   SECURE STORAGE
                 </Text>
@@ -102,7 +98,6 @@ export function UnlockWalletScreen() {
             {error && (
               <View className="items-center mt-2 mb-2">
                 <View className="flex-row items-center">
-                  <Text className="text-xl mr-2">⚠️</Text>
                   <Text className="text-sm font-semibold text-status-error">
                     Incorrect PIN. Please try again.
                   </Text>
@@ -112,8 +107,8 @@ export function UnlockWalletScreen() {
 
             <View className="flex-row gap-5 mt-4">
               {Array.from({ length: PIN_LENGTH }).map((_, index) => (
-                <PinDot 
-                  key={index} 
+                <PinDot
+                  key={index}
                   filled={index < pin.length}
                   error={error && pin.length === PIN_LENGTH}
                 />
@@ -132,9 +127,9 @@ export function UnlockWalletScreen() {
         </View>
 
         <View className="items-center pb-8">
-          <Pressable 
+          <Pressable
             className="py-3"
-            onPress={() => navigation.navigate('emergency-details' as never)}
+            onPress={() => navigation.navigate("emergency-details" as never)}
           >
             <Text className="text-base md:text-lg text-primary-main font-semibold">
               Emergency Details

@@ -5,4 +5,5 @@ export interface CreditCardRepository {
   findById(id: string): Promise<CreditCard | null>;
   findAll(): Promise<CreditCard[]>;
   delete(id: string): Promise<void>;
+  decryptCardNumber(encryptedCardNumber: string): Promise<string>;
 }
