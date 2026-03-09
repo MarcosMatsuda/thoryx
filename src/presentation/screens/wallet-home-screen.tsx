@@ -1,13 +1,14 @@
 import { ActionCard } from "@presentation/components/action-card";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { useDocuments } from "@presentation/hooks/use-documents";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SvgIcon } from "@presentation/components/svg-icon";
+import { RootStackParamList } from "@presentation/types/navigation";
 
 export function WalletHomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { documents } = useDocuments();
   const { cards } = useCreditCards();
 
@@ -135,8 +136,8 @@ export function WalletHomeScreen() {
                   className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
                   onPress={() =>
                     navigation.navigate(
-                      "document-details" as never,
-                      { documentId: doc.id } as never,
+                      "document-details",
+                      { documentId: doc.id }
                     )
                   }
                 >
