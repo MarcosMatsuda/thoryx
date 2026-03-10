@@ -8,6 +8,9 @@ interface PinConfirmationBottomSheetProps {
   onClose: () => void;
   onConfirm: (confirmedPin: string) => void;
   originalPin: string;
+  title?: string;
+  subtitle?: string;
+  context?: string;
 }
 
 const PIN_LENGTH = 6;
@@ -17,6 +20,9 @@ export function PinConfirmationBottomSheet({
   onClose,
   onConfirm,
   originalPin,
+  title = 'Confirm Your PIN',
+  subtitle = 'Please re-enter your 6-digit PIN to verify.',
+  context = 'Initial PIN Setup',
 }: PinConfirmationBottomSheetProps) {
   const [confirmPin, setConfirmPin] = useState("");
   const [error, setError] = useState(false);
@@ -76,16 +82,16 @@ export function PinConfirmationBottomSheet({
               >
                 <Text className="text-2xl text-text-primary">←</Text>
               </Pressable>
-              <Text className="text-base text-text-secondary">Initial PIN Setup</Text>
+              <Text className="text-base text-text-secondary">{context}</Text>
             </View>
 
             <View className="px-4 md:px-8 pt-4">
               <View className="items-center">
                 <Text className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
-                  Confirm Your PIN
+                  {title}
                 </Text>
                 <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
-                  Please re-enter your 6-digit PIN to verify.
+                  {subtitle}
                 </Text>
               </View>
 

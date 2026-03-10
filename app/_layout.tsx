@@ -35,6 +35,7 @@ export default function RootLayout() {
         <Stack.Screen name="add-document" options={{ headerShown: false }} />
         <Stack.Screen name="select-documents" options={{ headerShown: false }} />
         <Stack.Screen name="profile-setup" options={{ headerShown: false }} />
+        <Stack.Screen name="change-pin" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="light" />
