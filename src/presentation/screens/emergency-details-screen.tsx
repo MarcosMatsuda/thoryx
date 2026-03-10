@@ -238,28 +238,6 @@ export function EmergencyDetailsScreen() {
             )}
           </View>
         </ScrollView>
-
-        <View className="flex-row bg-background-secondary border-t border-ui-border">
-          <Pressable 
-            className="flex-1 items-center py-3"
-            onPress={() => navigation.navigate('home' as never)}
-          >
-            <Text className="text-2xl mb-1">💼</Text>
-            <Text className="text-xs font-medium text-text-secondary">Wallet</Text>
-          </Pressable>
-          <Pressable className="flex-1 items-center py-3">
-            <Text className="text-2xl mb-1">❤️</Text>
-            <Text className="text-xs font-medium text-text-secondary">Health</Text>
-          </Pressable>
-          <Pressable className="flex-1 items-center py-3">
-            <Text className="text-2xl mb-1">🚨</Text>
-            <Text className="text-xs font-medium text-primary-main">Emergency</Text>
-          </Pressable>
-          <Pressable className="flex-1 items-center py-3">
-            <Text className="text-2xl mb-1">⚙️</Text>
-            <Text className="text-xs font-medium text-text-secondary">Settings</Text>
-          </Pressable>
-        </View>
       </View>
     </SafeAreaView>
   );
