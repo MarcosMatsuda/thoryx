@@ -6,7 +6,7 @@ import { BloodTypeSelector } from '@presentation/components/blood-type-selector'
 import { TextInputField } from '@presentation/components/text-input-field';
 import { ContactCard } from '@presentation/components/contact-card';
 import { AddContactBottomSheet } from '@presentation/components/add-contact-bottom-sheet';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { EmergencyContact } from '@domain/entities/emergency-info.entity';
 import { EmergencyInfoRepositoryImpl } from '@data/repositories/emergency-info.repository.impl';
@@ -14,7 +14,7 @@ import { SaveEmergencyInfoUseCase } from '@domain/use-cases/save-emergency-info.
 import { useEmergencyInfo } from '@presentation/hooks/use-emergency-info';
 
 export function EmergencySetupScreen() {
-  const navigation = useNavigation();
+  const router = useRouter();
   const { emergencyInfo, isLoading: isLoadingInfo, refresh } = useEmergencyInfo();
   
   const [lockScreenVisible, setLockScreenVisible] = useState(false);
@@ -111,7 +111,7 @@ export function EmergencySetupScreen() {
               text: 'OK',
               onPress: () => {
                 refresh();
-                navigation.goBack();
+                router.back();
               }
             }
           ]
@@ -141,7 +141,7 @@ export function EmergencySetupScreen() {
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()}
             disabled={isSaving}
           >
             <Text className="text-2xl text-text-primary">←</Text>

@@ -3,8 +3,7 @@ import { SvgIcon } from "@presentation/components/svg-icon";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { useDocuments } from "@presentation/hooks/use-documents";
 import { useUserProfile } from "@presentation/hooks/use-user-profile";
-import { RootStackParamList } from "@presentation/types/navigation";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -16,7 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export function WalletHomeScreen() {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const router = useRouter();
   const { documents, isLoading: documentsLoading } = useDocuments();
   const { cards, isLoading: cardsLoading } = useCreditCards();
   const { profile, isLoading: profileLoading } = useUserProfile();
@@ -26,7 +25,7 @@ export function WalletHomeScreen() {
   // Redirect to profile setup if no profile exists
   useEffect(() => {
     if (!profileLoading && !profile) {
-      navigation.navigate("profile-setup");
+      router.push("/profile-setup");
     }
   }, [profile, profileLoading, navigation]);
 
@@ -99,7 +98,7 @@ export function WalletHomeScreen() {
                 icon={<SvgIcon name="new-card" width={28} height={28} />}
                 label={getCardLabel()}
                 variant="primary"
-                onPress={() => navigation.navigate("add-credit-card")}
+                onPress={() => router.push("/add-credit-card")}
               />
               <ActionCard
                 icon={
@@ -107,13 +106,13 @@ export function WalletHomeScreen() {
                 }
                 label="Emergency"
                 variant="danger"
-                onPress={() => navigation.navigate("../emergency")}
+                onPress={() => router.push("/emergency")}
               />
               <ActionCard
                 icon={<SvgIcon name="add-doc" width={28} height={28} />}
                 label="Add Doc"
                 variant="secondary"
-                onPress={() => navigation.navigate("add-document")}
+                onPress={() => router.push("/add-document")}
               />
             </View>
           </View>
@@ -133,7 +132,7 @@ export function WalletHomeScreen() {
             </Text>
             <Pressable
               className="bg-white rounded-xl py-3.5 items-center active:opacity-90"
-              onPress={() => navigation.navigate("select-documents")}
+              onPress={() => router.push("/select-documents")}
             >
               <Text className="text-base md:text-lg font-bold text-primary-main">
                 Start Sharing
@@ -174,7 +173,7 @@ export function WalletHomeScreen() {
                     key={doc.id}
                     className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
                     onPress={() =>
-                      navigation.navigate("document-details", {
+                      router.push("/document-details", {
                         documentId: doc.id,
                       })
                     }
