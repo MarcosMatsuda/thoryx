@@ -1,11 +1,22 @@
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useEmergencyInfo } from '@presentation/hooks/use-emergency-info';
+import { useCallback } from 'react';
 
 export function EmergencyDetailsScreen() {
   const router = useRouter();
-  const { emergencyInfo, isLoading } = useEmergencyInfo();
+  const { emergencyInfo, isLoading, refresh } = useEmergencyInfo();
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [])
+  );
+
+  const handleEditPress = () => {
+    router.push('/emergency-setup');
+  };
 
   if (isLoading) {
     return (
@@ -31,7 +42,7 @@ export function EmergencyDetailsScreen() {
             </Text>
             <Pressable 
               className="w-10 h-10 items-center justify-center"
-              onPress={() => router.push('/emergency')}
+              onPress={handleEditPress}
             >
               <Text className="text-xl text-primary-main">✏️</Text>
             </Pressable>
@@ -47,7 +58,7 @@ export function EmergencyDetailsScreen() {
             </Text>
             <Pressable 
               className="bg-primary-main rounded-xl py-3 px-6 active:bg-primary-dark"
-              onPress={() => router.push('/emergency')}
+              onPress={handleEditPress}
             >
               <Text className="text-base font-bold text-text-primary">
                 Set Up Emergency Profile
@@ -74,7 +85,7 @@ export function EmergencyDetailsScreen() {
           </Text>
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => router.push('/emergency')}
+            onPress={handleEditPress}
           >
             <Text className="text-xl text-primary-main">✏️</Text>
           </Pressable>

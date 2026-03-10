@@ -27,7 +27,7 @@ export function WalletHomeScreen() {
     if (!profileLoading && !profile) {
       router.push("/profile-setup");
     }
-  }, [profile, profileLoading, navigation]);
+  }, [profile, profileLoading, router]);
 
   const getDocumentIcon = (type: string) => {
     switch (type) {
@@ -173,8 +173,9 @@ export function WalletHomeScreen() {
                     key={doc.id}
                     className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
                     onPress={() =>
-                      router.push("/document-details", {
-                        documentId: doc.id,
+                      router.push({
+                        pathname: "/document-details",
+                        params: { documentId: doc.id },
                       })
                     }
                   >
