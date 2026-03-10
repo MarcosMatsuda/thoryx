@@ -1,5 +1,5 @@
-import { EmergencyScreen } from '@presentation/screens/emergency-screen';
+import { EmergencyDetailsScreen } from '@presentation/screens/emergency-details-screen';
 
 export default function Emergency() {
-  return <EmergencyScreen />;
+  return <EmergencyDetailsScreen />;
 }

@@ -67,7 +67,12 @@ export function EmergencyDetailsScreen() {
           <Text className="text-lg font-bold text-text-primary">
             Emergency Profile
           </Text>
-          <View className="w-10" />
+          <Pressable 
+            className="w-10 h-10 items-center justify-center"
+            onPress={() => navigation.navigate('emergency' as never)}
+          >
+            <Text className="text-xl text-primary-main">✏️</Text>
+          </Pressable>
         </View>
 
         <ScrollView 
