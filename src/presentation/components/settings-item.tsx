@@ -12,6 +12,7 @@ interface SettingsItemProps {
   onSwitchChange?: (value: boolean) => void;
   isFirst?: boolean;
   isLast?: boolean;
+  disabled?: boolean;
 }
 
 export function SettingsItem({
@@ -25,6 +26,7 @@ export function SettingsItem({
   onSwitchChange,
   isFirst = false,
   isLast = false,
+  disabled = false,
 }: SettingsItemProps) {
   const content = (
     <View
@@ -55,6 +57,7 @@ export function SettingsItem({
           <Switch
             value={switchValue}
             onValueChange={onSwitchChange}
+            disabled={disabled}
             trackColor={{ false: '#767577', true: '#3B82F6' }}
             thumbColor={switchValue ? '#FFFFFF' : '#f4f3f4'}
           />
@@ -70,7 +73,8 @@ export function SettingsItem({
     return (
       <Pressable
         onPress={onPress}
-        className="active:bg-surface-hover"
+        disabled={disabled}
+        className={`${disabled ? 'opacity-50' : 'active:bg-surface-hover'}`}
       >
         {content}
       </Pressable>
