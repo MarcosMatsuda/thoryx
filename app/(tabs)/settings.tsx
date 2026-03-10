@@ -1,18 +1,5 @@
-import { View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SettingsScreen } from '@presentation/screens/settings-screen';
 
-export default function SettingsScreen() {
-  return (
-    <SafeAreaView className="flex-1 bg-background-primary">
-      <View className="flex-1 items-center justify-center px-6">
-        <Text className="text-4xl mb-4">⚙️</Text>
-        <Text className="text-2xl font-bold text-text-primary mb-2">
-          Settings
-        </Text>
-        <Text className="text-base text-text-secondary text-center">
-          Manage your app preferences and account settings
-        </Text>
-      </View>
-    </SafeAreaView>
-  );
+export default function Settings() {
+  return <SettingsScreen />;
 }
