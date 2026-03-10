@@ -1,17 +1,38 @@
 import { View, Text, ScrollView, Pressable, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useUserProfile } from '@presentation/hooks/use-user-profile';
+import { useBiometry } from '@presentation/hooks/use-biometry';
 import { SettingsSection } from '@presentation/components/settings-section';
 import { SettingsItem } from '@presentation/components/settings-item';
+import { SecureStorageAdapter } from '@infrastructure/storage/secure-storage.adapter';
 import * as Application from 'expo-application';
+
+const BIOMETRY_ENABLED_KEY = 'biometry_enabled';
+const storage = new SecureStorageAdapter('settings-storage', 'thoryx-mmkv-encryption-key-2026');
 
 export function SettingsScreen() {
   const navigation = useNavigation();
   const { profile } = useUserProfile();
+  const { isAvailable: biometryAvailable, getBiometryName, authenticate } = useBiometry();
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [autoLockTimeout, setAutoLockTimeout] = useState('5 minutes');
+
+  useEffect(() => {
+    loadBiometryPreference();
+  }, []);
+
+  const loadBiometryPreference = async () => {
+    try {
+      const enabled = await storage.get(BIOMETRY_ENABLED_KEY);
+      if (enabled === 'true') {
+        setBiometricEnabled(true);
+      }
+    } catch (error) {
+      console.error('Error loading biometry preference:', error);
+    }
+  };
 
   const handleChangePin = () => {
     Alert.alert(
@@ -21,9 +42,43 @@ export function SettingsScreen() {
     );
   };
 
-  const handleBiometricToggle = (value: boolean) => {
-    setBiometricEnabled(value);
-    // TODO: Implement biometric authentication
+  const handleBiometricToggle = async (value: boolean) => {
+    if (!biometryAvailable) {
+      Alert.alert(
+        'Not Available',
+        'Biometric authentication is not available on this device or not set up.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    if (value) {
+      // Test biometry before enabling
+      const result = await authenticate('Enable biometric lock');
+      if (result.success) {
+        await storage.set(BIOMETRY_ENABLED_KEY, 'true');
+        setBiometricEnabled(true);
+        Alert.alert(
+          'Enabled',
+          `${getBiometryName()} has been enabled for unlocking the app.`,
+          [{ text: 'OK' }]
+        );
+      } else {
+        Alert.alert(
+          'Authentication Failed',
+          result.error || 'Could not verify biometric authentication.',
+          [{ text: 'OK' }]
+        );
+      }
+    } else {
+      await storage.set(BIOMETRY_ENABLED_KEY, 'false');
+      setBiometricEnabled(false);
+      Alert.alert(
+        'Disabled',
+        'Biometric lock has been disabled.',
+        [{ text: 'OK' }]
+      );
+    }
   };
 
   const handleAutoLockTimeout = () => {
@@ -50,9 +105,27 @@ export function SettingsScreen() {
         {
           text: 'Clear',
           style: 'destructive',
-          onPress: () => {
-            // TODO: Implement clear all data
-            Alert.alert('Success', 'All data has been cleared.');
+          onPress: async () => {
+            try {
+              // Clear all MMKV storage instances
+              const creditCardStorage = new SecureStorageAdapter('credit-cards-storage', 'thoryx-mmkv-encryption-key-2026');
+              const documentStorage = new SecureStorageAdapter('documents-storage', 'thoryx-mmkv-encryption-key-2026');
+              const emergencyStorage = new SecureStorageAdapter('emergency-info-storage', 'thoryx-mmkv-encryption-key-2026');
+              const pinStorage = new SecureStorageAdapter('pin-storage', 'thoryx-mmkv-encryption-key-2026');
+              const profileStorage = new SecureStorageAdapter('user-profile-storage', 'thoryx-mmkv-encryption-key-2026');
+
+              await creditCardStorage.clear();
+              await documentStorage.clear();
+              await emergencyStorage.clear();
+              await pinStorage.clear();
+              await profileStorage.clear();
+              await storage.clear();
+
+              Alert.alert('Success', 'All data has been cleared. Please restart the app.');
+            } catch (error) {
+              console.error('Error clearing data:', error);
+              Alert.alert('Error', 'Failed to clear all data. Please try again.');
+            }
           },
         },
       ]
@@ -135,10 +208,11 @@ export function SettingsScreen() {
               isFirst
             />
             <SettingsItem
-              label="Biometric Lock"
+              label={biometryAvailable ? `${getBiometryName()}` : 'Biometric Lock (Not Available)'}
               icon={<Text className="text-xl">👆</Text>}
               switchValue={biometricEnabled}
               onSwitchChange={handleBiometricToggle}
+              disabled={!biometryAvailable}
             />
             <SettingsItem
               label="Auto-lock Timeout"

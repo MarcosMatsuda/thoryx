@@ -5,21 +5,46 @@ import { PinDot } from "@presentation/components/pin-dot";
 import { SvgIcon } from "@presentation/components/svg-icon";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useBiometry } from "@presentation/hooks/use-biometry";
 
 const PIN_LENGTH = 6;
 
 export function UnlockWalletScreen() {
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const navigation = useNavigation();
+  const { isAvailable: biometryAvailable, authenticate, getBiometryName } = useBiometry();
 
   useEffect(() => {
     if (pin.length === PIN_LENGTH) {
       verifyPin();
     }
   }, [pin]);
+
+  useEffect(() => {
+    // Try biometric authentication automatically when screen loads
+    if (biometryAvailable) {
+      handleBiometricAuth();
+    }
+  }, [biometryAvailable]);
+
+  const handleBiometricAuth = async () => {
+    try {
+      setIsAuthenticating(true);
+      const result = await authenticate("Unlock your wallet");
+      
+      if (result.success) {
+        navigation.navigate("home" as never);
+      }
+    } catch (error) {
+      console.error("Biometric auth error:", error);
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
 
   const verifyPin = async () => {
     try {
@@ -91,9 +116,29 @@ export function UnlockWalletScreen() {
                 Unlock Wallet
               </Text>
               <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
-                Use FaceID or enter your PIN to access your documents
+                {biometryAvailable 
+                  ? `Use ${getBiometryName()} or enter your PIN to access your documents`
+                  : "Enter your PIN to access your documents"
+                }
               </Text>
             </View>
+
+            {biometryAvailable && !isAuthenticating && (
+              <Pressable 
+                className="mt-2 mb-2 px-6 py-3 bg-primary-main/10 rounded-xl active:opacity-70"
+                onPress={handleBiometricAuth}
+              >
+                <Text className="text-sm font-semibold text-primary-main text-center">
+                  Use {getBiometryName()}
+                </Text>
+              </Pressable>
+            )}
+
+            {isAuthenticating && (
+              <View className="mt-2 mb-2 px-6 py-3">
+                <ActivityIndicator size="small" color="#3B82F6" />
+              </View>
+            )}
 
             {error && (
               <View className="items-center mt-2 mb-2">
