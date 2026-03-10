@@ -29,7 +29,12 @@ export function EmergencyDetailsScreen() {
             <Text className="text-lg font-bold text-text-primary">
               Emergency Profile
             </Text>
-            <View className="w-10" />
+            <Pressable 
+              className="w-10 h-10 items-center justify-center"
+              onPress={() => navigation.navigate('../emergency' as never)}
+            >
+              <Text className="text-xl text-primary-main">✏️</Text>
+            </Pressable>
           </View>
           
           <View className="flex-1 items-center justify-center px-6">
@@ -42,7 +47,7 @@ export function EmergencyDetailsScreen() {
             </Text>
             <Pressable 
               className="bg-primary-main rounded-xl py-3 px-6 active:bg-primary-dark"
-              onPress={() => navigation.navigate('emergency' as never)}
+              onPress={() => navigation.navigate('../emergency' as never)}
             >
               <Text className="text-base font-bold text-text-primary">
                 Set Up Emergency Profile
@@ -69,7 +74,7 @@ export function EmergencyDetailsScreen() {
           </Text>
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.navigate('emergency' as never)}
+            onPress={() => navigation.navigate('../emergency' as never)}
           >
             <Text className="text-xl text-primary-main">✏️</Text>
           </Pressable>
