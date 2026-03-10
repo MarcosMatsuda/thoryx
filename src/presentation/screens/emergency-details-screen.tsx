@@ -1,11 +1,22 @@
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useEmergencyInfo } from '@presentation/hooks/use-emergency-info';
+import { useCallback } from 'react';
 
 export function EmergencyDetailsScreen() {
-  const navigation = useNavigation();
-  const { emergencyInfo, isLoading } = useEmergencyInfo();
+  const router = useRouter();
+  const { emergencyInfo, isLoading, refresh } = useEmergencyInfo();
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [])
+  );
+
+  const handleEditPress = () => {
+    router.push('/emergency-setup');
+  };
 
   if (isLoading) {
     return (
@@ -22,14 +33,19 @@ export function EmergencyDetailsScreen() {
           <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
             <Pressable 
               className="w-10 h-10 items-center justify-center"
-              onPress={() => navigation.goBack()}
+              onPress={() => router.back()}
             >
               <Text className="text-2xl text-text-primary">←</Text>
             </Pressable>
             <Text className="text-lg font-bold text-text-primary">
               Emergency Profile
             </Text>
-            <View className="w-10" />
+            <Pressable 
+              className="w-10 h-10 items-center justify-center"
+              onPress={handleEditPress}
+            >
+              <Text className="text-xl text-primary-main">✏️</Text>
+            </Pressable>
           </View>
           
           <View className="flex-1 items-center justify-center px-6">
@@ -42,7 +58,7 @@ export function EmergencyDetailsScreen() {
             </Text>
             <Pressable 
               className="bg-primary-main rounded-xl py-3 px-6 active:bg-primary-dark"
-              onPress={() => navigation.navigate('emergency' as never)}
+              onPress={handleEditPress}
             >
               <Text className="text-base font-bold text-text-primary">
                 Set Up Emergency Profile
@@ -60,7 +76,7 @@ export function EmergencyDetailsScreen() {
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()}
           >
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
@@ -69,7 +85,7 @@ export function EmergencyDetailsScreen() {
           </Text>
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.navigate('emergency' as never)}
+            onPress={handleEditPress}
           >
             <Text className="text-xl text-primary-main">✏️</Text>
           </Pressable>
@@ -238,28 +254,6 @@ export function EmergencyDetailsScreen() {
             )}
           </View>
         </ScrollView>
-
-        <View className="flex-row bg-background-secondary border-t border-ui-border">
-          <Pressable 
-            className="flex-1 items-center py-3"
-            onPress={() => navigation.navigate('home' as never)}
-          >
-            <Text className="text-2xl mb-1">💼</Text>
-            <Text className="text-xs font-medium text-text-secondary">Wallet</Text>
-          </Pressable>
-          <Pressable className="flex-1 items-center py-3">
-            <Text className="text-2xl mb-1">❤️</Text>
-            <Text className="text-xs font-medium text-text-secondary">Health</Text>
-          </Pressable>
-          <Pressable className="flex-1 items-center py-3">
-            <Text className="text-2xl mb-1">🚨</Text>
-            <Text className="text-xs font-medium text-primary-main">Emergency</Text>
-          </Pressable>
-          <Pressable className="flex-1 items-center py-3">
-            <Text className="text-2xl mb-1">⚙️</Text>
-            <Text className="text-xs font-medium text-text-secondary">Settings</Text>
-          </Pressable>
-        </View>
       </View>
     </SafeAreaView>
   );
