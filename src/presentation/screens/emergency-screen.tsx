@@ -2,11 +2,13 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useEmergencyInfo } from '@presentation/hooks/use-emergency-info';
+import { useUserProfile } from '@presentation/hooks/use-user-profile';
 import { RootStackParamList } from '@presentation/types/navigation';
 
 export function EmergencyScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { emergencyInfo, isLoading } = useEmergencyInfo();
+  const { profile } = useUserProfile();
 
   return (
     <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
@@ -26,16 +28,21 @@ export function EmergencyScreen() {
                 No emergency information
               </Text>
               <Text className="text-sm md:text-base text-text-secondary mb-6 text-center px-8">
-                Add your medical info and emergency contacts for quick access
+                {profile 
+                  ? "Add your medical info and emergency contacts for quick access"
+                  : "Please log in to add emergency information"
+                }
               </Text>
-              <Pressable
-                onPress={() => navigation.navigate('emergency')}
-                className="bg-status-error px-6 py-3 rounded-xl active:opacity-80"
-              >
-                <Text className="text-white font-semibold text-base md:text-lg">
-                  Add Emergency Info
-                </Text>
-              </Pressable>
+              {profile && (
+                <Pressable
+                  onPress={() => navigation.navigate('emergency')}
+                  className="bg-status-error px-6 py-3 rounded-xl active:opacity-80"
+                >
+                  <Text className="text-white font-semibold text-base md:text-lg">
+                    Add Emergency Info
+                  </Text>
+                </Pressable>
+              )}
             </View>
           ) : (
             <>

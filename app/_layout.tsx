@@ -13,15 +13,28 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="home" options={{ headerShown: false }} />
+        <Stack.Screen name="unlock" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="(tabs)" 
+          options={{ 
+            headerShown: false,
+            gestureEnabled: false, // Disable swipe back
+          }} 
+        />
+        <Stack.Screen 
+          name="home" 
+          options={{ 
+            headerShown: false,
+            gestureEnabled: false, // Disable swipe back
+          }} 
+        />
         <Stack.Screen name="emergency" options={{ headerShown: false }} />
         <Stack.Screen name="emergency-details" options={{ headerShown: false }} />
         <Stack.Screen name="add-credit-card" options={{ headerShown: false }} />
         <Stack.Screen name="document-details" options={{ headerShown: false }} />
         <Stack.Screen name="add-document" options={{ headerShown: false }} />
         <Stack.Screen name="select-documents" options={{ headerShown: false }} />
-        <Stack.Screen name="unlock" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="profile-setup" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="light" />

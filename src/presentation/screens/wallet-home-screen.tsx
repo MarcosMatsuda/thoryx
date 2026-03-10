@@ -78,10 +78,6 @@ export function WalletHomeScreen() {
                 )}
               </View>
             </View>
-            <Pressable className="w-10 h-10 items-center justify-center">
-              <View className="w-2 h-2 rounded-full bg-status-error absolute top-2 right-2" />
-              <Text className="text-2xl">🔔</Text>
-            </Pressable>
           </View>
 
           <View className="mb-6">

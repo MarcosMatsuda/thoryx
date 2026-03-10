@@ -66,7 +66,7 @@ export class BiometryService {
       const result = await LocalAuthentication.authenticateAsync({
         promptMessage: promptMessage || 'Authenticate to access your wallet',
         fallbackLabel: 'Use PIN',
-        disableDeviceFallback: false,
+        disableDeviceFallback: true, // Disable device password fallback
         cancelLabel: 'Cancel'
       });
 
