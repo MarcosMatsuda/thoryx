@@ -24,23 +24,28 @@ export function UnlockWalletScreen() {
     }
   }, [pin]);
 
-  useEffect(() => {
-    // Try biometric authentication automatically when screen loads
-    if (biometryAvailable) {
-      handleBiometricAuth();
-    }
-  }, [biometryAvailable]);
-
   const handleBiometricAuth = async () => {
     try {
       setIsAuthenticating(true);
       const result = await authenticate("Unlock your wallet");
       
       if (result.success) {
-        navigation.navigate("home" as never);
+        // Navigate to main app (tabs)
+        navigation.reset({
+          index: 0,
+          routes: [{ name: '(tabs)' as never }],
+        });
+      } else {
+        // Show error message if authentication failed
+        if (result.error) {
+          setError(true);
+          setTimeout(() => setError(false), 2000);
+        }
       }
     } catch (error) {
       console.error("Biometric auth error:", error);
+      setError(true);
+      setTimeout(() => setError(false), 2000);
     } finally {
       setIsAuthenticating(false);
     }
@@ -55,7 +60,11 @@ export function UnlockWalletScreen() {
 
       if (result.success) {
         setError(false);
-        navigation.navigate("home" as never);
+        // Navigate to main app (tabs) and reset stack
+        navigation.reset({
+          index: 0,
+          routes: [{ name: '(tabs)' as never }],
+        });
       } else {
         setError(true);
         setTimeout(() => {

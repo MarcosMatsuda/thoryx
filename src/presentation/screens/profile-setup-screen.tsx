@@ -21,7 +21,11 @@ export function ProfileSetupScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      navigation.goBack();
+      // Navigate to main app after profile setup
+      navigation.reset({
+        index: 0,
+        routes: [{ name: '(tabs)' as never }],
+      });
     } else {
       Alert.alert('Error', result.message);
     }
