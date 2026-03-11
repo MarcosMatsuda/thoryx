@@ -31,6 +31,8 @@ export function CameraScannerV2({
 }: CameraScannerV2Props) {
   const [hasPermission, setHasPermission] = useState(false);
   const [isVisionCameraAvailable, setIsVisionCameraAvailable] = useState(false);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const device = VisionCamera ? VisionCamera.useCameraDevice('back') : null;
 
   useEffect(() => {
     checkPermissions();
@@ -80,7 +82,6 @@ export function CameraScannerV2({
   }
 
   const Camera = VisionCamera.Camera;
-  const device = VisionCamera.useCameraDevice('back');
 
   if (!device) {
     return (

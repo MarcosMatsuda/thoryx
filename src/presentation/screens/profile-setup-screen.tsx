@@ -40,7 +40,7 @@ export function ProfileSetupScreen() {
           </View>
           <Text className="text-2xl font-bold text-text-primary mb-2">Welcome to Thoryx</Text>
           <Text className="text-base text-text-secondary text-center">
-            Let's set up your profile to get started
+            Let&apos;s set up your profile to get started
           </Text>
         </View>
 

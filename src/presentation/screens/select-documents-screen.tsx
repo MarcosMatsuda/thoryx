@@ -35,7 +35,7 @@ export function SelectDocumentsScreen() {
               Which documents do you want to share?
             </Text>
             <Text className="text-sm md:text-base text-text-secondary mb-6 leading-5">
-              The app will enter a restricted "Secure Mode" showing only your selected documents for verification.
+              The app will enter a restricted &quot;Secure Mode&quot; showing only your selected documents for verification.
             </Text>
 
             <View className="mb-6">
