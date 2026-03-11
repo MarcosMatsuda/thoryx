@@ -10,7 +10,11 @@ const config = {
       },
       testMatch: ['<rootDir>/src/**/*.test.ts'],
       moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1',
+        '^@domain/(.*)$': '<rootDir>/src/domain/$1',
+        '^@data/(.*)$': '<rootDir>/src/data/$1',
+        '^@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',
+        '^@presentation/(.*)$': '<rootDir>/src/presentation/$1',
+        '^@shared/(.*)$': '<rootDir>/src/shared/$1',
       },
     },
     {
@@ -23,8 +27,13 @@ const config = {
       ],
       testMatch: ['<rootDir>/src/**/*.test.tsx'],
       moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1',
+        '^@domain/(.*)$': '<rootDir>/src/domain/$1',
+        '^@data/(.*)$': '<rootDir>/src/data/$1',
+        '^@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',
+        '^@presentation/(.*)$': '<rootDir>/src/presentation/$1',
+        '^@shared/(.*)$': '<rootDir>/src/shared/$1',
       },
+      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     },
   ],
   // Coverage threshold will be enforced once Test Writer Agent adds meaningful tests
