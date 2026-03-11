@@ -25,6 +25,7 @@ const config = {
       moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
       },
+      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     },
   ],
   // Coverage threshold will be enforced once Test Writer Agent adds meaningful tests
