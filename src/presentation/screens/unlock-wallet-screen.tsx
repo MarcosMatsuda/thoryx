@@ -3,7 +3,7 @@ import { VerifyPinUseCase } from "@domain/use-cases/verify-pin.use-case";
 import { NumericKeypad } from "@presentation/components/numeric-keypad";
 import { PinDot } from "@presentation/components/pin-dot";
 import { SvgIcon } from "@presentation/components/svg-icon";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Pressable, Text, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,23 +11,16 @@ import { useBiometry } from "@presentation/hooks/use-biometry";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 
 const PIN_LENGTH = 6;
-const BIOMETRY_ENABLED_KEY = "biometry_enabled";
-const storage = new SecureStorageAdapter(
-  "settings-storage",
-  "thoryx-mmkv-encryption-key-2026",
-);
+const BIOMETRY_ENABLED_KEY = 'biometry_enabled';
+const storage = new SecureStorageAdapter('settings-storage', 'thoryx-mmkv-encryption-key-2026');
 
 export function UnlockWalletScreen() {
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [biometryEnabled, setBiometryEnabled] = useState(false);
-  const router = useRouter();
-  const {
-    isAvailable: biometryAvailable,
-    authenticate,
-    getBiometryName,
-  } = useBiometry();
+  const navigation = useNavigation();
+  const { isAvailable: biometryAvailable, authenticate, getBiometryName } = useBiometry();
 
   useEffect(() => {
     checkBiometryEnabled();
@@ -36,9 +29,9 @@ export function UnlockWalletScreen() {
   const checkBiometryEnabled = async () => {
     try {
       const enabled = await storage.get(BIOMETRY_ENABLED_KEY);
-      setBiometryEnabled(enabled === "true" && biometryAvailable);
+      setBiometryEnabled(enabled === 'true' && biometryAvailable);
     } catch (error) {
-      console.error("Error checking biometry enabled:", error);
+      console.error('Error checking biometry enabled:', error);
       setBiometryEnabled(false);
     }
   };
@@ -53,10 +46,13 @@ export function UnlockWalletScreen() {
     try {
       setIsAuthenticating(true);
       const result = await authenticate("Unlock your wallet");
-
+      
       if (result.success) {
         // Navigate to main app (tabs)
-        router.replace("/(tabs)");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: '(tabs)' as never }],
+        });
       } else {
         // Show error message if authentication failed
         if (result.error) {
@@ -83,7 +79,10 @@ export function UnlockWalletScreen() {
       if (result.success) {
         setError(false);
         // Navigate to main app (tabs) and reset stack
-        router.replace("/(tabs)");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: '(tabs)' as never }],
+        });
       } else {
         setError(true);
         setTimeout(() => {
@@ -144,14 +143,15 @@ export function UnlockWalletScreen() {
                 Unlock Wallet
               </Text>
               <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
-                {biometryEnabled
+                {biometryEnabled 
                   ? `Use ${getBiometryName()} or enter your PIN to access your documents`
-                  : "Enter your PIN to access your documents"}
+                  : "Enter your PIN to access your documents"
+                }
               </Text>
             </View>
 
             {biometryEnabled && !isAuthenticating && (
-              <Pressable
+              <Pressable 
                 className="mt-2 mb-2 px-6 py-3 bg-primary-main/10 rounded-xl active:opacity-70"
                 onPress={handleBiometricAuth}
               >
@@ -201,7 +201,7 @@ export function UnlockWalletScreen() {
         <View className="items-center pb-8">
           <Pressable
             className="py-3"
-            onPress={() => router.push("/emergency-details")}
+            onPress={() => navigation.navigate("emergency-details" as never)}
           >
             <Text className="text-base md:text-lg text-primary-main font-semibold">
               Emergency Details
