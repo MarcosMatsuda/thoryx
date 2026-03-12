@@ -35,11 +35,7 @@ export function SettingsScreen() {
   };
 
   const handleChangePin = () => {
-    Alert.alert(
-      'Change PIN',
-      'This feature will be implemented soon.',
-      [{ text: 'OK' }]
-    );
+    navigation.navigate('change-pin' as never);
   };
 
   const handleBiometricToggle = async (value: boolean) => {
