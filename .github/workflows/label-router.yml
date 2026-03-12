@@ -7,33 +7,94 @@ on:
     types: [labeled]
 
 jobs:
-  notify-orchestrator:
-    name: Notify Orchestrator
+  route:
+    name: Route to Agent
     runs-on: ubuntu-latest
 
     # Only react to routing labels — ignore all others
     if: |
-      contains(fromJson('["task","needs-tests","needs-fix","tests-ready","qa-approved","qa-changes-requested"]'), github.event.label.name)
+      contains(fromJson('["task","wip","needs-tests","needs-fix","tests-ready","qa-approved","qa-changes-requested"]'), github.event.label.name)
 
     steps:
-      - name: Build message
-        id: msg
+      - name: Build variables
+        id: vars
         run: |
           if [ "${{ github.event_name }}" = "issues" ]; then
             KIND="issue"
+            NUMBER="${{ github.event.issue.number }}"
+            TITLE="${{ github.event.issue.title }}"
           else
             KIND="pr"
+            NUMBER="${{ github.event.pull_request.number }}"
+            TITLE="${{ github.event.pull_request.title }}"
           fi
-          NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
-          LABEL="${{ github.event.label.name }}"
-          echo "text=🔔 github: label=${LABEL} ${KIND}=#${NUMBER}" >> $GITHUB_OUTPUT
+          echo "kind=${KIND}" >> $GITHUB_OUTPUT
+          echo "number=${NUMBER}" >> $GITHUB_OUTPUT
+          echo "label=${{ github.event.label.name }}" >> $GITHUB_OUTPUT
+          echo "title=${TITLE}" >> $GITHUB_OUTPUT
 
-      - name: Post to Slack #orchestrator
+      - name: Open thread in #thoryx-squad (task only)
+        if: steps.vars.outputs.label == 'task' && steps.vars.outputs.kind == 'issue'
         run: |
+          PAYLOAD=$(jq -n \
+            --arg channel "C0AKW87DA78" \
+            --arg text "📋 ${{ steps.vars.outputs.title }}\nIssue: #${{ steps.vars.outputs.number }} — https://github.com/MarcosMatsuda/thoryx/issues/${{ steps.vars.outputs.number }}" \
+            '{channel: $channel, text: $text}')
           curl -s -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{
-              "channel": "C0AL2R8S858",
-              "text": "${{ steps.msg.outputs.text }}"
-            }'
+            -d "$PAYLOAD"
+
+      - name: Post status to #thoryx-squad
+        run: |
+          LABEL="${{ steps.vars.outputs.label }}"
+          NUMBER="${{ steps.vars.outputs.number }}"
+
+          case "$LABEL" in
+            task)                 MSG="📋 TASK-${NUMBER} iniciada — Senior Dev ativado." ;;
+            wip)                  MSG="⚙️ Senior Dev iniciou TASK-${NUMBER}." ;;
+            needs-tests)          MSG="⚙️ PR #${NUMBER} aberto — Wolf escrevendo testes." ;;
+            needs-fix)            MSG="🔧 PR #${NUMBER} — bug encontrado. Senior Dev corrigindo." ;;
+            tests-ready)          MSG="🐺 Testes prontos — PR #${NUMBER}. QA ativado." ;;
+            qa-approved)          MSG="✅ PR #${NUMBER} aprovado por QA. Pronto para sua revisão e merge, Marcos." ;;
+            qa-changes-requested) MSG="❌ PR #${NUMBER} — mudanças solicitadas por QA. Senior Dev corrigindo." ;;
+          esac
+
+          PAYLOAD=$(jq -n --arg channel "C0AKW87DA78" --arg text "$MSG" '{channel: $channel, text: $text}')
+          curl -s -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"
+
+      - name: Route to agent channel
+        run: |
+          LABEL="${{ steps.vars.outputs.label }}"
+          NUMBER="${{ steps.vars.outputs.number }}"
+          WEBHOOK=""
+          TEXT=""
+
+          case "$LABEL" in
+            task)
+              WEBHOOK="${{ secrets.SLACK_WEBHOOK_SENIOR_DEV }}"
+              TEXT="Issue #${NUMBER} has label task. Read the issue and implement it: gh issue view ${NUMBER} --repo MarcosMatsuda/thoryx\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
+              ;;
+            needs-tests)
+              WEBHOOK="${{ secrets.SLACK_WEBHOOK_TEST_WRITER }}"
+              TEXT="PR #${NUMBER} has label needs-tests. Write tests for this PR.\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
+              ;;
+            needs-fix|qa-changes-requested)
+              WEBHOOK="${{ secrets.SLACK_WEBHOOK_SENIOR_DEV }}"
+              TEXT="PR #${NUMBER} has label ${LABEL}. Read the PR comments and fix the reported issues: gh pr view ${NUMBER} --repo MarcosMatsuda/thoryx\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
+              ;;
+            tests-ready)
+              WEBHOOK="${{ secrets.SLACK_WEBHOOK_QA }}"
+              TEXT="PR #${NUMBER} has label tests-ready. Review against the acceptance criteria in the linked issue.\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
+              ;;
+          esac
+
+          if [ -n "$WEBHOOK" ]; then
+            PAYLOAD=$(jq -n --arg text "$TEXT" '{text: $text}')
+            curl -s -X POST "$WEBHOOK" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD"
+          fi
