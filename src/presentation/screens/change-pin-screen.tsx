@@ -142,18 +142,21 @@ export function ChangePinScreen() {
       className="flex-1 bg-background-primary"
       edges={["top", "bottom"]}
     >
-      <View className="flex-1 w-full max-w-[500px] self-center">
-        {/* Header */}
-        <View className="px-6 pt-6 pb-4">
-          <View className="mb-6">
-            <Pressable
-              className="w-10 h-10 items-center justify-center active:bg-surface-hover rounded-full"
-              onPress={handleBack}
-            >
-              <Text className="text-2xl text-text-primary">←</Text>
-            </Pressable>
-          </View>
+      <View className="flex-1">
+        {/* Header - Fixed at top (like Emergency Information) */}
+        <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+          <Pressable
+            className="w-10 h-10 items-center justify-center active:bg-surface-hover rounded-full"
+            onPress={handleBack}
+          >
+            <Text className="text-2xl text-text-primary">←</Text>
+          </Pressable>
+          {/* Empty view for spacing - no label in middle */}
+          <View className="w-10" />
+        </View>
 
+        {/* Main Content */}
+        <View className="flex-1 w-full max-w-[500px] self-center px-6 pt-6">
           <View className="items-center mb-6">
             <Text className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
               {getTitle()}
@@ -187,61 +190,67 @@ export function ChangePinScreen() {
               ))}
             </View>
           </View>
-        </View>
 
-        {/* Keypad */}
-        <View className="flex-1 justify-center items-center px-4">
-          <View className="w-[75%] h-[60%] justify-center">
-            <NumericKeypad
-              onKeyPress={handleKeyPress}
-              onBackspace={handleBackspace}
-            />
+          {/* Keypad */}
+          <View className="flex-1 justify-center items-center px-4">
+            <View className="w-[75%] h-[60%] justify-center">
+              <NumericKeypad
+                onKeyPress={handleKeyPress}
+                onBackspace={handleBackspace}
+              />
+            </View>
+          </View>
+
+          {/* Continue Button */}
+          <View className="px-6 pb-6">
+            <Pressable
+              className={`rounded-xl py-4 items-center ${
+                isPinComplete()
+                  ? "bg-primary-main active:bg-primary-dark"
+                  : "bg-ui-border"
+              }`}
+              disabled={!isPinComplete()}
+              onPress={
+                step === "current"
+                  ? handleVerifyCurrentPin
+                  : handleNewPinComplete
+              }
+            >
+              <View className="flex-row items-center">
+                <Text
+                  className={`text-base font-bold mr-2 ${
+                    isPinComplete()
+                      ? "text-text-primary"
+                      : "text-text-secondary"
+                  }`}
+                >
+                  {step === "current" ? "Continue" : "Confirm New PIN"}
+                </Text>
+                <Text
+                  className={
+                    isPinComplete()
+                      ? "text-text-primary"
+                      : "text-text-secondary"
+                  }
+                >
+                  →
+                </Text>
+              </View>
+            </Pressable>
           </View>
         </View>
 
-        {/* Continue Button */}
-        <View className="px-6 pb-6">
-          <Pressable
-            className={`rounded-xl py-4 items-center ${
-              isPinComplete()
-                ? "bg-primary-main active:bg-primary-dark"
-                : "bg-ui-border"
-            }`}
-            disabled={!isPinComplete()}
-            onPress={
-              step === "current" ? handleVerifyCurrentPin : handleNewPinComplete
-            }
-          >
-            <View className="flex-row items-center">
-              <Text
-                className={`text-base font-bold mr-2 ${
-                  isPinComplete() ? "text-text-primary" : "text-text-secondary"
-                }`}
-              >
-                {step === "current" ? "Continue" : "Confirm New PIN"}
-              </Text>
-              <Text
-                className={
-                  isPinComplete() ? "text-text-primary" : "text-text-secondary"
-                }
-              >
-                →
-              </Text>
-            </View>
-          </Pressable>
-        </View>
+        {/* Confirmation Bottom Sheet */}
+        <PinConfirmationBottomSheet
+          visible={showConfirmation}
+          onClose={() => setShowConfirmation(false)}
+          onConfirm={handleConfirmNewPin}
+          originalPin={newPin}
+          title="Confirm New PIN"
+          subtitle="Please re-enter your new 6-digit PIN to verify."
+          context="Change PIN"
+        />
       </View>
-
-      {/* Confirmation Bottom Sheet */}
-      <PinConfirmationBottomSheet
-        visible={showConfirmation}
-        onClose={() => setShowConfirmation(false)}
-        onConfirm={handleConfirmNewPin}
-        originalPin={newPin}
-        title="Confirm New PIN"
-        subtitle="Please re-enter your new 6-digit PIN to verify."
-        context="Change PIN"
-      />
     </SafeAreaView>
   );
 }
