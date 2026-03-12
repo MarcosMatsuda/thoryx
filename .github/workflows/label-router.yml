@@ -13,7 +13,7 @@ jobs:
 
     # Only react to routing labels — ignore all others
     if: |
-      contains(fromJson('["task","needs-tests","needs-fix","tests-ready","qa-approved","qa-changes-requested"]'), github.event.label.name)
+      contains(fromJson('["task","wip","needs-tests","needs-fix","tests-ready","qa-approved","qa-changes-requested"]'), github.event.label.name)
 
     steps:
       - name: Build variables
