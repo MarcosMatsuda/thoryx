@@ -145,16 +145,13 @@ export function ChangePinScreen() {
       <View className="flex-1 w-full max-w-[500px] self-center">
         {/* Header */}
         <View className="px-6 pt-6 pb-4">
-          <View className="flex-row items-center mb-6">
+          <View className="mb-6">
             <Pressable
               className="w-10 h-10 items-center justify-center active:bg-surface-hover rounded-full"
               onPress={handleBack}
             >
               <Text className="text-2xl text-text-primary">←</Text>
             </Pressable>
-            <Text className="text-2xl font-bold text-text-primary ml-4">
-              Change PIN
-            </Text>
           </View>
 
           <View className="items-center mb-6">
