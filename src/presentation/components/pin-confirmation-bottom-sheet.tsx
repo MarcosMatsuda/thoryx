@@ -35,15 +35,18 @@ export function PinConfirmationBottomSheet({
         setConfirmPin("");
       } else {
         setError(true);
+        setTimeout(() => {
+          setConfirmPin("");
+          setError(false);
+        }, 1000);
       }
-    } else {
-      setError(false);
     }
   }, [confirmPin, originalPin]);
 
   const handleKeyPress = (value: string) => {
     if (confirmPin.length < PIN_LENGTH) {
       setConfirmPin(confirmPin + value);
+      setError(false);
     }
   };
 
@@ -76,12 +79,6 @@ export function PinConfirmationBottomSheet({
           <View className="flex-1 w-full max-w-[500px] self-center">
             <View className="items-center pt-4 pb-2">
               <View className="w-12 h-1 bg-ui-border rounded-full mb-4" />
-              <Pressable 
-                className="absolute left-6 top-4 w-10 h-10 items-center justify-center"
-                onPress={handleClose}
-              >
-                <Text className="text-2xl text-text-primary">←</Text>
-              </Pressable>
               <Text className="text-base text-text-secondary">{context}</Text>
             </View>
 
@@ -98,7 +95,6 @@ export function PinConfirmationBottomSheet({
               {error && (
                 <View className="items-center mt-4 mb-2">
                   <View className="flex-row items-center">
-                    <Text className="text-xl mr-2">⚠️</Text>
                     <Text className="text-sm font-semibold text-status-error">
                       PINs do not match. Please try again.
                     </Text>
