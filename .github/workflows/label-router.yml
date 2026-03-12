@@ -16,24 +16,41 @@ jobs:
       contains(fromJson('["task","needs-tests","needs-fix","tests-ready","qa-approved","qa-changes-requested"]'), github.event.label.name)
 
     steps:
-      - name: Build message
+      - name: Build variables
         id: msg
         run: |
           if [ "${{ github.event_name }}" = "issues" ]; then
             KIND="issue"
+            NUMBER="${{ github.event.issue.number }}"
+            TITLE="${{ github.event.issue.title }}"
           else
             KIND="pr"
+            NUMBER="${{ github.event.pull_request.number }}"
+            TITLE="${{ github.event.pull_request.title }}"
           fi
-          NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
           LABEL="${{ github.event.label.name }}"
-          echo "text=🔔 github: label=${LABEL} ${KIND}=#${NUMBER}" >> $GITHUB_OUTPUT
+          echo "kind=${KIND}" >> $GITHUB_OUTPUT
+          echo "number=${NUMBER}" >> $GITHUB_OUTPUT
+          echo "label=${LABEL}" >> $GITHUB_OUTPUT
+          echo "title=${TITLE}" >> $GITHUB_OUTPUT
 
-      - name: Post to Slack #orchestrator
+      - name: Post to #orchestrator
         run: |
           curl -s -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{
-              "channel": "C0AL2R8S858",
-              "text": "${{ steps.msg.outputs.text }}"
-            }'
+            -d "{
+              \"channel\": \"C0AL2R8S858\",
+              \"text\": \"🔔 github: label=${{ steps.msg.outputs.label }} ${{ steps.msg.outputs.kind }}=#${{ steps.msg.outputs.number }}\"
+            }"
+
+      - name: Open task thread in #thoryx-squad
+        if: steps.msg.outputs.label == 'task' && steps.msg.outputs.kind == 'issue'
+        run: |
+          curl -s -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"channel\": \"C0AKW87DA78\",
+              \"text\": \"📋 ${{ steps.msg.outputs.title }}\nIssue: #${{ steps.msg.outputs.number }} — https://github.com/MarcosMatsuda/thoryx/issues/${{ steps.msg.outputs.number }}\"
+            }"
