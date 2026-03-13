@@ -33,34 +33,22 @@ jobs:
           echo "label=${{ github.event.label.name }}" >> $GITHUB_OUTPUT
           echo "title=${TITLE}" >> $GITHUB_OUTPUT
 
-      - name: Open thread in #thoryx-squad (task only)
-        if: steps.vars.outputs.label == 'task' && steps.vars.outputs.kind == 'issue'
-        run: |
-          PAYLOAD=$(jq -n \
-            --arg channel "C0AKW87DA78" \
-            --arg text "📋 ${{ steps.vars.outputs.title }}\nIssue: #${{ steps.vars.outputs.number }} — https://github.com/MarcosMatsuda/thoryx/issues/${{ steps.vars.outputs.number }}" \
-            '{channel: $channel, text: $text}')
-          curl -s -X POST https://slack.com/api/chat.postMessage \
-            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "$PAYLOAD"
-
-      - name: Post status to #thoryx-squad
+      - name: Notify Conductor
         run: |
           LABEL="${{ steps.vars.outputs.label }}"
           NUMBER="${{ steps.vars.outputs.number }}"
+          KIND="${{ steps.vars.outputs.kind }}"
+          TITLE="${{ steps.vars.outputs.title }}"
 
-          case "$LABEL" in
-            task)                 MSG="📋 TASK-${NUMBER} iniciada — Senior Dev ativado." ;;
-            wip)                  MSG="⚙️ Senior Dev iniciou TASK-${NUMBER}." ;;
-            needs-tests)          MSG="⚙️ PR #${NUMBER} aberto — Wolf escrevendo testes." ;;
-            needs-fix)            MSG="🔧 PR #${NUMBER} — bug encontrado. Senior Dev corrigindo." ;;
-            tests-ready)          MSG="🐺 Testes prontos — PR #${NUMBER}. QA ativado." ;;
-            qa-approved)          MSG="✅ PR #${NUMBER} aprovado por QA. Pronto para sua revisão e merge, Marcos." ;;
-            qa-changes-requested) MSG="❌ PR #${NUMBER} — mudanças solicitadas por QA. Senior Dev corrigindo." ;;
-          esac
+          if [ "$KIND" = "issue" ]; then
+            URL="https://github.com/MarcosMatsuda/thoryx/issues/${NUMBER}"
+          else
+            URL="https://github.com/MarcosMatsuda/thoryx/pull/${NUMBER}"
+          fi
 
-          PAYLOAD=$(jq -n --arg channel "C0AKW87DA78" --arg text "$MSG" '{channel: $channel, text: $text}')
+          TEXT="PIPELINE_EVENT label=${LABEL} kind=${KIND} number=${NUMBER} url=${URL} title=${TITLE}"
+
+          PAYLOAD=$(jq -n --arg channel "C0AL2R8S858" --arg text "$TEXT" '{channel: $channel, text: $text}')
           curl -s -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
             -H "Content-Type: application/json" \
