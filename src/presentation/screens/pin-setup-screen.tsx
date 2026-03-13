@@ -5,7 +5,7 @@ import { PinConfirmationBottomSheet } from "@presentation/components/pin-confirm
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { PinRepositoryImpl } from '@data/repositories/pin.repository.impl';
 import { SavePinUseCase } from '@domain/use-cases/save-pin.use-case';
 
@@ -15,7 +15,7 @@ export function PinSetupScreen() {
   const [pin, setPin] = useState("");
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const handleKeyPress = (value: string) => {
     if (pin.length < PIN_LENGTH) {
@@ -47,7 +47,7 @@ export function PinSetupScreen() {
         
         if (result.success) {
           setShowConfirmation(false);
-          navigation.navigate('home' as never);
+          router.push('/home');
         }
       } catch (error) {
         console.error('Error saving PIN:', error);

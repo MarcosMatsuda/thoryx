@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { View, Text, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { NumericKeypad } from "@presentation/components/numeric-keypad";
 import { PinDot } from "@presentation/components/pin-dot";
 import { PinConfirmationBottomSheet } from "@presentation/components/pin-confirmation-bottom-sheet";
@@ -15,7 +15,7 @@ const PIN_LENGTH = 6;
 type Step = "current" | "new";
 
 export function ChangePinScreen() {
-  const navigation = useNavigation();
+  const router = useRouter();
   const [step, setStep] = useState<Step>("current");
   const [currentPin, setCurrentPin] = useState("");
   const [newPin, setNewPin] = useState("");
@@ -99,7 +99,7 @@ export function ChangePinScreen() {
           Alert.alert("Success", "Your PIN has been changed successfully.", [
             {
               text: "OK",
-              onPress: () => navigation.goBack(),
+              onPress: () => router.back(),
             },
           ]);
         } else {
@@ -143,7 +143,7 @@ export function ChangePinScreen() {
       setNewPin("");
       setError(false);
     } else {
-      navigation.goBack();
+      router.back();
     }
   };
 

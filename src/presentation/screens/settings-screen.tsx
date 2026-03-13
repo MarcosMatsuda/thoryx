@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Pressable, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { useUserProfile } from '@presentation/hooks/use-user-profile';
 import { useBiometry } from '@presentation/hooks/use-biometry';
 import { SettingsSection } from '@presentation/components/settings-section';
@@ -13,7 +13,7 @@ const BIOMETRY_ENABLED_KEY = 'biometry_enabled';
 const storage = new SecureStorageAdapter('settings-storage', 'thoryx-mmkv-encryption-key-2026');
 
 export function SettingsScreen() {
-  const navigation = useNavigation();
+  const router = useRouter();
   const { profile } = useUserProfile();
   const { isAvailable: biometryAvailable, getBiometryName, authenticate } = useBiometry();
   const [biometricEnabled, setBiometricEnabled] = useState(false);
@@ -35,7 +35,7 @@ export function SettingsScreen() {
   };
 
   const handleChangePin = () => {
-    navigation.navigate('change-pin' as never);
+    router.push('/change-pin');
   };
 
   const handleBiometricToggle = async (value: boolean) => {
@@ -173,7 +173,7 @@ export function SettingsScreen() {
           {/* Profile Section */}
           <SettingsSection title="PROFILE">
             <Pressable
-              onPress={() => navigation.navigate('profile-setup' as never)}
+              onPress={() => router.push('/profile-setup')}
               className="p-4 active:bg-surface-hover"
             >
               <View className="flex-row items-center">

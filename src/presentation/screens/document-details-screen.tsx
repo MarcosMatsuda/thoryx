@@ -4,16 +4,15 @@ import { DocumentPhotoCarousel } from '@presentation/components/document-photo-c
 import { DetailRow } from '@presentation/components/detail-row';
 import { ActionButtonLarge } from '@presentation/components/action-button-large';
 import { InfoBanner } from '@presentation/components/info-banner';
-import { useNavigation, useRoute, NavigationProp } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { DocumentRepositoryImpl } from '@data/repositories/document.repository.impl';
 import { Document } from '@domain/entities/document.entity';
-import { RootStackParamList } from '@presentation/types/navigation';
 
 export function DocumentDetailsScreen() {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const route = useRoute();
-  const { documentId } = route.params as { documentId?: string };
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const { documentId } = params as { documentId?: string };
   
   const [document, setDocument] = useState<Document | null>(null);
   const [frontPhotoUri, setFrontPhotoUri] = useState<string | null>(null);
@@ -87,7 +86,7 @@ export function DocumentDetailsScreen() {
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()}
           >
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
@@ -96,7 +95,7 @@ export function DocumentDetailsScreen() {
           </Text>
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.navigate('add-document', { documentId: document.id })}
+            onPress={() => router.push({ pathname: '/add-document', params: { documentId: document.id } })}
           >
             <Text className="text-xl text-primary-main">✏️</Text>
           </Pressable>
