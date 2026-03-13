@@ -5,6 +5,7 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import "react-native-reanimated";
 import "../global.css";
 
@@ -14,48 +15,50 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack
-        screenOptions={{
-          headerShown: false, // Global setting: hide ALL headers by default
-        }}
-      >
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="unlock" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-            gestureEnabled: false, // Disable swipe back
+    <SafeAreaProvider>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack
+          screenOptions={{
+            headerShown: false, // Global setting: hide ALL headers by default
           }}
-        />
-        <Stack.Screen
-          name="home"
-          options={{
-            headerShown: false,
-            gestureEnabled: false, // Disable swipe back
-          }}
-        />
-        <Stack.Screen name="emergency" options={{ headerShown: false }} />
-        <Stack.Screen name="emergency-setup" options={{ headerShown: false }} />
-        <Stack.Screen name="add-credit-card" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="document-details"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="add-document" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="select-documents"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="profile-setup" options={{ headerShown: false }} />
-        <Stack.Screen name="change-pin" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
-        />
-      </Stack>
-      <StatusBar style="light" />
-    </ThemeProvider>
+        >
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="unlock" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              gestureEnabled: false, // Disable swipe back
+            }}
+          />
+          <Stack.Screen
+            name="home"
+            options={{
+              headerShown: false,
+              gestureEnabled: false, // Disable swipe back
+            }}
+          />
+          <Stack.Screen name="emergency" options={{ headerShown: false }} />
+          <Stack.Screen name="emergency-setup" options={{ headerShown: false }} />
+          <Stack.Screen name="add-credit-card" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="document-details"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="add-document" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="select-documents"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="profile-setup" options={{ headerShown: false }} />
+          <Stack.Screen name="change-pin" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="modal"
+            options={{ presentation: "modal", title: "Modal" }}
+          />
+        </Stack>
+        <StatusBar style="light" />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
