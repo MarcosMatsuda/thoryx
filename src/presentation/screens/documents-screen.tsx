@@ -1,11 +1,10 @@
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { useDocuments } from '@presentation/hooks/use-documents';
-import { RootStackParamList } from '@presentation/types/navigation';
 
 export function DocumentsScreen() {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const router = useRouter();
   const { documents, isLoading } = useDocuments();
 
   const getDocumentIcon = (type: string) => {
@@ -45,7 +44,7 @@ export function DocumentsScreen() {
                 No documents yet
               </Text>
               <Pressable
-                onPress={() => navigation.navigate('select-documents')}
+                onPress={() => router.push('/select-documents')}
                 className="bg-primary-main px-6 py-3 rounded-xl active:opacity-80"
               >
                 <Text className="text-white font-semibold text-base md:text-lg">
@@ -59,7 +58,7 @@ export function DocumentsScreen() {
                 {documents.map((doc, index) => (
                   <Pressable
                     key={index}
-                    onPress={() => navigation.navigate('document-details', { documentId: doc.id })}
+                    onPress={() => router.push({ pathname: '/document-details', params: { documentId: doc.id } })}
                     className="bg-surface-card p-4 rounded-2xl flex-row items-center active:opacity-80"
                   >
                     <View className="w-12 h-12 md:w-14 md:h-14 bg-primary-main/10 rounded-xl items-center justify-center mr-4">
@@ -81,7 +80,7 @@ export function DocumentsScreen() {
               </View>
 
               <Pressable
-                onPress={() => navigation.navigate('select-documents')}
+                onPress={() => router.push('/select-documents')}
                 className="bg-primary-main/10 border-2 border-primary-main border-dashed p-4 rounded-2xl items-center active:opacity-80"
               >
                 <Text className="text-primary-main font-semibold text-base md:text-lg">

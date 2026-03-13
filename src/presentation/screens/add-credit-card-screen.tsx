@@ -1,7 +1,7 @@
 import { CameraScannerV2 } from "@presentation/components/camera-scanner-v2";
 import { CheckboxOption } from "@presentation/components/checkbox-option";
 import { CreditCardCarousel } from "@presentation/components/credit-card-carousel";
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 import { Pressable, ScrollView, Text, TextInput, View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,7 +13,7 @@ import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { InputMasks } from "@shared/utils/input-masks";
 
 export function AddCreditCardScreen() {
-  const navigation = useNavigation();
+  const router = useRouter();
   const { cards, isLoading: isLoadingCards } = useCreditCards();
   const [saveCard, setSaveCard] = useState(false);
   const [cardNumber, setCardNumber] = useState("");
@@ -109,7 +109,7 @@ export function AddCreditCardScreen() {
             [
               {
                 text: 'OK',
-                onPress: () => navigation.navigate("home" as never)
+                onPress: () => router.push('/home')
               }
             ]
           );
@@ -137,7 +137,7 @@ export function AddCreditCardScreen() {
             [
               {
                 text: 'OK',
-                onPress: () => navigation.navigate("home" as never)
+                onPress: () => router.push('/home')
               }
             ]
           );
@@ -179,7 +179,7 @@ export function AddCreditCardScreen() {
 
       if (result.success) {
         handleAddNewCard();
-        navigation.navigate("home" as never);
+        router.push('/home');
       } else {
         Alert.alert('Error', result.message);
       }
@@ -196,7 +196,7 @@ export function AddCreditCardScreen() {
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()}
           >
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>

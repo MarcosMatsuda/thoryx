@@ -1,46 +1,59 @@
-import { useState } from 'react';
-import { View, Text, Pressable, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { NumericKeypad } from '@presentation/components/numeric-keypad';
-import { PinDot } from '@presentation/components/pin-dot';
-import { PinConfirmationBottomSheet } from '@presentation/components/pin-confirmation-bottom-sheet';
-import { PinRepositoryImpl } from '@data/repositories/pin.repository.impl';
-import { VerifyPinUseCase } from '@domain/use-cases/verify-pin.use-case';
-import { SavePinUseCase } from '@domain/use-cases/save-pin.use-case';
+import { useState, useEffect } from "react";
+import { View, Text, Pressable, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { NumericKeypad } from "@presentation/components/numeric-keypad";
+import { PinDot } from "@presentation/components/pin-dot";
+import { PinConfirmationBottomSheet } from "@presentation/components/pin-confirmation-bottom-sheet";
+import { ThoryxHeader, BackButton } from "@presentation/components/thoryx-header";
+import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
+import { VerifyPinUseCase } from "@domain/use-cases/verify-pin.use-case";
+import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
 
 const PIN_LENGTH = 6;
 
-type Step = 'current' | 'new';
+type Step = "current" | "new";
 
 export function ChangePinScreen() {
-  const navigation = useNavigation();
-  const [step, setStep] = useState<Step>('current');
-  const [currentPin, setCurrentPin] = useState('');
-  const [newPin, setNewPin] = useState('');
-  const [error, setError] = useState('');
+  const router = useRouter();
+  const [step, setStep] = useState<Step>("current");
+  const [currentPin, setCurrentPin] = useState("");
+  const [newPin, setNewPin] = useState("");
+  const [error, setError] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
+  useEffect(() => {
+    if (step === "current" && currentPin.length === PIN_LENGTH) {
+      handleVerifyCurrentPin();
+    }
+  }, [currentPin]);
+
+  useEffect(() => {
+    if (step === "new" && newPin.length === PIN_LENGTH) {
+      setShowConfirmation(true);
+    }
+  }, [newPin]);
+
   const handleKeyPress = (value: string) => {
-    if (step === 'current') {
+    if (step === "current") {
       if (currentPin.length < PIN_LENGTH) {
         setCurrentPin(currentPin + value);
+        setError(false);
       }
     } else {
       if (newPin.length < PIN_LENGTH) {
         setNewPin(newPin + value);
       }
     }
-    setError('');
   };
 
   const handleBackspace = () => {
-    if (step === 'current') {
+    if (step === "current") {
       setCurrentPin(currentPin.slice(0, -1));
+      setError(false);
     } else {
       setNewPin(newPin.slice(0, -1));
     }
-    setError('');
   };
 
   const handleVerifyCurrentPin = async () => {
@@ -51,25 +64,25 @@ export function ChangePinScreen() {
     try {
       const repository = new PinRepositoryImpl();
       const verifyPinUseCase = new VerifyPinUseCase(repository);
-      
+
       const result = await verifyPinUseCase.execute(currentPin);
-      
+
       if (result.success) {
-        setStep('new');
-        setError('');
+        setStep("new");
+        setError(false);
       } else {
-        setError('Invalid PIN. Please try again.');
-        setCurrentPin('');
+        setError(true);
+        setTimeout(() => {
+          setCurrentPin("");
+          setError(false);
+        }, 1000);
       }
     } catch {
-      setError('Failed to verify PIN. Please try again.');
-      setCurrentPin('');
-    }
-  };
-
-  const handleNewPinComplete = () => {
-    if (newPin.length === PIN_LENGTH) {
-      setShowConfirmation(true);
+      setError(true);
+      setTimeout(() => {
+        setCurrentPin("");
+        setError(false);
+      }, 1000);
     }
   };
 
@@ -78,86 +91,74 @@ export function ChangePinScreen() {
       try {
         const repository = new PinRepositoryImpl();
         const savePinUseCase = new SavePinUseCase(repository);
-        
+
         const result = await savePinUseCase.execute({ pin: newPin });
-        
+
         if (result.success) {
           setShowConfirmation(false);
-          Alert.alert(
-            'Success',
-            'Your PIN has been changed successfully.',
-            [
-              {
-                text: 'OK',
-                onPress: () => navigation.goBack(),
-              },
-            ]
-          );
+          Alert.alert("Success", "Your PIN has been changed successfully.", [
+            {
+              text: "OK",
+              onPress: () => router.back(),
+            },
+          ]);
         } else {
-          Alert.alert('Error', result.message || 'Failed to save new PIN.');
+          Alert.alert("Error", result.message || "Failed to save new PIN.");
         }
       } catch {
-        Alert.alert('Error', 'Failed to save new PIN. Please try again.');
+        Alert.alert("Error", "Failed to save new PIN. Please try again.");
       }
     }
   };
 
   const getTitle = () => {
     switch (step) {
-      case 'current':
-        return 'Enter your current PIN';
-      case 'new':
-        return 'Enter your new PIN';
+      case "current":
+        return "Enter your current PIN";
+      case "new":
+        return "Enter your new PIN";
       default:
-        return '';
+        return "";
     }
   };
 
   const getSubtitle = () => {
     switch (step) {
-      case 'current':
-        return 'Please enter your current 6-digit PIN to continue.';
-      case 'new':
-        return 'Create a new 6-digit PIN for your account.';
+      case "current":
+        return "Please enter your current 6-digit PIN to continue.";
+      case "new":
+        return "Create a new 6-digit PIN for your account.";
       default:
-        return '';
+        return "";
     }
   };
 
   const getPin = () => {
-    return step === 'current' ? currentPin : newPin;
-  };
-
-  const isPinComplete = () => {
-    return getPin().length === PIN_LENGTH;
+    return step === "current" ? currentPin : newPin;
   };
 
   const handleBack = () => {
-    if (step === 'new') {
-      setStep('current');
-      setNewPin('');
+    if (step === "new") {
+      setStep("current");
+      setNewPin("");
+      setError(false);
     } else {
-      navigation.goBack();
+      router.back();
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top", "bottom"]}>
-      <View className="flex-1 w-full max-w-[500px] self-center">
-        {/* Header */}
-        <View className="px-6 pt-6 pb-4">
-          <View className="flex-row items-center mb-6">
-            <Pressable 
-              className="w-10 h-10 items-center justify-center active:bg-surface-hover rounded-full"
-              onPress={handleBack}
-            >
-              <Text className="text-2xl text-text-primary">←</Text>
-            </Pressable>
-            <Text className="text-2xl font-bold text-text-primary ml-4">
-              Change PIN
-            </Text>
-          </View>
+    <SafeAreaView
+      className="flex-1 bg-background-primary"
+      edges={["top", "bottom"]}
+    >
+      {/* Header */}
+      <ThoryxHeader
+        left={<BackButton onPress={handleBack} />}
+      />
 
+      <View className="flex-1 w-full max-w-[500px] self-center">
+        <View className="px-6 pt-6 pb-4">
           <View className="items-center mb-6">
             <Text className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
               {getTitle()}
@@ -168,23 +169,22 @@ export function ChangePinScreen() {
           </View>
 
           {/* Error Message */}
-          {error ? (
+          {error && (
             <View className="items-center mb-4">
-              <View className="flex-row items-center bg-status-error/10 px-4 py-3 rounded-lg">
-                <Text className="text-xl mr-2">⚠️</Text>
+              <View className="flex-row items-center">
                 <Text className="text-sm font-semibold text-status-error">
-                  {error}
+                  Incorrect PIN. Please try again.
                 </Text>
               </View>
             </View>
-          ) : null}
+          )}
 
           {/* PIN Dots */}
           <View className="items-center mb-8">
             <View className="flex-row gap-3 md:gap-5">
               {Array.from({ length: PIN_LENGTH }).map((_, index) => (
-                <PinDot 
-                  key={index} 
+                <PinDot
+                  key={index}
                   filled={index < getPin().length}
                   error={!!error && getPin().length === PIN_LENGTH}
                 />
@@ -195,7 +195,7 @@ export function ChangePinScreen() {
 
         {/* Keypad */}
         <View className="flex-1 justify-center items-center px-4">
-          <View className="w-[75%] h-[60%] justify-center">
+          <View className="w-[75%] h-[75%] justify-center">
             <NumericKeypad
               onKeyPress={handleKeyPress}
               onBackspace={handleBackspace}
@@ -203,28 +203,8 @@ export function ChangePinScreen() {
           </View>
         </View>
 
-        {/* Continue Button */}
-        <View className="px-6 pb-6">
-          <Pressable 
-            className={`rounded-xl py-4 items-center ${
-              isPinComplete() 
-                ? 'bg-primary-main active:bg-primary-dark' 
-                : 'bg-ui-border'
-            }`}
-            disabled={!isPinComplete()}
-            onPress={step === 'current' ? handleVerifyCurrentPin : handleNewPinComplete}
-          >
-            <View className="flex-row items-center">
-              <Text className={`text-base font-bold mr-2 ${
-                isPinComplete() ? 'text-text-primary' : 'text-text-secondary'
-              }`}>
-                {step === 'current' ? 'Continue' : 'Confirm New PIN'}
-              </Text>
-              <Text className={isPinComplete() ? 'text-text-primary' : 'text-text-secondary'}>
-                →
-              </Text>
-            </View>
-          </Pressable>
+        <View className="px-6 pb-8">
+          <View className="h-14" />
         </View>
       </View>
 

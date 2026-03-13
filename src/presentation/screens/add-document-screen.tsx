@@ -5,7 +5,7 @@ import { TextInputField } from '@presentation/components/text-input-field';
 import { DateInput } from '@presentation/components/date-input';
 import { PhotoUpload } from '@presentation/components/photo-upload';
 import { CalendarPickerBottomSheet } from '@presentation/components/calendar-picker-bottom-sheet';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useState, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { DocumentRepositoryImpl } from '@data/repositories/document.repository.impl';
@@ -19,9 +19,9 @@ const DOCUMENT_TYPES = [
 ];
 
 export function AddDocumentScreen() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { documentId } = route.params as { documentId?: string } || {};
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const { documentId } = params as { documentId?: string };
   
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarField, setCalendarField] = useState<'dateOfBirth' | 'expiryDate'>('expiryDate');
@@ -193,7 +193,7 @@ export function AddDocumentScreen() {
       const result = await deleteDocumentUseCase.execute(documentId);
 
       if (result.success) {
-        navigation.navigate('home' as never);
+        router.push('/home');
       } else {
         Alert.alert('Error', result.message);
       }
@@ -233,7 +233,7 @@ export function AddDocumentScreen() {
           [
             {
               text: 'OK',
-              onPress: () => navigation.navigate('home' as never)
+              onPress: () => router.push('/home')
             }
           ]
         );
@@ -262,7 +262,7 @@ export function AddDocumentScreen() {
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
           <Pressable 
             className="w-10 h-10 items-center justify-center"
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()}
           >
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>

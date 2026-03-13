@@ -11,6 +11,7 @@ export type RootStackParamList = {
   'modal': undefined;
   '(tabs)': undefined;
   'profile-setup': undefined;
+  'change-pin': undefined;
 };
 
 declare global {

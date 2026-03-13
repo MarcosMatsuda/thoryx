@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { useUserProfile } from '@presentation/hooks/use-user-profile';
 
 export function ProfileSetupScreen() {
-  const navigation = useNavigation();
+  const router = useRouter();
   const { saveProfile } = useUserProfile();
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -22,10 +22,7 @@ export function ProfileSetupScreen() {
 
     if (result.success) {
       // Navigate to main app after profile setup
-      navigation.reset({
-        index: 0,
-        routes: [{ name: '(tabs)' as never }],
-      });
+      router.replace('/(tabs)');
     } else {
       Alert.alert('Error', result.message);
     }

@@ -3,7 +3,7 @@ import { VerifyPinUseCase } from "@domain/use-cases/verify-pin.use-case";
 import { NumericKeypad } from "@presentation/components/numeric-keypad";
 import { PinDot } from "@presentation/components/pin-dot";
 import { SvgIcon } from "@presentation/components/svg-icon";
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, Text, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,7 +19,7 @@ export function UnlockWalletScreen() {
   const [error, setError] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [biometryEnabled, setBiometryEnabled] = useState(false);
-  const navigation = useNavigation();
+  const router = useRouter();
   const { isAvailable: biometryAvailable, authenticate, getBiometryName } = useBiometry();
 
   useEffect(() => {
@@ -49,10 +49,7 @@ export function UnlockWalletScreen() {
       
       if (result.success) {
         // Navigate to main app (tabs)
-        navigation.reset({
-          index: 0,
-          routes: [{ name: '(tabs)' as never }],
-        });
+        router.replace('/(tabs)');
       } else {
         // Show error message if authentication failed
         if (result.error) {
@@ -79,10 +76,7 @@ export function UnlockWalletScreen() {
       if (result.success) {
         setError(false);
         // Navigate to main app (tabs) and reset stack
-        navigation.reset({
-          index: 0,
-          routes: [{ name: '(tabs)' as never }],
-        });
+        router.replace('/(tabs)');
       } else {
         setError(true);
         setTimeout(() => {
@@ -201,7 +195,7 @@ export function UnlockWalletScreen() {
         <View className="items-center pb-8">
           <Pressable
             className="py-3"
-            onPress={() => navigation.navigate("emergency-details" as never)}
+            onPress={() => router.push('/emergency')}
           >
             <Text className="text-base md:text-lg text-primary-main font-semibold">
               Emergency Details

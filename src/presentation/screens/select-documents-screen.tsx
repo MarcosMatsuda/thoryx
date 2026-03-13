@@ -1,11 +1,11 @@
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SelectableDocumentItem } from '@presentation/components/selectable-document-item';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 export function SelectDocumentsScreen() {
-  const navigation = useNavigation();
+  const router = useRouter();
   const [selectedDocs, setSelectedDocs] = useState<string[]>(['passport', 'national-id']);
 
   const toggleDocument = (docId: string) => {
@@ -20,7 +20,7 @@ export function SelectDocumentsScreen() {
     <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
-          <Pressable onPress={() => navigation.goBack()}>
+          <Pressable onPress={() => router.back()}>
             <Text className="text-2xl text-text-primary">✕</Text>
           </Pressable>
           <Text className="text-lg md:text-xl font-bold text-text-primary">Select Documents</Text>
@@ -98,7 +98,7 @@ export function SelectDocumentsScreen() {
           <Pressable 
             className="bg-primary-main rounded-xl py-4 items-center active:opacity-90"
             onPress={() => {
-              navigation.goBack();
+              router.back();
             }}
           >
             <Text className="text-base md:text-lg font-bold text-text-primary">
