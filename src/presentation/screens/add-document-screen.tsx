@@ -193,7 +193,7 @@ export function AddDocumentScreen() {
       const result = await deleteDocumentUseCase.execute(documentId);
 
       if (result.success) {
-        router.push('/home');
+        router.push('/(tabs)');
       } else {
         Alert.alert('Error', result.message);
       }
@@ -233,7 +233,7 @@ export function AddDocumentScreen() {
           [
             {
               text: 'OK',
-              onPress: () => router.push('/home')
+              onPress: () => router.push('/(tabs)')
             }
           ]
         );

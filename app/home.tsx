@@ -1,5 +1,6 @@
-import { WalletHomeScreen } from '@presentation/screens/wallet-home-screen';
+import { Redirect } from 'expo-router';
 
 export default function HomeScreen() {
-  return <WalletHomeScreen />;
+  // Redirect to tabs to ensure bottom bar is always visible
+  return <Redirect href="/(tabs)" />;
 }

@@ -109,7 +109,7 @@ export function AddCreditCardScreen() {
             [
               {
                 text: 'OK',
-                onPress: () => router.push('/home')
+                onPress: () => router.push('/(tabs)')
               }
             ]
           );
@@ -137,7 +137,7 @@ export function AddCreditCardScreen() {
             [
               {
                 text: 'OK',
-                onPress: () => router.push('/home')
+                onPress: () => router.push('/(tabs)')
               }
             ]
           );
@@ -179,7 +179,7 @@ export function AddCreditCardScreen() {
 
       if (result.success) {
         handleAddNewCard();
-        router.push('/home');
+        router.push('/(tabs)');
       } else {
         Alert.alert('Error', result.message);
       }
