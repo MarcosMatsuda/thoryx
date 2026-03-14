@@ -55,10 +55,17 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
       expect(fs.existsSync(indexPath)).toBe(true)
     })
 
-    it('should immediately navigate to splash', () => {
+    it('should render SplashScreen component inline', () => {
       const indexContent = fs.readFileSync(indexPath, 'utf8')
-      expect(indexContent).toContain('router.replace')
-      expect(indexContent).toContain("'/splash'")
+      expect(indexContent).toContain('SplashScreen')
+      expect(indexContent).toContain('return <SplashScreen />')
+    })
+
+    it('should check PIN existence and navigate after 2 seconds', () => {
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('PinRepositoryImpl')
+      expect(indexContent).toContain('CheckPinExistsUseCase')
+      expect(indexContent).toContain('setTimeout(() => setSplashDone(true), 2000)')
     })
 
     it('should use router.replace not router.push', () => {
@@ -67,15 +74,9 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
       expect(indexContent).not.toContain('push')
     })
 
-    it('should navigate on mount with useEffect', () => {
+    it('should navigate to /unlock or /pin-setup based on PIN check', () => {
       const indexContent = fs.readFileSync(indexPath, 'utf8')
-      expect(indexContent).toContain('useEffect')
-      expect(indexContent).toContain('router.replace')
-    })
-
-    it('should return null to avoid showing any UI', () => {
-      const indexContent = fs.readFileSync(indexPath, 'utf8')
-      expect(indexContent).toContain('return null')
+      expect(indexContent).toContain("router.replace(hasPinSaved ? '/unlock' : '/pin-setup')")
     })
   })
 
@@ -175,12 +176,11 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
   })
 
   describe('Navigation Flow', () => {
-    it('app.start -> index.tsx -> splash.tsx -> splash-screen.tsx', () => {
+    it('app.start -> index.tsx (renders SplashScreen inline) -> /unlock or /pin-setup', () => {
       const indexContent = fs.readFileSync(indexPath, 'utf8')
-      const splashContent = fs.readFileSync(splashPath, 'utf8')
-
-      expect(indexContent).toContain("'/splash'")
-      expect(splashContent).toContain('SplashScreen')
+      expect(indexContent).toContain('SplashScreen')
+      expect(indexContent).toContain("'/unlock'")
+      expect(indexContent).toContain("'/pin-setup'")
     })
 
     it('splash -> /unlock if PIN exists', () => {
@@ -270,7 +270,7 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
       const splashLines = fs.readFileSync(splashPath, 'utf8').split('\n').length
       const pinSetupLines = fs.readFileSync(pinSetupPath, 'utf8').split('\n').length
 
-      expect(indexLines).toBeLessThan(20)
+      expect(indexLines).toBeLessThan(40) // Increased due to inline SplashScreen implementation
       expect(splashLines).toBeLessThan(10)
       expect(pinSetupLines).toBeLessThan(10)
     })
@@ -295,7 +295,7 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
   describe('Acceptance Criteria (PR #57)', () => {
     it('criterion: Toda abertura do app mostra a SplashScreen primeiro', () => {
       const indexContent = fs.readFileSync(indexPath, 'utf8')
-      expect(indexContent).toContain("'/splash'")
+      expect(indexContent).toContain('SplashScreen')
       expect(indexContent).toContain('useEffect')
     })
 
