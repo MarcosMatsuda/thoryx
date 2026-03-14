@@ -1,6 +1,6 @@
 export interface UserProfile {
   name: string;
-  photoUri?: string;
+  photoUri: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

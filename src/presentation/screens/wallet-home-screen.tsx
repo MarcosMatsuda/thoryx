@@ -7,6 +7,7 @@ import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import {
   ActivityIndicator,
+  Image,
   Pressable,
   ScrollView,
   Text,
@@ -68,11 +69,19 @@ export function WalletHomeScreen() {
           <View className="flex-row items-center justify-between mb-6">
             <View className="flex-row items-center">
               <View className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden mr-3">
-                <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-                  <Text className="text-xl md:text-2xl text-text-primary">
-                    👤
-                  </Text>
-                </View>
+                {profile?.photoUri ? (
+                  <Image
+                    source={{ uri: profile.photoUri }}
+                    className="w-full h-full"
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View className="w-full h-full bg-primary-main/20 items-center justify-center">
+                    <Text className="text-xl md:text-2xl text-text-primary">
+                      👤
+                    </Text>
+                  </View>
+                )}
               </View>
               <View>
                 <Text className="text-xs md:text-sm text-text-secondary mb-1">
