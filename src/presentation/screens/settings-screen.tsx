@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable, Alert, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
@@ -20,7 +20,6 @@ export function SettingsScreen() {
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [autoLockTimeout, setAutoLockTimeout] = useState('5 minutes');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   useEffect(() => {
     loadBiometryPreference();
@@ -164,42 +163,7 @@ export function SettingsScreen() {
     );
   };
 
-  const handleDeleteAccount = () => {
-    Alert.alert(
-      'Delete Account',
-      'Are you sure? This will permanently delete your account and all associated data. This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            setIsDeletingAccount(true);
-            try {
-              // In a real app, we would get the user ID from the current user context
-              // For now, we'll use undefined to skip API call (since we don't have real backend)
-              const userId = undefined; // No userId means we'll just clear local data
-              
-              const authService = new AuthService();
-              const result = await authService.deleteAccount(userId);
-              
-              if (result.success) {
-                // Navigate to onboarding (index will show PIN setup since all data is cleared)
-                router.replace('/');
-              } else {
-                Alert.alert('Error', result.error || 'Failed to delete account. Please try again.');
-              }
-            } catch (error) {
-              console.error('Error deleting account:', error);
-              Alert.alert('Error', 'Failed to delete account. Please try again.');
-            } finally {
-              setIsDeletingAccount(false);
-            }
-          },
-        },
-      ]
-    );
-  };
+
 
   const handleTermsOfService = () => {
     Alert.alert(
@@ -270,35 +234,6 @@ export function SettingsScreen() {
               onPress={handleAutoLockTimeout}
               icon={<Text className="text-xl">⏱️</Text>}
               value={autoLockTimeout}
-            />
-            <SettingsItem
-              label="Log Out"
-              onPress={handleLogout}
-              icon={<Text className="text-xl">🚪</Text>}
-              destructive
-              showChevron={false}
-              loading={isLoggingOut}
-              isLast
-            />
-          </SettingsSection>
-
-          {/* Data & Privacy Section */}
-          <SettingsSection title="DATA & PRIVACY">
-            <SettingsItem
-              label="Clear All Data"
-              onPress={handleClearData}
-              icon={<Text className="text-xl">🗑️</Text>}
-              destructive
-              showChevron={false}
-              isFirst
-            />
-            <SettingsItem
-              label="Delete Account"
-              onPress={handleDeleteAccount}
-              icon={<Text className="text-xl">⚠️</Text>}
-              destructive
-              showChevron={false}
-              loading={isDeletingAccount}
               isLast
             />
           </SettingsSection>
@@ -321,6 +256,27 @@ export function SettingsScreen() {
               label="Privacy Policy"
               onPress={handlePrivacyPolicy}
               icon={<Text className="text-xl">🔒</Text>}
+              isLast
+            />
+          </SettingsSection>
+
+          {/* Data & Privacy Section */}
+          <SettingsSection title="DATA & PRIVACY">
+            <SettingsItem
+              label="Clear All Data"
+              onPress={handleClearData}
+              icon={<Text className="text-xl">🗑️</Text>}
+              destructive
+              showChevron={false}
+              isFirst
+            />
+            <SettingsItem
+              label="Log Out"
+              onPress={handleLogout}
+              icon={<Text className="text-xl">🚪</Text>}
+              destructive
+              showChevron={false}
+              loading={isLoggingOut}
               isLast
             />
           </SettingsSection>
