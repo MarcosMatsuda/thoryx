@@ -283,7 +283,7 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
       const splashLines = fs.readFileSync(splashPath, 'utf8').split('\n').length
       const pinSetupLines = fs.readFileSync(pinSetupPath, 'utf8').split('\n').length
 
-      expect(indexLines).toBeLessThan(40) // Increased due to inline SplashScreen implementation
+      expect(indexLines).toBeLessThan(50) // Increased due to inline SplashScreen implementation and duplicate PIN check fix
       expect(splashLines).toBeLessThan(10)
       expect(pinSetupLines).toBeLessThan(10)
     })

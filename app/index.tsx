@@ -2,14 +2,22 @@ import { SplashScreen } from '@presentation/screens/splash-screen';
 import { PinRepositoryImpl } from '@data/repositories/pin.repository.impl';
 import { CheckPinExistsUseCase } from '@domain/use-cases/check-pin-exists.use-case';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function IndexScreen() {
   const router = useRouter();
   const [splashDone, setSplashDone] = useState(false);
   const [hasPinSaved, setHasPinSaved] = useState<boolean | null>(null);
+  const hasPinCheckedRef = useRef(false);
 
   useEffect(() => {
+    // Prevent duplicate PIN checks in development (React Strict Mode)
+    if (hasPinCheckedRef.current) {
+      return;
+    }
+    
+    hasPinCheckedRef.current = true;
+    
     const checkPin = async () => {
       try {
         const repository = new PinRepositoryImpl();
