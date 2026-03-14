@@ -1,207 +1,177 @@
 /**
- * Unit tests for SplashScreen navigation and PIN checking logic
- * Tests the new features added in PR #57 for splash screen integration
+ * Unit tests for SplashScreen as a dumb component
+ * After PR #62 fix, SplashScreen should be purely presentational
  */
 
 import * as fs from 'fs'
 
-describe('SplashScreen Navigation and PIN Logic', () => {
+describe('SplashScreen as Dumb Component', () => {
   const componentPath = require('path').join(__dirname, './splash-screen.tsx')
 
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  describe('Router Integration', () => {
-    it('should import useRouter from expo-router', () => {
+  describe('Component Structure', () => {
+    it('should export a function named SplashScreen', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("useRouter")
-      expect(fileContent).toContain("expo-router")
+      expect(fileContent).toContain('export function SplashScreen')
     })
 
-    it('should initialize router hook', () => {
+    it('should import View and Image from react-native', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("const router = useRouter()")
+      expect(fileContent).toContain("from 'react-native'")
+      expect(fileContent).toContain('View')
+      expect(fileContent).toContain('Image')
     })
 
-    it('should use router.replace() for navigation', () => {
+    it('should import Animated from react-native-reanimated', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("router.replace")
-    })
-
-    it('should not use router.push() to avoid back navigation', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).not.toContain("router.push")
+      expect(fileContent).toContain("from 'react-native-reanimated'")
+      expect(fileContent).toContain('Animated')
     })
   })
 
-  describe('PIN Checking', () => {
-    it('should import CheckPinExistsUseCase', () => {
+  describe('Animation Logic', () => {
+    it('should use useSharedValue for opacity', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("CheckPinExistsUseCase")
+      expect(fileContent).toContain('useSharedValue')
+      expect(fileContent).toContain('opacity')
     })
 
-    it('should import PinRepositoryImpl', () => {
+    it('should start fade-in animation on mount', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("PinRepositoryImpl")
+      expect(fileContent).toContain('useEffect')
+      expect(fileContent).toContain('opacity.value = withTiming')
     })
 
-    it('should have a checkPinExists method or function', () => {
+    it('should have 800ms animation duration', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("checkPinExists")
+      expect(fileContent).toContain('800')
     })
 
-    it('should track PIN check state with hasPinChecked', () => {
+    it('should use Easing.out(Easing.cubic) for animation', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("hasPinChecked")
-      expect(fileContent).toContain("useState")
+      expect(fileContent).toContain('Easing.out(Easing.cubic)')
     })
 
-    it('should track PIN saved state with hasPinSaved', () => {
+    it('should use useAnimatedStyle for animated styles', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("hasPinSaved")
-    })
-
-    it('should initialize states to false', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("useState(false)")
-    })
-
-    it('should call checkPinExists in useEffect', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("useEffect")
-      expect(fileContent).toContain("checkPinExists()")
-    })
-
-    it('should handle PIN check errors gracefully', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("catch")
-      expect(fileContent).toContain("error")
-    })
-
-    it('should set hasPinSaved to false on error', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("setHasPinSaved(false)")
-    })
-
-    it('should set hasPinChecked to true after check', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("setHasPinChecked(true)")
+      expect(fileContent).toContain('useAnimatedStyle')
     })
   })
 
-  describe('Navigation Routes', () => {
-    it('should navigate to /unlock when PIN exists', () => {
+  describe('No Navigation Logic', () => {
+    it('should NOT import useRouter from expo-router', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain('/unlock')
+      expect(fileContent).not.toContain("from 'expo-router'")
+      expect(fileContent).not.toContain('useRouter')
     })
 
-    it('should navigate to /pin-setup when PIN does not exist', () => {
+    it('should NOT import CheckPinExistsUseCase', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain('/pin-setup')
+      expect(fileContent).not.toContain('CheckPinExistsUseCase')
     })
 
-    it('should conditionally navigate based on hasPinSaved', () => {
+    it('should NOT import PinRepositoryImpl', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain('if (hasPinSaved)')
-    })
-  })
-
-  describe('Navigation Timing', () => {
-    it('should navigate after 2 seconds total', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("2000")
+      expect(fileContent).not.toContain('PinRepositoryImpl')
     })
 
-    it('should wait for PIN check before navigating', () => {
+    it('should NOT have navigation routes (/unlock or /pin-setup)', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("if (hasPinChecked)")
+      expect(fileContent).not.toContain('/unlock')
+      expect(fileContent).not.toContain('/pin-setup')
     })
 
-    it('should not navigate before PIN check is complete', () => {
+    it('should NOT have router.replace or router.push', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      // Check that navigation is guarded by hasPinChecked
-      const navigatePattern = /router\.replace\(/
-      const indexOfNavigate = fileContent.indexOf('router.replace')
-      const guardPattern = /if \(hasPinChecked\)/
-      const indexOfGuard = fileContent.lastIndexOf('if (hasPinChecked)')
-      expect(indexOfGuard).toBeLessThan(indexOfNavigate)
+      expect(fileContent).not.toContain('router.replace')
+      expect(fileContent).not.toContain('router.push')
     })
 
-    it('should clear timeout on unmount', () => {
+    it('should NOT have PIN check logic', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("clearTimeout")
-      expect(fileContent).toContain("return () =>")
-    })
-  })
-
-  describe('Animation Integration', () => {
-    it('should preserve existing fade-in animation', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("withTiming")
-      expect(fileContent).toContain("opacity")
-      expect(fileContent).toContain("800")
+      expect(fileContent).not.toContain('checkPinExists')
+      expect(fileContent).not.toContain('hasPinChecked')
+      expect(fileContent).not.toContain('hasPinSaved')
     })
 
-    it('should start animation on component mount', () => {
+    it('should NOT have error handling for PIN check', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("useEffect")
-      expect(fileContent).toContain("opacity.value = withTiming")
+      expect(fileContent).not.toContain('catch')
+      expect(fileContent).not.toContain('console.error')
+      expect(fileContent).not.toContain('setHasPinSaved(false)')
     })
 
-    it('should animate while PIN check happens', () => {
+    it('should NOT have 2-second timer for navigation', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      // The 2000ms delay includes the 800ms animation
-      expect(fileContent).toContain("2000")
-      expect(fileContent).toContain("800")
+      expect(fileContent).not.toContain('2000') // Except possibly in comments
+      // Check that 2000 is not in the main logic (outside of comments)
+      const lines = fileContent.split('\n')
+      const has2000InLogic = lines.some(line => {
+        const trimmed = line.trim()
+        return trimmed.includes('2000') && !trimmed.startsWith('//')
+      })
+      expect(has2000InLogic).toBe(false)
     })
   })
 
-  describe('Error Scenarios', () => {
-    it('should handle PIN check errors without crashing', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("try")
-      expect(fileContent).toContain("catch")
-      expect(fileContent).toContain("finally")
-    })
-
-    it('should log errors for debugging', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("console.error")
-    })
-
-    it('should default to PIN setup on error', () => {
-      const fileContent = fs.readFileSync(componentPath, 'utf8')
-      expect(fileContent).toContain("setHasPinSaved(false)")
-    })
-  })
-
-  describe('Accessibility', () => {
-    it('should maintain testID attributes', () => {
+  describe('Rendering', () => {
+    it('should render a container with testID', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
       expect(fileContent).toContain('testID="splash-container"')
+    })
+
+    it('should render an Image with splash icon', () => {
+      const fileContent = fs.readFileSync(componentPath, 'utf8')
+      expect(fileContent).toContain('Image')
+      expect(fileContent).toContain('splash-icon.png')
+    })
+
+    it('should have testID on logo image', () => {
+      const fileContent = fs.readFileSync(componentPath, 'utf8')
       expect(fileContent).toContain('testID="splash-logo"')
     })
 
-    it('should maintain accessibility label', () => {
+    it('should have accessibility label on logo', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
       expect(fileContent).toContain('accessibilityLabel')
+      expect(fileContent).toContain('Thoryx Logo')
+    })
+
+    it('should use contain resize mode', () => {
+      const fileContent = fs.readFileSync(componentPath, 'utf8')
+      expect(fileContent).toContain('resizeMode="contain"')
+    })
+
+    it('should apply NativeWind classes', () => {
+      const fileContent = fs.readFileSync(componentPath, 'utf8')
+      expect(fileContent).toContain('className=')
     })
   })
 
-  describe('Dependencies', () => {
-    it('should have dependency arrays in useEffect calls', () => {
+  describe('Clean Architecture', () => {
+    it('should have only one useEffect for animation', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      // Check for dependency arrays - should have [ ... ]
-      const hasDeps = fileContent.includes('], [') || fileContent.includes(']') 
-      expect(hasDeps).toBe(true)
+      // Count useEffect calls, not imports
+      const effectCount = (fileContent.match(/useEffect\(/g) || []).length
+      expect(effectCount).toBe(1)
     })
 
-    it('should not have infinite loops in useEffect', () => {
+    it('should have empty dependency array for useEffect', () => {
       const fileContent = fs.readFileSync(componentPath, 'utf8')
-      const effectCount = (fileContent.match(/useEffect/g) || []).length
-      expect(effectCount).toBeGreaterThan(0)
-      expect(effectCount).toBeLessThanOrEqual(3) // Animation + PIN check + Navigation
+      expect(fileContent).toContain('useEffect(() => {')
+      expect(fileContent).toContain('}, [])')
+    })
+
+    it('should be a pure presentational component', () => {
+      const fileContent = fs.readFileSync(componentPath, 'utf8')
+      // Should not have any business logic imports
+      expect(fileContent).not.toContain('@domain')
+      expect(fileContent).not.toContain('@data')
+      expect(fileContent).not.toContain('use-case')
+      expect(fileContent).not.toContain('repository')
     })
   })
 })

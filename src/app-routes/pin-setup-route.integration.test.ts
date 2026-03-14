@@ -77,13 +77,14 @@ describe('Pin Setup Route (app/pin-setup.tsx)', () => {
 
   describe('Navigation Flow', () => {
     it('should be reachable from SplashScreen', () => {
-      const splashPath = path.join(
+      const indexPath = path.join(
         path.dirname(__dirname),
-        'presentation/screens/splash-screen.tsx'
+        '..',
+        'app/index.tsx'
       )
-      if (fs.existsSync(splashPath)) {
-        const splashContent = fs.readFileSync(splashPath, 'utf8')
-        expect(splashContent).toContain('/pin-setup')
+      if (fs.existsSync(indexPath)) {
+        const indexContent = fs.readFileSync(indexPath, 'utf8')
+        expect(indexContent).toContain('/pin-setup')
       }
     })
   })

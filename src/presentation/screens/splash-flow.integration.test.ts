@@ -97,65 +97,77 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
     })
   })
 
-  describe('SplashScreen Component Logic', () => {
-    it('should check if PIN exists on mount', () => {
+  describe('SplashScreen Component Logic (Post-PR #62)', () => {
+    it('should be a dumb component with no navigation logic', () => {
       const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('checkPinExists')
-      expect(screenContent).toContain('useEffect')
+      // Should NOT contain navigation or PIN check logic
+      expect(screenContent).not.toContain('checkPinExists')
+      expect(screenContent).not.toContain('CheckPinExistsUseCase')
+      expect(screenContent).not.toContain('PinRepositoryImpl')
+      expect(screenContent).not.toContain('hasPinChecked')
+      expect(screenContent).not.toContain('hasPinSaved')
+      expect(screenContent).not.toContain("'/unlock'")
+      expect(screenContent).not.toContain("'/pin-setup'")
+      expect(screenContent).not.toContain('router.replace')
+      expect(screenContent).not.toContain('router.push')
+      expect(screenContent).not.toContain('try')
+      expect(screenContent).not.toContain('catch')
+      expect(screenContent).not.toContain('finally')
+      expect(screenContent).not.toContain('setHasPinSaved')
     })
 
-    it('should import CheckPinExistsUseCase', () => {
+    it('should only contain animation logic', () => {
       const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('CheckPinExistsUseCase')
-      expect(screenContent).toContain('PinRepositoryImpl')
-    })
-
-    it('should track PIN check state', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('hasPinChecked')
-      expect(screenContent).toContain('hasPinSaved')
-    })
-
-    it('should navigate to /unlock if PIN exists', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain("'/unlock'")
-      expect(screenContent).toContain('if (hasPinSaved)')
-    })
-
-    it('should navigate to /pin-setup if PIN does not exist', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain("'/pin-setup'")
-      expect(screenContent).toContain('else')
-    })
-
-    it('should wait 2 seconds before navigating', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('2000')
-    })
-
-    it('should use router.replace for navigation stack reset', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('router.replace')
-    })
-
-    it('should preserve fade-in animation', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
+      // Should only contain animation-related code
+      expect(screenContent).toContain('useSharedValue')
       expect(screenContent).toContain('withTiming')
       expect(screenContent).toContain('800')
       expect(screenContent).toContain('opacity')
+      expect(screenContent).toContain('useAnimatedStyle')
+      expect(screenContent).toContain('Easing.out(Easing.cubic)')
     })
 
-    it('should handle errors gracefully', () => {
+    it('should render splash image with accessibility', () => {
       const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('try')
-      expect(screenContent).toContain('catch')
-      expect(screenContent).toContain('finally')
+      expect(screenContent).toContain('Image')
+      expect(screenContent).toContain('splash-icon.png')
+      expect(screenContent).toContain('testID="splash-container"')
+      expect(screenContent).toContain('testID="splash-logo"')
+      expect(screenContent).toContain('accessibilityLabel')
+    })
+  })
+
+  describe('Index Route Logic (Post-PR #62)', () => {
+    it('should contain all navigation and PIN check logic', () => {
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      // Should contain all the logic that was removed from SplashScreen
+      expect(indexContent).toContain('checkPin')
+      expect(indexContent).toContain('CheckPinExistsUseCase')
+      expect(indexContent).toContain('PinRepositoryImpl')
+      expect(indexContent).toContain('hasPinSaved')
+      expect(indexContent).toContain('splashDone')
+      expect(indexContent).toContain("'/unlock'")
+      expect(indexContent).toContain("'/pin-setup'")
+      expect(indexContent).toContain('router.replace')
+      expect(indexContent).toContain('2000')
+      expect(indexContent).toContain('setTimeout')
+    })
+
+    it('should handle PIN check errors gracefully', () => {
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('try')
+      expect(indexContent).toContain('catch')
+      // No finally block needed since catch handles the error
     })
 
     it('should default to PIN setup on error', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      // In catch block, should set hasPinSaved to false
-      expect(screenContent).toContain('setHasPinSaved(false)')
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('setHasPinSaved(false)')
+    })
+
+    it('should wait for both splash animation and PIN check', () => {
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('if (splashDone && hasPinSaved !== null)')
     })
   })
 
@@ -169,9 +181,9 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
       expect(pinSetupContent).toContain('PinSetupScreen')
     })
 
-    it('should be reachable from splash screen', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain("'/pin-setup'")
+    it('should be reachable from index route', () => {
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain("'/pin-setup'")
     })
   })
 
@@ -183,34 +195,35 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
       expect(indexContent).toContain("'/pin-setup'")
     })
 
-    it('splash -> /unlock if PIN exists', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain("'/unlock'")
-      expect(screenContent).toContain('if (hasPinSaved)')
+    it('index -> /unlock if PIN exists', () => {
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain("'/unlock'")
+      expect(indexContent).toContain('hasPinSaved ?')
     })
 
-    it('splash -> /pin-setup if PIN does not exist', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain("'/pin-setup'")
+    it('index -> /pin-setup if PIN does not exist', () => {
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain("'/pin-setup'")
     })
 
     it('both navigation paths use router.replace to reset stack', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      const replaceCount = (screenContent.match(/router\.replace/g) || []).length
-      expect(replaceCount).toBeGreaterThanOrEqual(2) // At least 2: /unlock and /pin-setup
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      const replaceCount = (indexContent.match(/router\.replace/g) || []).length
+      expect(replaceCount).toBe(1) // Single router.replace with ternary for both paths
+      expect(indexContent).toContain("hasPinSaved ? '/unlock' : '/pin-setup'")
     })
   })
 
   describe('Back Button Behavior', () => {
     it('should prevent back navigation from unlock screen', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('router.replace')
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('router.replace')
       // replace() resets stack instead of push()
     })
 
     it('should prevent back navigation from pin-setup', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('router.replace')
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('router.replace')
     })
 
     it('layout may have gestureEnabled disabled for auth flow', () => {
@@ -227,14 +240,14 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
     })
 
     it('total splash display should be ~2 seconds', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('2000')
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('2000')
     })
 
     it('should complete PIN check before navigation', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('if (hasPinChecked)')
-      expect(screenContent).toContain('setTimeout')
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('if (splashDone && hasPinSaved !== null)')
+      expect(indexContent).toContain('setTimeout')
     })
   })
 
@@ -258,9 +271,9 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
       expect(useCaseContent).toContain('return false')
     })
 
-    it('splash should default to PIN setup on error', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('setHasPinSaved(false)')
+    it('index should default to PIN setup on error', () => {
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('setHasPinSaved(false)')
     })
   })
 
@@ -275,10 +288,14 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
       expect(pinSetupLines).toBeLessThan(10)
     })
 
-    it('complex logic should be in screen components', () => {
+    it('complex logic should be in index route, not splash screen', () => {
       const screenLines = fs.readFileSync(splashScreenPath, 'utf8').split('\n')
         .length
-      expect(screenLines).toBeGreaterThan(20)
+      const indexLines = fs.readFileSync(indexPath, 'utf8').split('\n').length
+      // SplashScreen should be simple (dumb component)
+      expect(screenLines).toBeLessThanOrEqual(40)
+      // Index should contain the complex logic
+      expect(indexLines).toBeGreaterThan(30)
     })
 
     it('use-case should be testable', () => {
@@ -300,22 +317,27 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
     })
 
     it('criterion: Após ~2s, transita automaticamente para o fluxo correto', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('2000')
-      expect(screenContent).toContain('setTimeout')
-      expect(screenContent).toContain('if (hasPinSaved)')
+      // After PR #62 fix, navigation logic is in app/index.tsx
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('2000')
+      expect(indexContent).toContain('setTimeout')
+      expect(indexContent).toContain('if (splashDone && hasPinSaved !== null)')
     })
 
     it('criterion: Stack resetado — back não volta para splash', () => {
-      const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('router.replace')
-      expect(screenContent).not.toContain('router.push')
+      // After PR #62 fix, navigation logic is in app/index.tsx
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('router.replace')
+      expect(indexContent).not.toContain('router.push')
     })
 
     it('criterion: Fluxo de PIN check continua funcionando normalmente', () => {
       const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('CheckPinExistsUseCase')
-      expect(screenContent).toContain('hasPinSaved')
+      // After PR #62 fix, SplashScreen is a dumb component
+      // PIN check logic is now in app/index.tsx
+      const indexContent = fs.readFileSync(indexPath, 'utf8')
+      expect(indexContent).toContain('CheckPinExistsUseCase')
+      expect(indexContent).toContain('hasPinSaved')
     })
   })
 
@@ -335,8 +357,13 @@ describe('Splash Screen Flow Integration (PR #57)', () => {
 
     it('should have updated src/presentation/screens/splash-screen.tsx', () => {
       const screenContent = fs.readFileSync(splashScreenPath, 'utf8')
-      expect(screenContent).toContain('CheckPinExistsUseCase')
-      expect(screenContent).toContain('useRouter')
+      // After PR #62 fix, SplashScreen is a dumb component
+      // Should NOT contain navigation or PIN check logic
+      expect(screenContent).not.toContain('CheckPinExistsUseCase')
+      expect(screenContent).not.toContain('useRouter')
+      // Should only contain animation logic
+      expect(screenContent).toContain('useSharedValue')
+      expect(screenContent).toContain('withTiming')
     })
   })
 })
