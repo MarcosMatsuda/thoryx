@@ -83,7 +83,7 @@ export function useProfilePhoto(onPhotoUpdate?: OnPhotoUpdateCallback) {
     } finally {
       setIsLoading(false);
     }
-  }, [requestPermissions, updatePhotoUseCase]);
+  }, [requestPermissions, updatePhotoUseCase, onPhotoUpdate]);
 
   const showImagePickerOptions = useCallback(() => {
     Alert.alert(
@@ -117,7 +117,7 @@ export function useProfilePhoto(onPhotoUpdate?: OnPhotoUpdateCallback) {
     } finally {
       setIsLoading(false);
     }
-  }, [updatePhotoUseCase]);
+  }, [updatePhotoUseCase, onPhotoUpdate]);
 
   return {
     pickImage,
