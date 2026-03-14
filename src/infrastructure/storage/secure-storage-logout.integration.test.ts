@@ -254,10 +254,14 @@ describe('SecureStorageAdapter - Logout Flow Integration', () => {
       // Re-authenticate with new data
       await adapter.set('user:data', 'new-profile');
 
-      // New data should only use sanitized key
-      expect(SecureStore.setItemAsync).toHaveBeenLastCalledWith(
+      // New data should use sanitized key, and also update registry
+      expect(SecureStore.setItemAsync).toHaveBeenCalledWith(
         'auth-storage_user_data',
         'new-profile'
+      );
+      expect(SecureStore.setItemAsync).toHaveBeenCalledWith(
+        'auth-storage___keys_registry',
+        '["user:data"]'
       );
     });
   });
@@ -298,6 +302,98 @@ describe('SecureStorageAdapter - Logout Flow Integration', () => {
       expect(consoleDebugSpy.mock.calls.some(call =>
         call[0].includes('Failed to delete')
       )).toBe(true);
+
+      consoleDebugSpy.mockRestore();
+    });
+  });
+
+  describe('Clear All Data', () => {
+    it('should clear all registered keys when clear() is called', async () => {
+      // Mock setup - simpler approach
+      let registry: string[] = [];
+      (SecureStore.setItemAsync as jest.Mock).mockImplementation(async (key: string, value: string) => {
+        if (key === 'auth-storage___keys_registry') {
+          registry = JSON.parse(value);
+        }
+      });
+      
+      (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (key: string) => {
+        if (key === 'auth-storage___keys_registry') {
+          return JSON.stringify(registry);
+        }
+        if (key === 'auth-storage_key1') return 'value1';
+        if (key === 'auth-storage_key2') return 'value2';
+        return null;
+      });
+      
+      (SecureStore.deleteItemAsync as jest.Mock).mockResolvedValue(undefined);
+
+      // Store some data
+      await adapter.set('key1', 'value1');
+      await adapter.set('key2', 'value2');
+
+      // Clear all data
+      await adapter.clear();
+
+      // Should have deleted all registered keys and the registry
+      // Note: delete() is called for each key, which also calls getItemAsync for the registry
+      expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth-storage_key1');
+      expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth-storage_key2');
+      expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth-storage___keys_registry');
+    });
+
+    it('should handle clear() when registry is corrupted', async () => {
+      const consoleDebugSpy = jest.spyOn(console, 'debug').mockImplementation();
+
+      // Mock corrupted registry (not valid JSON)
+      (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('not-valid-json');
+      (SecureStore.deleteItemAsync as jest.Mock).mockResolvedValue(undefined);
+
+      // Should not throw even with corrupted registry
+      await expect(adapter.clear()).resolves.toBeUndefined();
+
+      // Should still try to delete the registry
+      expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth-storage___keys_registry');
+
+      consoleDebugSpy.mockRestore();
+    });
+
+    it('should handle clear() when no data exists', async () => {
+      // Mock empty registry
+      (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
+      (SecureStore.deleteItemAsync as jest.Mock).mockResolvedValue(undefined);
+
+      // Should not throw
+      await expect(adapter.clear()).resolves.toBeUndefined();
+
+      // Should still try to delete the registry
+      expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth-storage___keys_registry');
+    });
+
+    it('should handle partial failures during clear()', async () => {
+      const consoleDebugSpy = jest.spyOn(console, 'debug').mockImplementation();
+
+      // Mock registry with 2 keys
+      let callCount = 0;
+      (SecureStore.getItemAsync as jest.Mock).mockImplementation(async () => {
+        callCount++;
+        if (callCount === 1) return '["key1", "key2"]';
+        if (callCount === 2) return 'value1';
+        if (callCount === 3) return 'value2';
+        return null;
+      });
+
+      // First delete succeeds, second fails, registry delete succeeds
+      (SecureStore.deleteItemAsync as jest.Mock)
+        .mockResolvedValueOnce(undefined) // key1
+        .mockRejectedValueOnce(new Error('Delete failed')) // key2
+        .mockResolvedValueOnce(undefined); // registry
+
+      // Should not throw even with partial failures
+      await expect(adapter.clear()).resolves.toBeUndefined();
+
+      // Should have attempted all deletions
+      expect(SecureStore.deleteItemAsync).toHaveBeenCalledTimes(3);
 
       consoleDebugSpy.mockRestore();
     });

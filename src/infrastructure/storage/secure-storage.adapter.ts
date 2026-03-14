@@ -12,6 +12,7 @@ try {
 export class SecureStorageAdapter {
   private mmkvInstance: any = null;
   private readonly storageId: string;
+  private readonly KEYS_REGISTRY_KEY = '__keys_registry';
 
   constructor(storageId: string, encryptionKey?: string) {
     this.storageId = storageId;
@@ -47,6 +48,8 @@ export class SecureStorageAdapter {
     } else {
       const { sanitized } = this.getSecureStoreKeys(key);
       await SecureStore.setItemAsync(sanitized, value);
+      // Register the key for later cleanup
+      await this.registerKey(key);
     }
   }
 
@@ -67,6 +70,8 @@ export class SecureStorageAdapter {
           if (value !== null) {
             await SecureStore.setItemAsync(sanitized, value);
             await SecureStore.deleteItemAsync(original);
+            // Register the key after migration
+            await this.registerKey(key);
           }
         } catch (error) {
           // Original key might be invalid for SecureStore, ignore and return null
@@ -100,12 +105,106 @@ export class SecureStorageAdapter {
           console.debug('Failed to delete with original key, likely invalid characters:', error);
         }
       }
+      
+      // Remove from registry
+      await this.unregisterKey(key);
+    }
+  }
+
+  private async registerKey(key: string): Promise<void> {
+    if (this.mmkvInstance) return; // Not needed for MMKV
+    
+    try {
+      const registryKey = `${this.storageId}_${this.KEYS_REGISTRY_KEY}`;
+      const registryJson = await SecureStore.getItemAsync(registryKey);
+      let registry: string[] = [];
+      
+      if (registryJson) {
+        try {
+          registry = JSON.parse(registryJson);
+        } catch (parseError) {
+          console.debug('Failed to parse registry, starting fresh:', parseError);
+          registry = [];
+        }
+      }
+      
+      if (!registry.includes(key)) {
+        registry.push(key);
+        await SecureStore.setItemAsync(
+          registryKey,
+          JSON.stringify(registry)
+        );
+      }
+    } catch (error) {
+      console.debug('Error registering key:', error);
+    }
+  }
+
+  private async unregisterKey(key: string): Promise<void> {
+    if (this.mmkvInstance) return; // Not needed for MMKV
+    
+    try {
+      const registryKey = `${this.storageId}_${this.KEYS_REGISTRY_KEY}`;
+      const registryJson = await SecureStore.getItemAsync(registryKey);
+      if (!registryJson) return;
+      
+      let registry: string[] = [];
+      try {
+        registry = JSON.parse(registryJson);
+      } catch (parseError) {
+        console.debug('Failed to parse registry during unregister:', parseError);
+        return;
+      }
+      
+      registry = registry.filter(k => k !== key);
+      
+      await SecureStore.setItemAsync(
+        registryKey,
+        JSON.stringify(registry)
+      );
+    } catch (error) {
+      console.debug('Error unregistering key:', error);
+    }
+  }
+
+  private async getRegisteredKeys(): Promise<string[]> {
+    if (this.mmkvInstance) return []; // Not needed for MMKV
+    
+    try {
+      const registryKey = `${this.storageId}_${this.KEYS_REGISTRY_KEY}`;
+      const registryJson = await SecureStore.getItemAsync(registryKey);
+      if (!registryJson) return [];
+      
+      try {
+        return JSON.parse(registryJson);
+      } catch (parseError) {
+        console.debug('Failed to parse registry, returning empty:', parseError);
+        return [];
+      }
+    } catch (error) {
+      console.debug('Error getting registered keys:', error);
+      return [];
     }
   }
 
   async clear(): Promise<void> {
     if (this.mmkvInstance) {
       this.mmkvInstance.clearAll();
+    } else {
+      // For SecureStore, delete all registered keys
+      const keys = await this.getRegisteredKeys();
+      
+      // Delete all registered keys
+      for (const key of keys) {
+        await this.delete(key);
+      }
+      
+      // Also delete the registry itself
+      try {
+        await SecureStore.deleteItemAsync(`${this.storageId}_${this.KEYS_REGISTRY_KEY}`);
+      } catch (error) {
+        console.debug('Error deleting keys registry:', error);
+      }
     }
   }
 }
