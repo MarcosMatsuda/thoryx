@@ -168,11 +168,7 @@ export function SettingsScreen() {
 
 
   const handleTermsOfService = () => {
-    Alert.alert(
-      'Terms of Service',
-      'This feature will be implemented soon.',
-      [{ text: 'OK' }]
-    );
+    router.push('/terms-of-service');
   };
 
   const handlePrivacyPolicy = () => {
