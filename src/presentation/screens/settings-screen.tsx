@@ -9,7 +9,7 @@ import { SettingsSection } from '@presentation/components/settings-section';
 import { SettingsItem } from '@presentation/components/settings-item';
 import { SecureStorageAdapter } from '@infrastructure/storage/secure-storage.adapter';
 import { AuthService } from '@infrastructure/services/auth.service';
-import * as Application from 'expo-application';
+import { APP_CONFIG } from '@shared/constants/app';
 
 const BIOMETRY_ENABLED_KEY = 'biometry_enabled';
 const storage = new SecureStorageAdapter('settings-storage', 'thoryx-mmkv-encryption-key-2026');
@@ -264,7 +264,7 @@ export function SettingsScreen() {
           <SettingsSection title="ABOUT">
             <SettingsItem
               label="Version"
-              value={Application.nativeApplicationVersion || '1.0.0'}
+              value={APP_CONFIG.version}
               showChevron={false}
               icon={<Text className="text-xl">ℹ️</Text>}
               isFirst
