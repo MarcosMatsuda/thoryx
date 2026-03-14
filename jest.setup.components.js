@@ -1,19 +1,6 @@
-// Jest setup file for React Testing Library + React Native
-
-// Intercept the Expo asset loader VERY EARLY
-const Module = require('module');
-const originalRequire = Module.prototype.require;
-
-Module.prototype.require = function(id) {
-  // Mock image assets before they're loaded
-  if (id.includes('splash-icon.png') || id.match(/\.(png|jpg|jpeg|gif|svg)$/)) {
-    return 'test-image-path';
-  }
-  return originalRequire.apply(this, arguments);
-};
+// Jest setup for component tests
 
 // Setup must happen before importing testing library
-// Mock Expo's global installer to prevent errors with native modules
 jest.mock('expo/src/winter/installGlobal', () => ({
   installGlobal: jest.fn(),
 }))
@@ -52,9 +39,6 @@ if (typeof global.TransformStream === 'undefined') {
     constructor() {}
   }
 }
-
-// Now import the jest-native matchers
-require('@testing-library/jest-native/extend-expect')
 
 // Mock NativeWind
 jest.mock('nativewind', () => ({
@@ -110,8 +94,21 @@ jest.mock('react-native-mmkv', () => ({
   })),
 }))
 
+// Mock react-native-reanimated
+jest.mock('react-native-reanimated', () => ({
+  useSharedValue: jest.fn((value) => ({ value })),
+  useAnimatedStyle: jest.fn(() => ({})),
+  withTiming: jest.fn((target, config) => target),
+  Easing: {
+    out: jest.fn((inner) => inner),
+    cubic: jest.fn(() => jest.fn()),
+  },
+  default: {},
+}))
+
 // Global test utilities
 global.console = {
   ...console,
   error: jest.fn(),
+  warn: jest.fn(),
 }

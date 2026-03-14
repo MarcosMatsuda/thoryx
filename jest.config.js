@@ -32,8 +32,10 @@ const config = {
         '^@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',
         '^@presentation/(.*)$': '<rootDir>/src/presentation/$1',
         '^@shared/(.*)$': '<rootDir>/src/shared/$1',
+        '.+\\.(png|jpg|jpeg|gif|svg|webp|ico|eot|otf|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/jest.mock.image.js',
       },
       setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+      testPathIgnorePatterns: ['/node_modules/'],
     },
   ],
   // Coverage threshold will be enforced once Test Writer Agent adds meaningful tests
