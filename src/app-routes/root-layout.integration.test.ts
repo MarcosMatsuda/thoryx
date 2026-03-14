@@ -264,7 +264,7 @@ describe('Root Layout (app/_layout.tsx)', () => {
   })
 
   describe('Integration with Index Route', () => {
-    it('should allow index route to safely navigate after root layout mounts', () => {
+    it('should allow index route to render SplashScreen inline and navigate after pin check', () => {
       const rootLayoutContent = fs.readFileSync(rootLayoutPath, 'utf8')
       const indexRoutePath = path.join(projectRoot, 'app/index.tsx')
       const indexContent = fs.readFileSync(indexRoutePath, 'utf8')
@@ -272,9 +272,11 @@ describe('Root Layout (app/_layout.tsx)', () => {
       // Root layout should be fully defined with all routes
       expect(rootLayoutContent).toContain('<Stack.Screen')
       
-      // Index route should check for rootNavigationState before navigating
-      expect(indexContent).toContain('useRootNavigationState')
-      expect(indexContent).toContain('rootNavigationState?.key')
+      // Index route should render SplashScreen inline and check PIN
+      expect(indexContent).toContain('SplashScreen')
+      expect(indexContent).toContain('PinRepositoryImpl')
+      expect(indexContent).toContain('CheckPinExistsUseCase')
+      expect(indexContent).toContain('setTimeout(() => setSplashDone(true), 2000)')
     })
   })
 
