@@ -8,10 +8,10 @@ on:
 
 jobs:
   route:
-    name: Route to Agent
+    name: Post status to #thoryx-squad
     runs-on: ubuntu-latest
 
-    # Only react to routing labels — ignore all others
+    # Only react to pipeline labels — observability only, no agent routing
     if: |
       contains(fromJson('["task","wip","needs-tests","needs-fix","tests-ready","qa-approved","qa-changes-requested"]'), github.event.label.name)
 
@@ -23,66 +23,38 @@ jobs:
             KIND="issue"
             NUMBER="${{ github.event.issue.number }}"
             TITLE="${{ github.event.issue.title }}"
+            URL="https://github.com/MarcosMatsuda/thoryx/issues/${{ github.event.issue.number }}"
           else
             KIND="pr"
             NUMBER="${{ github.event.pull_request.number }}"
             TITLE="${{ github.event.pull_request.title }}"
+            URL="${{ github.event.pull_request.html_url }}"
           fi
           echo "kind=${KIND}" >> $GITHUB_OUTPUT
           echo "number=${NUMBER}" >> $GITHUB_OUTPUT
           echo "label=${{ github.event.label.name }}" >> $GITHUB_OUTPUT
           echo "title=${TITLE}" >> $GITHUB_OUTPUT
+          echo "url=${URL}" >> $GITHUB_OUTPUT
 
-      - name: Notify Maestro
+      - name: Post status to #thoryx-squad
         run: |
           LABEL="${{ steps.vars.outputs.label }}"
           NUMBER="${{ steps.vars.outputs.number }}"
-          KIND="${{ steps.vars.outputs.kind }}"
           TITLE="${{ steps.vars.outputs.title }}"
+          URL="${{ steps.vars.outputs.url }}"
 
-          if [ "$KIND" = "issue" ]; then
-            URL="https://github.com/MarcosMatsuda/thoryx/issues/${NUMBER}"
-          else
-            URL="https://github.com/MarcosMatsuda/thoryx/pull/${NUMBER}"
-          fi
+          case "$LABEL" in
+            task)                 MSG="📋 Issue #${NUMBER}: ${TITLE}\n${URL}" ;;
+            wip)                  MSG="⚙️ Issue #${NUMBER} — Developer implementando." ;;
+            needs-tests)          MSG="🧪 PR #${NUMBER} aberto — Tester escrevendo testes." ;;
+            needs-fix)            MSG="🔧 PR #${NUMBER} — bug encontrado. Developer corrigindo." ;;
+            tests-ready)          MSG="✅ Testes prontos — PR #${NUMBER}. QA validando." ;;
+            qa-approved)          MSG="✅ PR #${NUMBER} aprovado por QA. Mergeando em develop_bot." ;;
+            qa-changes-requested) MSG="❌ PR #${NUMBER} — QA solicitou mudanças. Developer corrigindo." ;;
+          esac
 
-          TEXT="PIPELINE_EVENT label=${LABEL} kind=${KIND} number=${NUMBER} url=${URL} title=${TITLE}"
-
-          PAYLOAD=$(jq -n --arg channel "C0AL2R8S858" --arg text "$TEXT" '{channel: $channel, text: $text}')
+          PAYLOAD=$(jq -n --arg channel "C0AKW87DA78" --arg text "$MSG" '{channel: $channel, text: $text}')
           curl -s -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD"
-
-      - name: Route to agent channel
-        run: |
-          LABEL="${{ steps.vars.outputs.label }}"
-          NUMBER="${{ steps.vars.outputs.number }}"
-          WEBHOOK=""
-          TEXT=""
-
-          case "$LABEL" in
-            task)
-              WEBHOOK="${{ secrets.SLACK_WEBHOOK_SENIOR_DEV }}"
-              TEXT="Issue #${NUMBER} has label task. Read the issue and implement it: gh issue view ${NUMBER} --repo MarcosMatsuda/thoryx\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
-              ;;
-            needs-tests)
-              WEBHOOK="${{ secrets.SLACK_WEBHOOK_TEST_WRITER }}"
-              TEXT="PR #${NUMBER} has label needs-tests. Write tests for this PR.\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
-              ;;
-            needs-fix|qa-changes-requested)
-              WEBHOOK="${{ secrets.SLACK_WEBHOOK_SENIOR_DEV }}"
-              TEXT="PR #${NUMBER} has label ${LABEL}. Read the PR comments and fix the reported issues: gh pr view ${NUMBER} --repo MarcosMatsuda/thoryx\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
-              ;;
-            tests-ready)
-              WEBHOOK="${{ secrets.SLACK_WEBHOOK_QA }}"
-              TEXT="PR #${NUMBER} has label tests-ready. Review against the acceptance criteria in the linked issue.\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
-              ;;
-          esac
-
-          if [ -n "$WEBHOOK" ]; then
-            PAYLOAD=$(jq -n --arg text "$TEXT" '{text: $text}')
-            curl -s -X POST "$WEBHOOK" \
-              -H "Content-Type: application/json" \
-              -d "$PAYLOAD"
-          fi
