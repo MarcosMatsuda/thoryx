@@ -1,9 +1,10 @@
-import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { useUserProfile } from '@presentation/hooks/use-user-profile';
 import { useBiometry } from '@presentation/hooks/use-biometry';
+import { useProfilePhoto } from '@presentation/hooks/use-profile-photo';
 import { SettingsSection } from '@presentation/components/settings-section';
 import { SettingsItem } from '@presentation/components/settings-item';
 import { SecureStorageAdapter } from '@infrastructure/storage/secure-storage.adapter';
@@ -15,8 +16,9 @@ const storage = new SecureStorageAdapter('settings-storage', 'thoryx-mmkv-encryp
 
 export function SettingsScreen() {
   const router = useRouter();
-  const { profile } = useUserProfile();
+  const { profile, reloadProfile } = useUserProfile();
   const { isAvailable: biometryAvailable, getBiometryName, authenticate } = useBiometry();
+  const { showImagePickerOptions, isLoading: isPhotoLoading } = useProfilePhoto(reloadProfile);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [autoLockTimeout, setAutoLockTimeout] = useState('5 minutes');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -196,11 +198,36 @@ export function SettingsScreen() {
               className="p-4 active:bg-surface-hover"
             >
               <View className="flex-row items-center">
-                <View className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mr-4">
-                  <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-                    <Text className="text-3xl md:text-4xl">👤</Text>
+                <Pressable
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    showImagePickerOptions();
+                  }}
+                  disabled={isPhotoLoading}
+                  className="relative"
+                >
+                  <View className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mr-4 border-2 border-primary-main/30">
+                    {profile?.photoUri ? (
+                      <Image
+                        source={{ uri: profile.photoUri }}
+                        className="w-full h-full"
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <View className="w-full h-full bg-primary-main/20 items-center justify-center">
+                        <Text className="text-3xl md:text-4xl">👤</Text>
+                      </View>
+                    )}
+                    {isPhotoLoading && (
+                      <View className="absolute inset-0 bg-black/50 items-center justify-center">
+                        <Text className="text-white text-sm">Loading...</Text>
+                      </View>
+                    )}
                   </View>
-                </View>
+                  <Text className="text-xs text-center mt-1 text-primary-main font-medium">
+                    {profile?.photoUri ? 'Alterar imagem' : 'Escolher imagem'}
+                  </Text>
+                </Pressable>
                 <View className="flex-1">
                   <Text className="text-lg md:text-xl font-bold text-text-primary mb-1">
                     {profile?.name || 'Set up profile'}
