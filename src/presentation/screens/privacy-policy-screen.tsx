@@ -82,7 +82,7 @@ export function PrivacyPolicyScreen() {
               5. Biometric Data
             </Text>
             <Text className="text-base md:text-lg text-text-secondary leading-relaxed">
-              If you enable Face ID / Touch ID, the biometric data is managed by your device's operating system. Thoryx never receives or stores your biometric information.
+              If you enable Face ID / Touch ID, the biometric data is managed by your device&apos;s operating system. Thoryx never receives or stores your biometric information.
             </Text>
           </View>
 
