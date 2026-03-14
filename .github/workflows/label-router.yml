@@ -33,7 +33,7 @@ jobs:
           echo "label=${{ github.event.label.name }}" >> $GITHUB_OUTPUT
           echo "title=${TITLE}" >> $GITHUB_OUTPUT
 
-      - name: Notify Conductor
+      - name: Notify Maestro
         run: |
           LABEL="${{ steps.vars.outputs.label }}"
           NUMBER="${{ steps.vars.outputs.number }}"
