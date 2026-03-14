@@ -113,7 +113,7 @@ export function SettingsScreen() {
               
               if (result.success) {
                 // Navigate to unlock screen (index will show unlock since PIN still exists)
-                router.replace('/');
+                router.replace('/unlock');
               } else {
                 Alert.alert('Error', result.error || 'Failed to log out. Please try again.');
               }
@@ -194,36 +194,38 @@ export function SettingsScreen() {
               className="p-4 active:bg-surface-hover"
             >
               <View className="flex-row items-center">
-                <Pressable
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    showImagePickerOptions();
-                  }}
-                  disabled={isPhotoLoading}
-                  className="relative"
-                >
-                  <View className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mr-4 border-2 border-primary-main/30">
-                    {profile?.photoUri ? (
-                      <Image
-                        source={{ uri: profile.photoUri }}
-                        className="w-full h-full"
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-                        <Text className="text-3xl md:text-4xl">👤</Text>
-                      </View>
-                    )}
-                    {isPhotoLoading && (
-                      <View className="absolute inset-0 bg-black/50 items-center justify-center">
-                        <Text className="text-white text-sm">Loading...</Text>
-                      </View>
-                    )}
-                  </View>
+                <View className="items-center mr-4">
+                  <Pressable
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      showImagePickerOptions();
+                    }}
+                    disabled={isPhotoLoading}
+                    className="relative"
+                  >
+                    <View className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-primary-main/30">
+                      {profile?.photoUri ? (
+                        <Image
+                          source={{ uri: profile.photoUri }}
+                          className="w-full h-full"
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View className="w-full h-full bg-primary-main/20 items-center justify-center">
+                          <Text className="text-3xl md:text-4xl">👤</Text>
+                        </View>
+                      )}
+                      {isPhotoLoading && (
+                        <View className="absolute inset-0 bg-black/50 items-center justify-center">
+                          <Text className="text-white text-sm">Loading...</Text>
+                        </View>
+                      )}
+                    </View>
+                  </Pressable>
                   <Text className="text-xs text-center mt-1 text-primary-main font-medium">
                     {profile?.photoUri ? 'Alterar imagem' : 'Escolher imagem'}
                   </Text>
-                </Pressable>
+                </View>
                 <View className="flex-1">
                   <Text className="text-lg md:text-xl font-bold text-text-primary mb-1">
                     {profile?.name || 'Set up profile'}
