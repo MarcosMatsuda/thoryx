@@ -27,6 +27,7 @@ const config = {
       ],
       testMatch: ['<rootDir>/src/**/*.test.tsx'],
       moduleNameMapper: {
+        '^expo/src/winter(/.*)?$': '<rootDir>/src/__mocks__/expo-winter.js',
         '^@domain/(.*)$': '<rootDir>/src/domain/$1',
         '^@data/(.*)$': '<rootDir>/src/data/$1',
         '^@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',
@@ -34,6 +35,7 @@ const config = {
         '^@shared/(.*)$': '<rootDir>/src/shared/$1',
         '.+\\.(png|jpg|jpeg|gif|svg|webp|ico|eot|otf|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/jest.mock.image.js',
       },
+      setupFiles: ['<rootDir>/jest.setup.env.js'],
       setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
       testPathIgnorePatterns: ['/node_modules/'],
     },

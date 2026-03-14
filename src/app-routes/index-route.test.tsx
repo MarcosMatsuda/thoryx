@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render, act } from '@testing-library/react-native';
 import { useRouter } from 'expo-router';
 import IndexScreen from '../../app/index';
 
@@ -13,9 +13,13 @@ jest.mock('expo-router', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('@presentation/screens/splash-screen', () => ({
-  SplashScreen: () => 'SplashScreen',
-}));
+jest.mock('@presentation/screens/splash-screen', () => {
+  const React = require('react');
+  const { Text } = require('react-native');
+  return {
+    SplashScreen: () => React.createElement(Text, null, 'SplashScreen'),
+  };
+});
 
 jest.mock('@data/repositories/pin.repository.impl', () => ({
   PinRepositoryImpl: jest.fn(),
@@ -51,9 +55,6 @@ describe('IndexScreen', () => {
 
     render(<IndexScreen />);
 
-    // Wait for async effects
-    await new Promise(resolve => setTimeout(resolve, 0));
-
     expect(MockPinRepositoryImpl).toHaveBeenCalled();
     expect(MockCheckPinExistsUseCase).toHaveBeenCalledWith({});
     expect(mockExecute).toHaveBeenCalled();
@@ -70,14 +71,12 @@ describe('IndexScreen', () => {
     }));
 
     jest.useFakeTimers();
-    
+
     render(<IndexScreen />);
 
-    // Fast-forward through the 2-second timer
-    jest.advanceTimersByTime(2000);
-
-    // Wait for async effects
-    await Promise.resolve();
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
 
     expect(mockReplace).toHaveBeenCalledWith('/unlock');
 
@@ -95,14 +94,12 @@ describe('IndexScreen', () => {
     }));
 
     jest.useFakeTimers();
-    
+
     render(<IndexScreen />);
 
-    // Fast-forward through the 2-second timer
-    jest.advanceTimersByTime(2000);
-
-    // Wait for async effects
-    await Promise.resolve();
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
 
     expect(mockReplace).toHaveBeenCalledWith('/pin-setup');
 
@@ -120,14 +117,12 @@ describe('IndexScreen', () => {
     }));
 
     jest.useFakeTimers();
-    
+
     render(<IndexScreen />);
 
-    // Fast-forward through the 2-second timer
-    jest.advanceTimersByTime(2000);
-
-    // Wait for async effects
-    await Promise.resolve();
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
 
     expect(mockReplace).toHaveBeenCalledWith('/pin-setup');
 
@@ -145,22 +140,18 @@ describe('IndexScreen', () => {
     }));
 
     jest.useFakeTimers();
-    
+
     render(<IndexScreen />);
 
-    // Only advance 1 second, not the full 2 seconds
-    jest.advanceTimersByTime(1000);
-
-    // Wait for async effects
-    await Promise.resolve();
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
 
     expect(mockReplace).not.toHaveBeenCalled();
 
-    // Now advance the remaining time
-    jest.advanceTimersByTime(1000);
-
-    // Wait for async effects
-    await Promise.resolve();
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
 
     expect(mockReplace).toHaveBeenCalledWith('/unlock');
 
@@ -172,7 +163,7 @@ describe('IndexScreen', () => {
     const mockExecute = jest.fn().mockImplementation(() => new Promise(resolve => {
       resolveExecute = resolve;
     }));
-    
+
     const MockPinRepositoryImpl = require('@data/repositories/pin.repository.impl').PinRepositoryImpl;
     const MockCheckPinExistsUseCase = require('@domain/use-cases/check-pin-exists.use-case').CheckPinExistsUseCase;
 
@@ -182,22 +173,18 @@ describe('IndexScreen', () => {
     }));
 
     jest.useFakeTimers();
-    
+
     render(<IndexScreen />);
 
-    // Advance the full 2 seconds, but PIN check hasn't resolved yet
-    jest.advanceTimersByTime(2000);
-
-    // Wait for async effects
-    await Promise.resolve();
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
 
     expect(mockReplace).not.toHaveBeenCalled();
 
-    // Now resolve the PIN check
-    resolveExecute!(true);
-
-    // Wait for async effects
-    await Promise.resolve();
+    await act(async () => {
+      resolveExecute!(true);
+    });
 
     expect(mockReplace).toHaveBeenCalledWith('/unlock');
 
