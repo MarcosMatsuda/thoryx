@@ -58,32 +58,31 @@ jobs:
         run: |
           LABEL="${{ steps.vars.outputs.label }}"
           NUMBER="${{ steps.vars.outputs.number }}"
-          CHANNEL=""
+          WEBHOOK=""
           TEXT=""
 
           case "$LABEL" in
             task)
-              CHANNEL="C0AL4T1JNBB"
+              WEBHOOK="${{ secrets.SLACK_WEBHOOK_SENIOR_DEV }}"
               TEXT="Issue #${NUMBER} has label task. Read the issue and implement it: gh issue view ${NUMBER} --repo MarcosMatsuda/thoryx\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
               ;;
             needs-tests)
-              CHANNEL="C0ALT3YPRQ8"
+              WEBHOOK="${{ secrets.SLACK_WEBHOOK_TEST_WRITER }}"
               TEXT="PR #${NUMBER} has label needs-tests. Write tests for this PR.\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
               ;;
             needs-fix|qa-changes-requested)
-              CHANNEL="C0AL4T1JNBB"
+              WEBHOOK="${{ secrets.SLACK_WEBHOOK_SENIOR_DEV }}"
               TEXT="PR #${NUMBER} has label ${LABEL}. Read the PR comments and fix the reported issues: gh pr view ${NUMBER} --repo MarcosMatsuda/thoryx\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
               ;;
             tests-ready)
-              CHANNEL="C0AKAGF1QCX"
+              WEBHOOK="${{ secrets.SLACK_WEBHOOK_QA }}"
               TEXT="PR #${NUMBER} has label tests-ready. Review against the acceptance criteria in the linked issue.\nIMPORTANT: cd /Users/marcosmatsuda/PROJECTS/MARCOSMATSUDA/thoryx && git checkout develop && git pull origin develop — do this FIRST."
               ;;
           esac
 
-          if [ -n "$CHANNEL" ]; then
-            PAYLOAD=$(jq -n --arg channel "$CHANNEL" --arg text "$TEXT" '{channel: $channel, text: $text}')
-            curl -s -X POST https://slack.com/api/chat.postMessage \
-              -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+          if [ -n "$WEBHOOK" ]; then
+            PAYLOAD=$(jq -n --arg text "$TEXT" '{text: $text}')
+            curl -s -X POST "$WEBHOOK" \
               -H "Content-Type: application/json" \
               -d "$PAYLOAD"
           fi
