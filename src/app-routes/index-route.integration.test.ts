@@ -32,9 +32,10 @@ describe('Index Route (app/index.tsx)', () => {
       expect(fileContent).toContain("from 'react'")
     })
 
-    it('should import useRouter from expo-router', () => {
+    it('should import useRouter and useRootNavigationState from expo-router', () => {
       const fileContent = fs.readFileSync(indexRoutePath, 'utf8')
       expect(fileContent).toContain('useRouter')
+      expect(fileContent).toContain('useRootNavigationState')
       expect(fileContent).toContain("from 'expo-router'")
     })
   })
@@ -45,16 +46,22 @@ describe('Index Route (app/index.tsx)', () => {
       expect(fileContent).toContain('export default function IndexScreen')
     })
 
-    it('should call useRouter hook', () => {
+    it('should call useRouter and useRootNavigationState hooks', () => {
       const fileContent = fs.readFileSync(indexRoutePath, 'utf8')
       expect(fileContent).toContain('const router = useRouter()')
+      expect(fileContent).toContain('const rootNavigationState = useRootNavigationState()')
     })
   })
 
   describe('Navigation Behavior', () => {
-    it('should navigate to /splash immediately on mount', () => {
+    it('should navigate to /splash after root navigation is ready', () => {
       const fileContent = fs.readFileSync(indexRoutePath, 'utf8')
       expect(fileContent).toContain("router.replace('/splash')")
+    })
+
+    it('should check for rootNavigationState.key before navigating', () => {
+      const fileContent = fs.readFileSync(indexRoutePath, 'utf8')
+      expect(fileContent).toContain('if (!rootNavigationState?.key) return')
     })
 
     it('should use router.replace to reset navigation stack', () => {
@@ -70,15 +77,15 @@ describe('Index Route (app/index.tsx)', () => {
   })
 
   describe('useEffect Setup', () => {
-    it('should use useEffect to navigate on mount', () => {
+    it('should use useEffect to navigate when root navigation is ready', () => {
       const fileContent = fs.readFileSync(indexRoutePath, 'utf8')
       expect(fileContent).toContain('useEffect')
       expect(fileContent).toContain('() => {')
     })
 
-    it('should have router in dependency array', () => {
+    it('should have rootNavigationState.key in dependency array', () => {
       const fileContent = fs.readFileSync(indexRoutePath, 'utf8')
-      expect(fileContent).toContain('[router]')
+      expect(fileContent).toContain('[rootNavigationState?.key]')
     })
   })
 })

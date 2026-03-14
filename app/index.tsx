@@ -1,14 +1,14 @@
+import { useRootNavigationState, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { useRouter } from 'expo-router';
 
 export default function IndexScreen() {
   const router = useRouter();
+  const rootNavigationState = useRootNavigationState();
 
   useEffect(() => {
-    // Navigate immediately to splash screen on app start
+    if (!rootNavigationState?.key) return; // wait for navigator ready
     router.replace('/splash');
-  }, [router]);
+  }, [rootNavigationState?.key]);
 
-  // Return null or a minimal loading indicator since we navigate immediately
-  return null;
+  return null; // or loading indicator
 }
