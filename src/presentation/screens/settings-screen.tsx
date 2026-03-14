@@ -154,6 +154,7 @@ export function SettingsScreen() {
               await profileStorage.clear();
               await storage.clear();
 
+              router.replace('/pin-setup');
               Alert.alert('Success', 'All data has been cleared. Please restart the app.');
             } catch (error) {
               console.error('Error clearing data:', error);
