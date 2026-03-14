@@ -19,6 +19,7 @@ export class UserProfileRepositoryImpl implements UserProfileRepository {
       
       const profile: UserProfile = {
         name: profileInput.name,
+        photoUri: profileInput.photoUri,
         createdAt: existingProfile?.createdAt || new Date(),
         updatedAt: new Date()
       };
