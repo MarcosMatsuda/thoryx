@@ -17,7 +17,7 @@ export class UpdateProfilePhotoUseCase {
 
       const profileInput: UserProfileInput = {
         name: existingProfile.name,
-        photoUri: photoUri || undefined
+        photoUri: photoUri || undefined // photoUri will be converted to null in repository
       };
 
       const profile = await this.userProfileRepository.save(profileInput);
