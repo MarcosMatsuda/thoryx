@@ -173,11 +173,7 @@ export function SettingsScreen() {
   };
 
   const handlePrivacyPolicy = () => {
-    Alert.alert(
-      'Privacy Policy',
-      'This feature will be implemented soon.',
-      [{ text: 'OK' }]
-    );
+    router.push('/privacy-policy');
   };
 
   return (
