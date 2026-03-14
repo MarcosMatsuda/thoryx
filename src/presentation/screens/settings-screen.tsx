@@ -140,18 +140,11 @@ export function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              // Clear all MMKV storage instances
-              const creditCardStorage = new SecureStorageAdapter('credit-cards-storage', 'thoryx-mmkv-encryption-key-2026');
-              const documentStorage = new SecureStorageAdapter('documents-storage', 'thoryx-mmkv-encryption-key-2026');
-              const emergencyStorage = new SecureStorageAdapter('emergency-info-storage', 'thoryx-mmkv-encryption-key-2026');
-              const pinStorage = new SecureStorageAdapter('pin-storage', 'thoryx-mmkv-encryption-key-2026');
-              const profileStorage = new SecureStorageAdapter('user-profile-storage', 'thoryx-mmkv-encryption-key-2026');
-
-              await creditCardStorage.clear();
-              await documentStorage.clear();
-              await emergencyStorage.clear();
-              await pinStorage.clear();
-              await profileStorage.clear();
+              // Use AuthService to clear all data consistently
+              const authService = new AuthService();
+              await authService.clearAllData();
+              
+              // Also clear the local settings storage
               await storage.clear();
 
               router.replace('/pin-setup');
