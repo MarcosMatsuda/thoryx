@@ -145,7 +145,7 @@ export function WalletHomeScreen() {
               <Text className="text-xs md:text-sm font-semibold text-text-secondary tracking-wider">
                 MY DOCUMENTS
               </Text>
-              <Pressable>
+              <Pressable onPress={() => router.push('/(tabs)/documents')}>
                 <Text className="text-sm md:text-base font-semibold text-primary-main">
                   See All
                 </Text>
