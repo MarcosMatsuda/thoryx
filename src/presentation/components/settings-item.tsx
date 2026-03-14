@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Switch } from 'react-native';
+import { View, Text, Pressable, Switch, ActivityIndicator } from 'react-native';
 import { ReactNode } from 'react';
 
 interface SettingsItemProps {
@@ -13,6 +13,7 @@ interface SettingsItemProps {
   isFirst?: boolean;
   isLast?: boolean;
   disabled?: boolean;
+  loading?: boolean;
 }
 
 export function SettingsItem({
@@ -27,6 +28,7 @@ export function SettingsItem({
   isFirst = false,
   isLast = false,
   disabled = false,
+  loading = false,
 }: SettingsItemProps) {
   const content = (
     <View
@@ -48,22 +50,28 @@ export function SettingsItem({
       </View>
 
       <View className="flex-row items-center gap-2">
-        {value && (
-          <Text className="text-sm md:text-base text-text-secondary">
-            {value}
-          </Text>
-        )}
-        {switchValue !== undefined && onSwitchChange && (
-          <Switch
-            value={switchValue}
-            onValueChange={onSwitchChange}
-            disabled={disabled}
-            trackColor={{ false: '#767577', true: '#3B82F6' }}
-            thumbColor={switchValue ? '#FFFFFF' : '#f4f3f4'}
-          />
-        )}
-        {showChevron && !onSwitchChange && (
-          <Text className="text-text-secondary text-lg">›</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color={destructive ? '#EF4444' : '#3B82F6'} />
+        ) : (
+          <>
+            {value && (
+              <Text className="text-sm md:text-base text-text-secondary">
+                {value}
+              </Text>
+            )}
+            {switchValue !== undefined && onSwitchChange && (
+              <Switch
+                value={switchValue}
+                onValueChange={onSwitchChange}
+                disabled={disabled}
+                trackColor={{ false: '#767577', true: '#3B82F6' }}
+                thumbColor={switchValue ? '#FFFFFF' : '#f4f3f4'}
+              />
+            )}
+            {showChevron && !onSwitchChange && (
+              <Text className="text-text-secondary text-lg">›</Text>
+            )}
+          </>
         )}
       </View>
     </View>
@@ -73,8 +81,8 @@ export function SettingsItem({
     return (
       <Pressable
         onPress={onPress}
-        disabled={disabled}
-        className={`${disabled ? 'opacity-50' : 'active:bg-surface-hover'}`}
+        disabled={disabled || loading}
+        className={`${disabled || loading ? 'opacity-50' : 'active:bg-surface-hover'}`}
       >
         {content}
       </Pressable>

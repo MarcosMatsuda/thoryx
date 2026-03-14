@@ -7,6 +7,7 @@ import { useBiometry } from '@presentation/hooks/use-biometry';
 import { SettingsSection } from '@presentation/components/settings-section';
 import { SettingsItem } from '@presentation/components/settings-item';
 import { SecureStorageAdapter } from '@infrastructure/storage/secure-storage.adapter';
+import { AuthService } from '@infrastructure/services/auth.service';
 import * as Application from 'expo-application';
 
 const BIOMETRY_ENABLED_KEY = 'biometry_enabled';
@@ -18,6 +19,8 @@ export function SettingsScreen() {
   const { isAvailable: biometryAvailable, getBiometryName, authenticate } = useBiometry();
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [autoLockTimeout, setAutoLockTimeout] = useState('5 minutes');
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   useEffect(() => {
     loadBiometryPreference();
@@ -92,6 +95,39 @@ export function SettingsScreen() {
     );
   };
 
+  const handleLogout = async () => {
+    Alert.alert(
+      'Log Out',
+      'Are you sure you want to log out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: async () => {
+            setIsLoggingOut(true);
+            try {
+              const authService = new AuthService();
+              const result = await authService.logout();
+              
+              if (result.success) {
+                // Navigate to unlock screen (index will show unlock since PIN still exists)
+                router.replace('/');
+              } else {
+                Alert.alert('Error', result.error || 'Failed to log out. Please try again.');
+              }
+            } catch (error) {
+              console.error('Error during logout:', error);
+              Alert.alert('Error', 'Failed to log out. Please try again.');
+            } finally {
+              setIsLoggingOut(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const handleClearData = () => {
     Alert.alert(
       'Clear All Data',
@@ -137,9 +173,28 @@ export function SettingsScreen() {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => {
-            // TODO: Implement account deletion
-            Alert.alert('Account Deleted', 'Your account has been permanently deleted.');
+          onPress: async () => {
+            setIsDeletingAccount(true);
+            try {
+              // In a real app, we would get the user ID from the current user context
+              // For now, we'll use undefined to skip API call (since we don't have real backend)
+              const userId = undefined; // No userId means we'll just clear local data
+              
+              const authService = new AuthService();
+              const result = await authService.deleteAccount(userId);
+              
+              if (result.success) {
+                // Navigate to onboarding (index will show PIN setup since all data is cleared)
+                router.replace('/');
+              } else {
+                Alert.alert('Error', result.error || 'Failed to delete account. Please try again.');
+              }
+            } catch (error) {
+              console.error('Error deleting account:', error);
+              Alert.alert('Error', 'Failed to delete account. Please try again.');
+            } finally {
+              setIsDeletingAccount(false);
+            }
           },
         },
       ]
@@ -215,6 +270,14 @@ export function SettingsScreen() {
               onPress={handleAutoLockTimeout}
               icon={<Text className="text-xl">⏱️</Text>}
               value={autoLockTimeout}
+            />
+            <SettingsItem
+              label="Log Out"
+              onPress={handleLogout}
+              icon={<Text className="text-xl">🚪</Text>}
+              destructive
+              showChevron={false}
+              loading={isLoggingOut}
               isLast
             />
           </SettingsSection>
@@ -235,6 +298,7 @@ export function SettingsScreen() {
               icon={<Text className="text-xl">⚠️</Text>}
               destructive
               showChevron={false}
+              loading={isDeletingAccount}
               isLast
             />
           </SettingsSection>

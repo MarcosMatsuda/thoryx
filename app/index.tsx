@@ -1,40 +1,37 @@
-import { PinSetupScreen } from '@presentation/screens/pin-setup-screen';
-import { UnlockWalletScreen } from '@presentation/screens/unlock-wallet-screen';
-import { useState, useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { SplashScreen } from '@presentation/screens/splash-screen';
 import { PinRepositoryImpl } from '@data/repositories/pin.repository.impl';
 import { CheckPinExistsUseCase } from '@domain/use-cases/check-pin-exists.use-case';
+import { useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
 
 export default function IndexScreen() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasPinSaved, setHasPinSaved] = useState(false);
+  const router = useRouter();
+  const [splashDone, setSplashDone] = useState(false);
+  const [hasPinSaved, setHasPinSaved] = useState<boolean | null>(null);
 
   useEffect(() => {
-    checkPinExists();
+    const checkPin = async () => {
+      try {
+        const repository = new PinRepositoryImpl();
+        const useCase = new CheckPinExistsUseCase(repository);
+        const exists = await useCase.execute();
+        setHasPinSaved(exists);
+      } catch {
+        setHasPinSaved(false);
+      }
+    };
+
+    checkPin();
+
+    const timer = setTimeout(() => setSplashDone(true), 2000);
+    return () => clearTimeout(timer);
   }, []);
 
-  const checkPinExists = async () => {
-    try {
-      const repository = new PinRepositoryImpl();
-      const checkPinExistsUseCase = new CheckPinExistsUseCase(repository);
-      
-      const exists = await checkPinExistsUseCase.execute();
-      setHasPinSaved(exists);
-    } catch (error) {
-      console.error('Error checking PIN existence:', error);
-      setHasPinSaved(false);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (splashDone && hasPinSaved !== null) {
+      router.replace(hasPinSaved ? '/unlock' : '/pin-setup');
     }
-  };
+  }, [splashDone, hasPinSaved, router]);
 
-  if (isLoading) {
-    return (
-      <View className="flex-1 bg-background-primary items-center justify-center">
-        <ActivityIndicator size="large" color="#3B82F6" />
-      </View>
-    );
-  }
-
-  return hasPinSaved ? <UnlockWalletScreen /> : <PinSetupScreen />;
+  return <SplashScreen />;
 }
