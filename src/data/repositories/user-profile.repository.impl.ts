@@ -19,6 +19,7 @@ export class UserProfileRepositoryImpl implements UserProfileRepository {
       
       const profile: UserProfile = {
         name: profileInput.name,
+        photoUri: profileInput.photoUri || null, // Ensure photoUri is either string or null, not undefined
         createdAt: existingProfile?.createdAt || new Date(),
         updatedAt: new Date()
       };
@@ -41,6 +42,7 @@ export class UserProfileRepositoryImpl implements UserProfileRepository {
       const profile = JSON.parse(profileJson);
       return {
         ...profile,
+        photoUri: profile.photoUri || null, // Ensure photoUri is null if not present or undefined
         createdAt: new Date(profile.createdAt),
         updatedAt: new Date(profile.updatedAt)
       };

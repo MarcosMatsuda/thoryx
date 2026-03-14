@@ -47,7 +47,7 @@ export function PinSetupScreen() {
         
         if (result.success) {
           setShowConfirmation(false);
-          router.push('/home');
+          router.push('/(tabs)');
         }
       } catch (error) {
         console.error('Error saving PIN:', error);

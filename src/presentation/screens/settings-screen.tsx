@@ -4,23 +4,24 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { useUserProfile } from '@presentation/hooks/use-user-profile';
 import { useBiometry } from '@presentation/hooks/use-biometry';
+import { useProfilePhoto } from '@presentation/hooks/use-profile-photo';
 import { SettingsSection } from '@presentation/components/settings-section';
 import { SettingsItem } from '@presentation/components/settings-item';
 import { SecureStorageAdapter } from '@infrastructure/storage/secure-storage.adapter';
 import { AuthService } from '@infrastructure/services/auth.service';
-import * as Application from 'expo-application';
+import { APP_CONFIG } from '@shared/constants/app';
 
 const BIOMETRY_ENABLED_KEY = 'biometry_enabled';
 const storage = new SecureStorageAdapter('settings-storage', 'thoryx-mmkv-encryption-key-2026');
 
 export function SettingsScreen() {
   const router = useRouter();
-  const { profile } = useUserProfile();
+  const { profile, reloadProfile } = useUserProfile();
   const { isAvailable: biometryAvailable, getBiometryName, authenticate } = useBiometry();
+  const { showImagePickerOptions, isLoading: isPhotoLoading } = useProfilePhoto(reloadProfile);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [autoLockTimeout, setAutoLockTimeout] = useState('5 minutes');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   useEffect(() => {
     loadBiometryPreference();
@@ -112,7 +113,7 @@ export function SettingsScreen() {
               
               if (result.success) {
                 // Navigate to unlock screen (index will show unlock since PIN still exists)
-                router.replace('/');
+                router.replace('/unlock');
               } else {
                 Alert.alert('Error', result.error || 'Failed to log out. Please try again.');
               }
@@ -139,20 +140,14 @@ export function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              // Clear all MMKV storage instances
-              const creditCardStorage = new SecureStorageAdapter('credit-cards-storage', 'thoryx-mmkv-encryption-key-2026');
-              const documentStorage = new SecureStorageAdapter('documents-storage', 'thoryx-mmkv-encryption-key-2026');
-              const emergencyStorage = new SecureStorageAdapter('emergency-info-storage', 'thoryx-mmkv-encryption-key-2026');
-              const pinStorage = new SecureStorageAdapter('pin-storage', 'thoryx-mmkv-encryption-key-2026');
-              const profileStorage = new SecureStorageAdapter('user-profile-storage', 'thoryx-mmkv-encryption-key-2026');
-
-              await creditCardStorage.clear();
-              await documentStorage.clear();
-              await emergencyStorage.clear();
-              await pinStorage.clear();
-              await profileStorage.clear();
+              // Use AuthService to clear all data consistently
+              const authService = new AuthService();
+              await authService.clearAllData();
+              
+              // Also clear the local settings storage
               await storage.clear();
 
+              router.replace('/pin-setup');
               Alert.alert('Success', 'All data has been cleared. Please restart the app.');
             } catch (error) {
               console.error('Error clearing data:', error);
@@ -164,57 +159,14 @@ export function SettingsScreen() {
     );
   };
 
-  const handleDeleteAccount = () => {
-    Alert.alert(
-      'Delete Account',
-      'Are you sure? This will permanently delete your account and all associated data. This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            setIsDeletingAccount(true);
-            try {
-              // In a real app, we would get the user ID from the current user context
-              // For now, we'll use undefined to skip API call (since we don't have real backend)
-              const userId = undefined; // No userId means we'll just clear local data
-              
-              const authService = new AuthService();
-              const result = await authService.deleteAccount(userId);
-              
-              if (result.success) {
-                // Navigate to onboarding (index will show PIN setup since all data is cleared)
-                router.replace('/');
-              } else {
-                Alert.alert('Error', result.error || 'Failed to delete account. Please try again.');
-              }
-            } catch (error) {
-              console.error('Error deleting account:', error);
-              Alert.alert('Error', 'Failed to delete account. Please try again.');
-            } finally {
-              setIsDeletingAccount(false);
-            }
-          },
-        },
-      ]
-    );
-  };
+
 
   const handleTermsOfService = () => {
-    Alert.alert(
-      'Terms of Service',
-      'This feature will be implemented soon.',
-      [{ text: 'OK' }]
-    );
+    router.push('/terms-of-service');
   };
 
   const handlePrivacyPolicy = () => {
-    Alert.alert(
-      'Privacy Policy',
-      'This feature will be implemented soon.',
-      [{ text: 'OK' }]
-    );
+    router.push('/privacy-policy');
   };
 
   return (
@@ -232,10 +184,37 @@ export function SettingsScreen() {
               className="p-4 active:bg-surface-hover"
             >
               <View className="flex-row items-center">
-                <View className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mr-4">
-                  <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-                    <Text className="text-3xl md:text-4xl">👤</Text>
-                  </View>
+                <View className="items-center mr-4">
+                  <Pressable
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      showImagePickerOptions();
+                    }}
+                    disabled={isPhotoLoading}
+                    className="relative"
+                  >
+                    <View className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-primary-main/30">
+                      {profile?.photoUri ? (
+                        <Image
+                          source={{ uri: profile.photoUri }}
+                          className="w-full h-full"
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View className="w-full h-full bg-primary-main/20 items-center justify-center">
+                          <Text className="text-3xl md:text-4xl">👤</Text>
+                        </View>
+                      )}
+                      {isPhotoLoading && (
+                        <View className="absolute inset-0 bg-black/50 items-center justify-center">
+                          <Text className="text-white text-sm">Loading...</Text>
+                        </View>
+                      )}
+                    </View>
+                  </Pressable>
+                  <Text className="text-xs text-center mt-1 text-primary-main font-medium">
+                    {profile?.photoUri ? 'Alterar imagem' : 'Escolher imagem'}
+                  </Text>
                 </View>
                 <View className="flex-1">
                   <Text className="text-lg md:text-xl font-bold text-text-primary mb-1">
@@ -270,14 +249,28 @@ export function SettingsScreen() {
               onPress={handleAutoLockTimeout}
               icon={<Text className="text-xl">⏱️</Text>}
               value={autoLockTimeout}
+              isLast
+            />
+          </SettingsSection>
+
+          {/* About Section */}
+          <SettingsSection title="ABOUT">
+            <SettingsItem
+              label="Version"
+              value={APP_CONFIG.version}
+              showChevron={false}
+              icon={<Text className="text-xl">ℹ️</Text>}
+              isFirst
             />
             <SettingsItem
-              label="Log Out"
-              onPress={handleLogout}
-              icon={<Text className="text-xl">🚪</Text>}
-              destructive
-              showChevron={false}
-              loading={isLoggingOut}
+              label="Terms of Service"
+              onPress={handleTermsOfService}
+              icon={<Text className="text-xl">📄</Text>}
+            />
+            <SettingsItem
+              label="Privacy Policy"
+              onPress={handlePrivacyPolicy}
+              icon={<Text className="text-xl">🔒</Text>}
               isLast
             />
           </SettingsSection>
@@ -293,34 +286,12 @@ export function SettingsScreen() {
               isFirst
             />
             <SettingsItem
-              label="Delete Account"
-              onPress={handleDeleteAccount}
-              icon={<Text className="text-xl">⚠️</Text>}
+              label="Log Out"
+              onPress={handleLogout}
+              icon={<Text className="text-xl">🚪</Text>}
               destructive
               showChevron={false}
-              loading={isDeletingAccount}
-              isLast
-            />
-          </SettingsSection>
-
-          {/* About Section */}
-          <SettingsSection title="ABOUT">
-            <SettingsItem
-              label="Version"
-              value={Application.nativeApplicationVersion || '1.0.0'}
-              showChevron={false}
-              icon={<Text className="text-xl">ℹ️</Text>}
-              isFirst
-            />
-            <SettingsItem
-              label="Terms of Service"
-              onPress={handleTermsOfService}
-              icon={<Text className="text-xl">📄</Text>}
-            />
-            <SettingsItem
-              label="Privacy Policy"
-              onPress={handlePrivacyPolicy}
-              icon={<Text className="text-xl">🔒</Text>}
+              loading={isLoggingOut}
               isLast
             />
           </SettingsSection>
