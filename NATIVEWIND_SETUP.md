@@ -5,6 +5,7 @@ NativeWind brings Tailwind CSS to React Native, providing responsive design capa
 ## 📦 Installation
 
 Already installed in this project:
+
 ```bash
 npx expo install nativewind tailwindcss
 ```
@@ -15,11 +16,8 @@ npx expo install nativewind tailwindcss
 
 ```javascript
 module.exports = {
-  content: [
-    './app/**/*.{js,jsx,ts,tsx}',
-    './src/**/*.{js,jsx,ts,tsx}',
-  ],
-  presets: [require('nativewind/preset')],
+  content: ["./app/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
+  presets: [require("nativewind/preset")],
   theme: {
     extend: {
       colors: {
@@ -33,12 +31,12 @@ module.exports = {
 ### 2. Metro Config (`metro.config.js`)
 
 ```javascript
-const { getDefaultConfig } = require('expo/metro-config');
-const { withNativeWind } = require('nativewind/metro');
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
 
 const config = getDefaultConfig(__dirname);
 
-module.exports = withNativeWind(config, { input: './global.css' });
+module.exports = withNativeWind(config, { input: "./global.css" });
 ```
 
 ### 3. Global CSS (`global.css`)
@@ -52,7 +50,7 @@ module.exports = withNativeWind(config, { input: './global.css' });
 ### 4. Import in Root Layout (`app/_layout.tsx`)
 
 ```typescript
-import '../global.css';
+import "../global.css";
 ```
 
 ### 5. TypeScript Types (`nativewind-env.d.ts`)
@@ -67,9 +65,7 @@ import '../global.css';
 
 ```tsx
 <View className="flex-1 bg-background-primary px-6 py-4">
-  <Text className="text-2xl font-bold text-text-primary">
-    Hello World
-  </Text>
+  <Text className="text-2xl font-bold text-text-primary">Hello World</Text>
 </View>
 ```
 
@@ -94,7 +90,9 @@ Use `md:` prefix for tablet/desktop (>= 768px):
 ### Conditional Classes
 
 ```tsx
-<View className={`w-12 h-12 rounded-full ${filled ? 'bg-primary-main' : 'bg-transparent'}`} />
+<View
+  className={`w-12 h-12 rounded-full ${filled ? "bg-primary-main" : "bg-transparent"}`}
+/>
 ```
 
 ## 📱 Responsive Breakpoints
@@ -108,20 +106,20 @@ All colors from `DesignTokens` are available in Tailwind:
 
 ```tsx
 // Background
-className="bg-background-primary"
-className="bg-background-secondary"
+className = "bg-background-primary";
+className = "bg-background-secondary";
 
 // Text
-className="text-text-primary"
-className="text-text-secondary"
+className = "text-text-primary";
+className = "text-text-secondary";
 
 // Primary
-className="bg-primary-main"
-className="text-primary-light"
+className = "bg-primary-main";
+className = "text-primary-light";
 
 // Status
-className="text-status-success"
-className="bg-status-error"
+className = "text-status-success";
+className = "bg-status-error";
 ```
 
 ## 🚀 Benefits
@@ -135,19 +133,21 @@ className="bg-status-error"
 ## 📝 Migration from StyleSheet
 
 **Before (StyleSheet):**
+
 ```tsx
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A1628',
+    backgroundColor: "#0A1628",
     paddingHorizontal: 24,
   },
 });
 
-<View style={styles.container} />
+<View style={styles.container} />;
 ```
 
 **After (NativeWind):**
+
 ```tsx
 <View className="flex-1 bg-background-primary px-6" />
 ```

@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
-import { BiometryService } from '@infrastructure/biometry/biometry.service';
-import { AuthenticateWithBiometryUseCase } from '@domain/use-cases/authenticate-with-biometry.use-case';
+import { useState, useEffect } from "react";
+import { BiometryService } from "@infrastructure/biometry/biometry.service";
+import { AuthenticateWithBiometryUseCase } from "@domain/use-cases/authenticate-with-biometry.use-case";
 
 export function useBiometry() {
   const [isAvailable, setIsAvailable] = useState(false);
-  const [biometryType, setBiometryType] = useState<'fingerprint' | 'facial' | 'iris' | 'none'>('none');
+  const [biometryType, setBiometryType] = useState<
+    "fingerprint" | "facial" | "iris" | "none"
+  >("none");
   const [isChecking, setIsChecking] = useState(true);
 
   const authenticateUseCase = new AuthenticateWithBiometryUseCase();
@@ -18,13 +20,13 @@ export function useBiometry() {
       setIsChecking(true);
       const available = await BiometryService.isAvailable();
       setIsAvailable(available);
-      
+
       if (available) {
         const type = await BiometryService.getBiometryType();
         setBiometryType(type);
       }
     } catch (error) {
-      console.error('Error checking biometry:', error);
+      console.error("Error checking biometry:", error);
       setIsAvailable(false);
     } finally {
       setIsChecking(false);
@@ -45,6 +47,6 @@ export function useBiometry() {
     isChecking,
     authenticate,
     getBiometryName,
-    checkAvailability
+    checkAvailability,
   };
 }

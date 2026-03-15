@@ -10,15 +10,15 @@ export class UserEntity implements User {
     public readonly id: string,
     public readonly name: string,
     public readonly email: string,
-    public readonly createdAt: Date
+    public readonly createdAt: Date,
   ) {}
 
-  static create(props: Omit<User, 'id' | 'createdAt'>): UserEntity {
+  static create(props: Omit<User, "id" | "createdAt">): UserEntity {
     return new UserEntity(
       crypto.randomUUID(),
       props.name,
       props.email,
-      new Date()
+      new Date(),
     );
   }
 

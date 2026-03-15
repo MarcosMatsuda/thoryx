@@ -1,9 +1,9 @@
-import * as LocalAuthentication from 'expo-local-authentication';
+import * as LocalAuthentication from "expo-local-authentication";
 
 export interface BiometryResult {
   success: boolean;
   error?: string;
-  biometryType?: 'fingerprint' | 'facial' | 'iris' | 'none';
+  biometryType?: "fingerprint" | "facial" | "iris" | "none";
 }
 
 export class BiometryService {
@@ -18,7 +18,7 @@ export class BiometryService {
       const enrolled = await LocalAuthentication.isEnrolledAsync();
       return enrolled;
     } catch (error) {
-      console.error('Error checking biometry availability:', error);
+      console.error("Error checking biometry availability:", error);
       return false;
     }
   }
@@ -26,24 +26,31 @@ export class BiometryService {
   /**
    * Get the type of biometry available on device
    */
-  static async getBiometryType(): Promise<'fingerprint' | 'facial' | 'iris' | 'none'> {
+  static async getBiometryType(): Promise<
+    "fingerprint" | "facial" | "iris" | "none"
+  > {
     try {
-      const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
-      
-      if (types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
-        return 'facial';
+      const types =
+        await LocalAuthentication.supportedAuthenticationTypesAsync();
+
+      if (
+        types.includes(
+          LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION,
+        )
+      ) {
+        return "facial";
       }
       if (types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
-        return 'fingerprint';
+        return "fingerprint";
       }
       if (types.includes(LocalAuthentication.AuthenticationType.IRIS)) {
-        return 'iris';
+        return "iris";
       }
-      
-      return 'none';
+
+      return "none";
     } catch (error) {
-      console.error('Error getting biometry type:', error);
-      return 'none';
+      console.error("Error getting biometry type:", error);
+      return "none";
     }
   }
 
@@ -53,40 +60,40 @@ export class BiometryService {
   static async authenticate(promptMessage?: string): Promise<BiometryResult> {
     try {
       const isAvailable = await this.isAvailable();
-      
+
       if (!isAvailable) {
         return {
           success: false,
-          error: 'Biometric authentication is not available on this device'
+          error: "Biometric authentication is not available on this device",
         };
       }
 
       const biometryType = await this.getBiometryType();
-      
+
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: promptMessage || 'Authenticate to access your wallet',
-        fallbackLabel: 'Use PIN',
+        promptMessage: promptMessage || "Authenticate to access your wallet",
+        fallbackLabel: "Use PIN",
         disableDeviceFallback: true, // Disable device password fallback
-        cancelLabel: 'Cancel'
+        cancelLabel: "Cancel",
       });
 
       if (result.success) {
         return {
           success: true,
-          biometryType
+          biometryType,
         };
       } else {
         return {
           success: false,
-          error: result.error || 'Authentication failed',
-          biometryType
+          error: result.error || "Authentication failed",
+          biometryType,
         };
       }
     } catch (error) {
-      console.error('Biometry authentication error:', error);
+      console.error("Biometry authentication error:", error);
       return {
         success: false,
-        error: 'An unexpected error occurred'
+        error: "An unexpected error occurred",
       };
     }
   }
@@ -94,16 +101,18 @@ export class BiometryService {
   /**
    * Get user-friendly name for biometry type
    */
-  static getBiometryName(type: 'fingerprint' | 'facial' | 'iris' | 'none'): string {
+  static getBiometryName(
+    type: "fingerprint" | "facial" | "iris" | "none",
+  ): string {
     switch (type) {
-      case 'fingerprint':
-        return 'Touch ID / Fingerprint';
-      case 'facial':
-        return 'Face ID';
-      case 'iris':
-        return 'Iris Recognition';
+      case "fingerprint":
+        return "Touch ID / Fingerprint";
+      case "facial":
+        return "Face ID";
+      case "iris":
+        return "Iris Recognition";
       default:
-        return 'Biometric Authentication';
+        return "Biometric Authentication";
     }
   }
 }

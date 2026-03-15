@@ -1,7 +1,7 @@
-import { EmergencyDetailsScreen } from '@presentation/screens/emergency-details-screen';
-import { EmergencySetupScreen } from '@presentation/screens/emergency-setup-screen';
-import { useEmergencyInfo } from '@presentation/hooks/use-emergency-info';
-import { ActivityIndicator, View } from 'react-native';
+import { EmergencyDetailsScreen } from "@presentation/screens/emergency-details-screen";
+import { EmergencySetupScreen } from "@presentation/screens/emergency-setup-screen";
+import { useEmergencyInfo } from "@presentation/hooks/use-emergency-info";
+import { ActivityIndicator, View } from "react-native";
 
 export default function EmergencyRoute() {
   const { emergencyInfo, isLoading } = useEmergencyInfo();

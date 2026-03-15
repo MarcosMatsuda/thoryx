@@ -18,24 +18,27 @@ src/
 ### 1. Domain Layer
 
 **Responsibilities:**
+
 - Define domain entities
 - Define repository interfaces
 - Implement use cases
 - Contain pure business rules
 
 **Restrictions:**
+
 - ❌ NEVER import from `data`, `infrastructure`, or `presentation`
 - ❌ NEVER depend on external libraries (except pure TypeScript)
 - ✅ Can only import from `@shared/types` and `@shared/utils` (pure functions)
 
 **Correct Example:**
+
 ```typescript
 // src/domain/entities/User.ts
 export class User {
   constructor(
     public readonly id: string,
     public readonly name: string,
-    public readonly email: string
+    public readonly email: string,
   ) {}
 }
 
@@ -47,7 +50,7 @@ export interface IUserRepository {
 // src/domain/use-cases/GetUserByIdUseCase.ts
 export class GetUserByIdUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
-  
+
   async execute(userId: string): Promise<User | null> {
     return await this.userRepository.findById(userId);
   }
@@ -55,37 +58,41 @@ export class GetUserByIdUseCase {
 ```
 
 **Incorrect Example:**
+
 ```typescript
 // ❌ WRONG: Domain importing from infrastructure
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 // ❌ WRONG: Domain importing from data
-import { UserRepository } from '@data/repositories/UserRepository';
+import { UserRepository } from "@data/repositories/UserRepository";
 ```
 
 ### 2. Data Layer
 
 **Responsibilities:**
+
 - Implement repository interfaces defined in domain
 - Define DTOs and data models
 - Manage data sources (local/remote)
 
 **Restrictions:**
+
 - ✅ MUST implement interfaces from `@domain/repositories`
 - ✅ Can import from `@domain` (entities and interfaces)
 - ✅ Can import from `@infrastructure` (adapters)
 - ❌ NEVER import from `@presentation`
 
 **Correct Example:**
+
 ```typescript
 // src/data/repositories/UserRepository.ts
-import { User } from '@domain/entities/User';
-import { IUserRepository } from '@domain/repositories/IUserRepository';
-import { ILocalDataSource } from '@data/sources/ILocalDataSource';
+import { User } from "@domain/entities/User";
+import { IUserRepository } from "@domain/repositories/IUserRepository";
+import { ILocalDataSource } from "@data/sources/ILocalDataSource";
 
 export class UserRepository implements IUserRepository {
   constructor(private readonly dataSource: ILocalDataSource<UserDTO>) {}
-  
+
   async findById(id: string): Promise<User | null> {
     const dto = await this.dataSource.get(id);
     return dto ? UserModel.toDomain(dto) : null;
@@ -96,21 +103,24 @@ export class UserRepository implements IUserRepository {
 ### 3. Infrastructure Layer
 
 **Responsibilities:**
+
 - Isolate external libraries (Expo, React Native, etc)
 - Provide adapters for data sources
 - Manage third-party APIs
 
 **Restrictions:**
+
 - ✅ Can import external libraries (Expo, React Native)
 - ✅ Can implement interfaces from `@data/sources`
 - ❌ NEVER import from `@domain` (except types if necessary)
 - ❌ NEVER import from `@presentation`
 
 **Correct Example:**
+
 ```typescript
 // src/infrastructure/storage/SecureStorageAdapter.ts
-import * as SecureStore from 'expo-secure-store';
-import { ILocalDataSource } from '@data/sources/ILocalDataSource';
+import * as SecureStore from "expo-secure-store";
+import { ILocalDataSource } from "@data/sources/ILocalDataSource";
 
 export class SecureStorageAdapter<T> implements ILocalDataSource<T> {
   async get(key: string): Promise<T | null> {
@@ -123,6 +133,7 @@ export class SecureStorageAdapter<T> implements ILocalDataSource<T> {
 ### 4. Presentation Layer
 
 **Responsibilities:**
+
 - UI Components
 - Screens (containers)
 - Custom hooks
@@ -130,6 +141,7 @@ export class SecureStorageAdapter<T> implements ILocalDataSource<T> {
 - Theme and styles
 
 **Restrictions:**
+
 - ✅ Can import from `@domain/use-cases`
 - ✅ Can import React Native, Expo Router
 - ✅ Can import from `@shared`
@@ -138,6 +150,7 @@ export class SecureStorageAdapter<T> implements ILocalDataSource<T> {
 - ❌ NEVER contain business logic
 
 **Correct Example:**
+
 ```typescript
 // src/presentation/screens/UserProfileScreen.tsx
 import { useState, useEffect } from 'react';
@@ -145,21 +158,22 @@ import { GetUserByIdUseCase } from '@domain/use-cases/GetUserByIdUseCase';
 
 export function UserProfileScreen({ userId }: Props) {
   const [user, setUser] = useState(null);
-  
+
   useEffect(() => {
     // Manual dependency injection
     const useCase = new GetUserByIdUseCase(userRepository);
     useCase.execute(userId).then(setUser);
   }, [userId]);
-  
+
   return <View>...</View>;
 }
 ```
 
 **Incorrect Example:**
+
 ```typescript
 // ❌ WRONG: Presentation accessing repository directly
-import { UserRepository } from '@data/repositories/UserRepository';
+import { UserRepository } from "@data/repositories/UserRepository";
 
 // ❌ WRONG: Business logic in presentation
 export function UserProfileScreen() {
@@ -173,11 +187,13 @@ export function UserProfileScreen() {
 ### 5. Shared Layer
 
 **Responsibilities:**
+
 - Shared types
 - Pure utilities (no side effects)
 - Application constants
 
 **Restrictions:**
+
 - ✅ Can be imported by any layer
 - ❌ NEVER import from other layers (except types)
 - ❌ NEVER contain business logic
@@ -188,6 +204,7 @@ export function UserProfileScreen() {
 This project uses **Manual Dependency Injection** (via constructors/parameters).
 
 **Example:**
+
 ```typescript
 // Creating dependencies (usually in a setup file)
 const localDataSource = new SecureStorageAdapter<UserDTO>();
@@ -229,18 +246,21 @@ External API/Storage
 ## Common Violations Examples
 
 ### ❌ Violation 1: Domain importing Infrastructure
+
 ```typescript
 // src/domain/use-cases/SaveUserUseCase.ts
-import * as SecureStore from 'expo-secure-store'; // ❌ WRONG!
+import * as SecureStore from "expo-secure-store"; // ❌ WRONG!
 ```
 
 ### ❌ Violation 2: Presentation accessing Repository
+
 ```typescript
 // src/presentation/screens/HomeScreen.tsx
-import { UserRepository } from '@data/repositories/UserRepository'; // ❌ WRONG!
+import { UserRepository } from "@data/repositories/UserRepository"; // ❌ WRONG!
 ```
 
 ### ❌ Violation 3: Business logic in Presentation
+
 ```typescript
 // src/presentation/screens/LoginScreen.tsx
 const validatePassword = (password: string) => {
@@ -250,6 +270,7 @@ const validatePassword = (password: string) => {
 ```
 
 ### ✅ Correction: Use Cases in Domain
+
 ```typescript
 // src/domain/use-cases/ValidatePasswordUseCase.ts
 export class ValidatePasswordUseCase {
@@ -262,6 +283,7 @@ export class ValidatePasswordUseCase {
 ## When Generating Code
 
 When generating code for this project:
+
 - Always respect layer boundaries
 - Never mix infrastructure inside domain
 - Prefer manual dependency injection

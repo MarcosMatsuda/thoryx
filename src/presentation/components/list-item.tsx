@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable } from "react-native";
 
 interface ListItemProps {
   icon: string;
@@ -20,7 +20,7 @@ export function ListItem({
       className="flex-row items-center bg-background-secondary rounded-xl p-4 mb-3 active:bg-background-tertiary"
       onPress={onPress}
     >
-      <View 
+      <View
         className="w-12 h-12 rounded-xl items-center justify-center mr-4"
         style={{ backgroundColor: iconBg }}
       >
@@ -31,9 +31,7 @@ export function ListItem({
         <Text className="text-base font-semibold text-text-primary mb-1">
           {title}
         </Text>
-        <Text className="text-sm text-text-secondary">
-          {subtitle}
-        </Text>
+        <Text className="text-sm text-text-secondary">{subtitle}</Text>
       </View>
 
       <View className="ml-2">

@@ -100,7 +100,8 @@ export function TermsOfServiceScreen() {
               5. No Warranty
             </Text>
             <Text className="text-base md:text-lg text-text-secondary leading-relaxed">
-              {`Thoryx is provided "as is" without warranty of any kind. We do not guarantee uninterrupted or error-free operation.`}
+              Thoryx is provided &quot;as is&quot; without warranty of any kind.
+              We do not guarantee uninterrupted or error-free operation.
             </Text>
           </View>
 

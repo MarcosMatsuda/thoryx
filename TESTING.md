@@ -268,4 +268,3 @@
 2. Bug corrigido
 3. Teste realizado
 4. Requisito alterado
-# Updated

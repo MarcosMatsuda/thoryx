@@ -1,17 +1,17 @@
-import { User } from '@domain/entities/User';
-import { IUserRepository } from '@domain/repositories/IUserRepository';
-import { ILocalDataSource } from '@data/sources/ILocalDataSource';
-import { UserDTO, UserModel } from '@data/models/UserModel';
+import { User } from "@domain/entities/User";
+import { IUserRepository } from "@domain/repositories/IUserRepository";
+import { ILocalDataSource } from "@data/sources/ILocalDataSource";
+import { UserDTO, UserModel } from "@data/models/UserModel";
 
 export class UserRepository implements IUserRepository {
-  private readonly STORAGE_KEY = 'users';
+  private readonly STORAGE_KEY = "users";
 
   constructor(private readonly localDataSource: ILocalDataSource<UserDTO>) {}
 
   async findById(id: string): Promise<User | null> {
     const users = await this.localDataSource.getAll();
-    const userDTO = users.find(u => u.id === id);
-    
+    const userDTO = users.find((u) => u.id === id);
+
     if (!userDTO) {
       return null;
     }
@@ -21,8 +21,8 @@ export class UserRepository implements IUserRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     const users = await this.localDataSource.getAll();
-    const userDTO = users.find(u => u.email === email);
-    
+    const userDTO = users.find((u) => u.email === email);
+
     if (!userDTO) {
       return null;
     }
@@ -41,6 +41,6 @@ export class UserRepository implements IUserRepository {
 
   async findAll(): Promise<User[]> {
     const usersDTO = await this.localDataSource.getAll();
-    return usersDTO.map(dto => UserModel.toDomain(dto));
+    return usersDTO.map((dto) => UserModel.toDomain(dto));
   }
 }

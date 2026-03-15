@@ -1,5 +1,5 @@
-import { Document } from '@domain/entities/document.entity';
-import { DocumentRepository } from '@domain/repositories/document.repository';
+import { Document } from "@domain/entities/document.entity";
+import { DocumentRepository } from "@domain/repositories/document.repository";
 
 export class GetAllDocumentsUseCase {
   constructor(private documentRepository: DocumentRepository) {}
@@ -8,7 +8,7 @@ export class GetAllDocumentsUseCase {
     try {
       return await this.documentRepository.findAll();
     } catch (error) {
-      console.error('Error getting documents:', error);
+      console.error("Error getting documents:", error);
       return [];
     }
   }

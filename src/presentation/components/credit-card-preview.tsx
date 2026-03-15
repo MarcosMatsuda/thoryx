@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text } from "react-native";
 
 interface CreditCardPreviewProps {
   cardNumber?: string;
@@ -25,7 +25,9 @@ export function CreditCardPreview({
 
       <View className="flex-row justify-between items-end">
         <View>
-          <Text className="text-xs text-text-primary/70 mb-1">Cardholder Name</Text>
+          <Text className="text-xs text-text-primary/70 mb-1">
+            Cardholder Name
+          </Text>
           <Text className="text-base font-bold text-text-primary">
             {cardholderName}
           </Text>

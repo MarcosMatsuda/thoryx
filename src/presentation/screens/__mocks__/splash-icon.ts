@@ -1,1 +1,1 @@
-export default 'test-image-path';
+export default "test-image-path";

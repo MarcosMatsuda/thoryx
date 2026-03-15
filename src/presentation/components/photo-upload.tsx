@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image } from 'react-native';
+import { View, Text, Pressable, Image } from "react-native";
 
 interface PhotoUploadProps {
   title: string;
@@ -7,16 +7,16 @@ interface PhotoUploadProps {
   onPress?: () => void;
 }
 
-export function PhotoUpload({ 
-  title, 
+export function PhotoUpload({
+  title,
   subtitle = "Tap to take a photo",
   imageUri,
-  onPress 
+  onPress,
 }: PhotoUploadProps) {
   return (
     <Pressable
       className={`bg-background-secondary rounded-2xl mb-4 overflow-hidden ${
-        imageUri ? 'p-0' : 'p-8 border-2 border-dashed border-ui-border'
+        imageUri ? "p-0" : "p-8 border-2 border-dashed border-ui-border"
       } items-center justify-center active:opacity-80`}
       onPress={onPress}
     >

@@ -12,15 +12,18 @@ This document tracks the integration of designs from Stitch into the Thoryx proj
 **Route**: `/unlock`
 
 **Components Created**:
+
 - `src/presentation/screens/unlock-wallet-screen.tsx` - Main screen
 - `src/presentation/components/pin-dot.tsx` - PIN indicator dot
 - `src/presentation/components/numeric-key.tsx` - Single keypad key
 - `src/presentation/components/numeric-keypad.tsx` - Full numeric keypad
 
 **Design Tokens Created**:
+
 - `src/presentation/theme/design-tokens.ts` - Complete design system
 
 **Features**:
+
 - 6-digit PIN entry
 - Visual feedback with animated dots
 - Numeric keypad (0-9 + backspace)
@@ -31,6 +34,7 @@ This document tracks the integration of designs from Stitch into the Thoryx proj
 - Primary blue (#135BEC)
 
 **Implementation Notes**:
+
 - UI only (no authentication logic)
 - Follows Clean Architecture (Presentation layer)
 - Uses Design Tokens for consistency
@@ -41,6 +45,7 @@ This document tracks the integration of designs from Stitch into the Thoryx proj
 ### Extracted from Stitch
 
 **Theme**:
+
 - Color Mode: Dark
 - Font: Inter
 - Roundness: 8px
@@ -48,6 +53,7 @@ This document tracks the integration of designs from Stitch into the Thoryx proj
 - Saturation: 3
 
 **Tokens Created**:
+
 - Colors (primary, background, text, status, ui)
 - Spacing (xs to xxxl)
 - Border Radius (sm to full)
@@ -71,6 +77,7 @@ From project "thorix app":
 ### For Each New Screen:
 
 1. **Fetch from Stitch**
+
    ```typescript
    CallMcpTool: get_screen
    - server: user-stitch
@@ -100,7 +107,7 @@ From project "thorix app":
 ## 🛠️ Design Tokens Usage
 
 ```typescript
-import { DesignTokens } from '@presentation/theme/design-tokens';
+import { DesignTokens } from "@presentation/theme/design-tokens";
 
 // Example usage
 const styles = StyleSheet.create({
@@ -128,6 +135,7 @@ const styles = StyleSheet.create({
 ### Future Components (from Design System)
 
 Based on Stitch screens, we'll need:
+
 - Card components
 - List items
 - Action buttons

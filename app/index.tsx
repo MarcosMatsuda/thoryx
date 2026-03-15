@@ -1,8 +1,8 @@
-import { SplashScreen } from '@presentation/screens/splash-screen';
-import { PinRepositoryImpl } from '@data/repositories/pin.repository.impl';
-import { CheckPinExistsUseCase } from '@domain/use-cases/check-pin-exists.use-case';
-import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { SplashScreen } from "@presentation/screens/splash-screen";
+import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
+import { CheckPinExistsUseCase } from "@domain/use-cases/check-pin-exists.use-case";
+import { useRouter } from "expo-router";
+import { useState, useEffect } from "react";
 
 export default function IndexScreen() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function IndexScreen() {
 
   useEffect(() => {
     if (splashDone && hasPinSaved !== null) {
-      router.replace(hasPinSaved ? '/unlock' : '/pin-setup');
+      router.replace(hasPinSaved ? "/unlock" : "/pin-setup");
     }
   }, [splashDone, hasPinSaved, router]);
 

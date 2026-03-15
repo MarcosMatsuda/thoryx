@@ -1,4 +1,7 @@
-import { CreditCard, CreditCardInput } from '@domain/entities/credit-card.entity';
+import {
+  CreditCard,
+  CreditCardInput,
+} from "@domain/entities/credit-card.entity";
 
 export interface CreditCardRepository {
   save(card: CreditCardInput): Promise<CreditCard>;

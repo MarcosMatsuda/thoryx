@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable } from "react-native";
 
 interface ContactCardProps {
   fullName: string;
@@ -38,7 +38,7 @@ export function ContactCard({
           </Text>
         </View>
         {onRemove && (
-          <Pressable 
+          <Pressable
             className="w-8 h-8 items-center justify-center"
             onPress={onRemove}
           >
@@ -64,7 +64,7 @@ export function ContactCard({
           </Text>
           <View className="flex-row items-center justify-between">
             <Text className="text-sm text-text-primary">{phoneNumber}</Text>
-            <Pressable 
+            <Pressable
               className="w-8 h-8 bg-status-success/20 rounded-full items-center justify-center"
               onPress={onCall}
             >

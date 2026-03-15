@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Document } from '@domain/entities/document.entity';
-import { DocumentRepositoryImpl } from '@data/repositories/document.repository.impl';
-import { GetAllDocumentsUseCase } from '@domain/use-cases/get-all-documents.use-case';
+import { useState, useEffect } from "react";
+import { Document } from "@domain/entities/document.entity";
+import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
+import { GetAllDocumentsUseCase } from "@domain/use-cases/get-all-documents.use-case";
 
 export function useDocuments() {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -15,7 +15,7 @@ export function useDocuments() {
       const loadedDocuments = await getAllDocumentsUseCase.execute();
       setDocuments(loadedDocuments);
     } catch (error) {
-      console.error('Error loading documents:', error);
+      console.error("Error loading documents:", error);
     } finally {
       setIsLoading(false);
     }
@@ -28,6 +28,6 @@ export function useDocuments() {
   return {
     documents,
     isLoading,
-    reload: loadDocuments
+    reload: loadDocuments,
   };
 }

@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
-import { ToggleOption } from './toggle-option';
+import { View, Text } from "react-native";
+import { ToggleOption } from "./toggle-option";
 
 interface AlertBannerProps {
   title: string;
@@ -33,7 +33,7 @@ export function AlertBanner({
           </Text>
         </View>
       </View>
-      
+
       {toggleLabel && toggleSubtitle && (
         <View className="mt-2">
           <View className="flex-row items-center justify-between">
@@ -43,12 +43,12 @@ export function AlertBanner({
             <View className="ml-4">
               <View
                 className={`w-12 h-7 rounded-full justify-center ${
-                  toggleEnabled ? 'bg-primary-main' : 'bg-ui-border'
+                  toggleEnabled ? "bg-primary-main" : "bg-ui-border"
                 }`}
               >
                 <View
                   className={`w-5 h-5 rounded-full bg-text-primary shadow-sm ${
-                    toggleEnabled ? 'ml-6' : 'ml-1'
+                    toggleEnabled ? "ml-6" : "ml-1"
                   }`}
                 />
               </View>

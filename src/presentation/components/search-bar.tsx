@@ -1,4 +1,4 @@
-import { View, TextInput } from 'react-native';
+import { View, TextInput } from "react-native";
 
 interface SearchBarProps {
   placeholder?: string;
@@ -6,10 +6,10 @@ interface SearchBarProps {
   onChangeText?: (text: string) => void;
 }
 
-export function SearchBar({ 
+export function SearchBar({
   placeholder = "Search documents, IDs, or cards",
   value,
-  onChangeText 
+  onChangeText,
 }: SearchBarProps) {
   return (
     <View className="flex-row items-center bg-background-secondary rounded-xl px-4 py-3">

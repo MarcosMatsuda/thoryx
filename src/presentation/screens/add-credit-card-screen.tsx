@@ -3,7 +3,14 @@ import { CheckboxOption } from "@presentation/components/checkbox-option";
 import { CreditCardCarousel } from "@presentation/components/credit-card-carousel";
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
-import { Pressable, ScrollView, Text, TextInput, View, Alert } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+  Alert,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CreditCardRepositoryImpl } from "@data/repositories/credit-card.repository.impl";
 import { SaveCreditCardUseCase } from "@domain/use-cases/save-credit-card.use-case";
@@ -46,13 +53,13 @@ export function AddCreditCardScreen() {
     setOriginalCardData({
       cardNumber: maskedNumber,
       cardholderName: card.cardholderName,
-      expiryDate: card.expiryDate
+      expiryDate: card.expiryDate,
     });
   };
 
   const hasChanges = () => {
     if (!isEditMode || !originalCardData) return true;
-    
+
     return (
       cardNumber !== originalCardData.cardNumber ||
       cardholderName !== originalCardData.cardholderName ||
@@ -65,8 +72,10 @@ export function AddCreditCardScreen() {
     cardholderName?: string;
     expiryDate?: string;
   }) => {
-    if (data.cardNumber) setCardNumber(InputMasks.creditCardNumber(data.cardNumber));
-    if (data.cardholderName) setCardholderName(InputMasks.cardholderName(data.cardholderName));
+    if (data.cardNumber)
+      setCardNumber(InputMasks.creditCardNumber(data.cardNumber));
+    if (data.cardholderName)
+      setCardholderName(InputMasks.cardholderName(data.cardholderName));
     if (data.expiryDate) setExpiryDate(InputMasks.expiryDate(data.expiryDate));
   };
 
@@ -84,69 +93,61 @@ export function AddCreditCardScreen() {
 
   const handleSaveCard = async () => {
     if (!cardholderName || !expiryDate) {
-      Alert.alert('Error', 'Please fill in all required fields');
+      Alert.alert("Error", "Please fill in all required fields");
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
       const repository = new CreditCardRepositoryImpl();
 
       if (isEditMode && editingCardId) {
         const updateCardUseCase = new UpdateCreditCardUseCase(repository);
-        
+
         const result = await updateCardUseCase.execute({
           cardId: editingCardId,
           cardholderName,
-          expiryDate: InputMasks.removeExpiryDateMask(expiryDate)
+          expiryDate: InputMasks.removeExpiryDateMask(expiryDate),
         });
 
         if (result.success) {
-          Alert.alert(
-            'Success',
-            'Credit card updated successfully',
-            [
-              {
-                text: 'OK',
-                onPress: () => router.push('/(tabs)')
-              }
-            ]
-          );
+          Alert.alert("Success", "Credit card updated successfully", [
+            {
+              text: "OK",
+              onPress: () => router.push("/(tabs)"),
+            },
+          ]);
         } else {
-          Alert.alert('Error', result.message);
+          Alert.alert("Error", result.message);
         }
       } else {
         if (!cardNumber) {
-          Alert.alert('Error', 'Please fill in all fields');
+          Alert.alert("Error", "Please fill in all fields");
           return;
         }
 
         const saveCardUseCase = new SaveCreditCardUseCase(repository);
-        
+
         const result = await saveCardUseCase.execute({
           cardNumber: InputMasks.removeCardNumberMask(cardNumber),
           cardholderName,
-          expiryDate: InputMasks.removeExpiryDateMask(expiryDate)
+          expiryDate: InputMasks.removeExpiryDateMask(expiryDate),
         });
 
         if (result.success) {
-          Alert.alert(
-            'Success',
-            'Credit card saved securely',
-            [
-              {
-                text: 'OK',
-                onPress: () => router.push('/(tabs)')
-              }
-            ]
-          );
+          Alert.alert("Success", "Credit card saved securely", [
+            {
+              text: "OK",
+              onPress: () => router.push("/(tabs)"),
+            },
+          ]);
         } else {
-          Alert.alert('Error', result.message);
+          Alert.alert("Error", result.message);
         }
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to save credit card');
+      Alert.alert("Error", "Failed to save credit card");
     } finally {
       setIsLoading(false);
     }
@@ -174,17 +175,17 @@ export function AddCreditCardScreen() {
     try {
       const repository = new CreditCardRepositoryImpl();
       const deleteCardUseCase = new DeleteCreditCardUseCase(repository);
-      
+
       const result = await deleteCardUseCase.execute(editingCardId);
 
       if (result.success) {
         handleAddNewCard();
-        router.push('/(tabs)');
+        router.push("/(tabs)");
       } else {
-        Alert.alert('Error', result.message);
+        Alert.alert("Error", result.message);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to delete credit card');
+      Alert.alert("Error", "Failed to delete credit card");
     } finally {
       setIsLoading(false);
     }
@@ -201,7 +202,7 @@ export function AddCreditCardScreen() {
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
           <Text className="text-lg font-bold text-text-primary">
-            {cards.length > 0 && isEditMode ? 'Credit Card' : 'New Credit Card'}
+            {cards.length > 0 && isEditMode ? "Credit Card" : "New Credit Card"}
           </Text>
           {cards.length > 0 && isEditMode ? (
             <Pressable
@@ -224,7 +225,7 @@ export function AddCreditCardScreen() {
                 selectedIndex={selectedCardIndex}
               />
             ) : (
-              <CameraScannerV2 
+              <CameraScannerV2
                 onCardDataExtracted={handleCardDataExtracted}
                 cardNumber={cardNumber}
                 cardholderName={cardholderName}
@@ -232,31 +233,31 @@ export function AddCreditCardScreen() {
               />
             )}
 
-              <View className="mb-6">
-                <View className="flex-row items-center justify-between mb-4">
-                  <Text className="text-lg font-bold text-text-primary">
-                    Card Details
-                  </Text>
-                  {isEditMode && editingCardId && (
-                    <Pressable
-                      className="w-10 h-10 items-center justify-center active:opacity-60"
-                      onPress={handleDeleteCard}
-                      disabled={isLoading}
-                    >
-                      <Text className="text-xl text-status-error">🗑️</Text>
-                    </Pressable>
-                  )}
-                </View>
-                {!isEditMode && (
-                  <Text className="text-sm text-text-secondary mb-4">
-                    Fields will be automatically filled after scanning
-                  </Text>
+            <View className="mb-6">
+              <View className="flex-row items-center justify-between mb-4">
+                <Text className="text-lg font-bold text-text-primary">
+                  Card Details
+                </Text>
+                {isEditMode && editingCardId && (
+                  <Pressable
+                    className="w-10 h-10 items-center justify-center active:opacity-60"
+                    onPress={handleDeleteCard}
+                    disabled={isLoading}
+                  >
+                    <Text className="text-xl text-status-error">🗑️</Text>
+                  </Pressable>
                 )}
+              </View>
+              {!isEditMode && (
+                <Text className="text-sm text-text-secondary mb-4">
+                  Fields will be automatically filled after scanning
+                </Text>
+              )}
 
-                <View className="mb-4">
-                  <Text className="text-sm text-text-secondary mb-2">
-                    Cardholder Name
-                  </Text>
+              <View className="mb-4">
+                <Text className="text-sm text-text-secondary mb-2">
+                  Cardholder Name
+                </Text>
                 <View className="bg-background-secondary rounded-xl px-4 py-4 flex-row items-center">
                   <TextInput
                     className="flex-1 text-text-primary"
@@ -268,12 +269,12 @@ export function AddCreditCardScreen() {
                   />
                   <Text className="text-xl text-primary-main ml-2">👤</Text>
                 </View>
-                </View>
+              </View>
 
-                <View className="mb-4">
-                  <Text className="text-sm text-text-secondary mb-2">
-                    Card Number
-                  </Text>
+              <View className="mb-4">
+                <Text className="text-sm text-text-secondary mb-2">
+                  Card Number
+                </Text>
                 <View className="bg-background-secondary rounded-xl px-4 py-4 flex-row items-center">
                   <TextInput
                     className="flex-1 text-text-primary"
@@ -287,43 +288,47 @@ export function AddCreditCardScreen() {
                   />
                   <Text className="text-xl text-primary-main ml-2">💳</Text>
                 </View>
-                </View>
+              </View>
 
-                <View className="mb-4">
-                  <Text className="text-sm text-text-secondary mb-2">
-                    Expiry Date
-                  </Text>
-                  <TextInput
-                    className="bg-background-secondary rounded-xl px-4 py-4 text-text-primary"
-                    placeholder="MM/YY"
-                    placeholderTextColor="#64748B"
-                    keyboardType="number-pad"
-                    inputMode="numeric"
-                    value={expiryDate}
-                    onChangeText={handleExpiryDateChange}
-                    maxLength={5}
-                  />
-                </View>
-
-                <CheckboxOption
-                  label="keep as primary card"
-                  checked={saveCard}
-                  onToggle={() => setSaveCard(!saveCard)}
+              <View className="mb-4">
+                <Text className="text-sm text-text-secondary mb-2">
+                  Expiry Date
+                </Text>
+                <TextInput
+                  className="bg-background-secondary rounded-xl px-4 py-4 text-text-primary"
+                  placeholder="MM/YY"
+                  placeholderTextColor="#64748B"
+                  keyboardType="number-pad"
+                  inputMode="numeric"
+                  value={expiryDate}
+                  onChangeText={handleExpiryDateChange}
+                  maxLength={5}
                 />
               </View>
 
+              <CheckboxOption
+                label="keep as primary card"
+                checked={saveCard}
+                onToggle={() => setSaveCard(!saveCard)}
+              />
+            </View>
+
             <Pressable
               className={`rounded-xl py-4 flex-row items-center justify-center ${
-                isLoading || (isEditMode && !hasChanges()) 
-                  ? 'bg-primary-main/50 opacity-50' 
-                  : 'bg-primary-main active:bg-primary-dark'
+                isLoading || (isEditMode && !hasChanges())
+                  ? "bg-primary-main/50 opacity-50"
+                  : "bg-primary-main active:bg-primary-dark"
               }`}
               onPress={handleSaveCard}
               disabled={isLoading || (isEditMode && !hasChanges())}
             >
               <Text className="text-lg mr-2">🔒</Text>
               <Text className="text-base font-bold text-text-primary">
-                {isLoading ? 'Saving...' : (isEditMode ? 'Update Card' : 'Securely Add Card')}
+                {isLoading
+                  ? "Saving..."
+                  : isEditMode
+                    ? "Update Card"
+                    : "Securely Add Card"}
               </Text>
             </Pressable>
           </View>

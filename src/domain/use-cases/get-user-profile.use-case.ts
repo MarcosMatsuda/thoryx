@@ -1,5 +1,5 @@
-import { UserProfile } from '@domain/entities/user-profile.entity';
-import { UserProfileRepository } from '@domain/repositories/user-profile.repository';
+import { UserProfile } from "@domain/entities/user-profile.entity";
+import { UserProfileRepository } from "@domain/repositories/user-profile.repository";
 
 export class GetUserProfileUseCase {
   constructor(private userProfileRepository: UserProfileRepository) {}
@@ -8,7 +8,7 @@ export class GetUserProfileUseCase {
     try {
       return await this.userProfileRepository.get();
     } catch (error) {
-      console.error('Error getting user profile:', error);
+      console.error("Error getting user profile:", error);
       return null;
     }
   }

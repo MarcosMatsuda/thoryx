@@ -5,7 +5,10 @@ import { useRouter } from "expo-router";
 import { NumericKeypad } from "@presentation/components/numeric-keypad";
 import { PinDot } from "@presentation/components/pin-dot";
 import { PinConfirmationBottomSheet } from "@presentation/components/pin-confirmation-bottom-sheet";
-import { ThoryxHeader, BackButton } from "@presentation/components/thoryx-header";
+import {
+  ThoryxHeader,
+  BackButton,
+} from "@presentation/components/thoryx-header";
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
 import { VerifyPinUseCase } from "@domain/use-cases/verify-pin.use-case";
 import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
@@ -153,9 +156,7 @@ export function ChangePinScreen() {
       edges={["top", "bottom"]}
     >
       {/* Header */}
-      <ThoryxHeader
-        left={<BackButton onPress={handleBack} />}
-      />
+      <ThoryxHeader left={<BackButton onPress={handleBack} />} />
 
       <View className="flex-1 w-full max-w-[500px] self-center">
         <View className="px-6 pt-6 pb-4">

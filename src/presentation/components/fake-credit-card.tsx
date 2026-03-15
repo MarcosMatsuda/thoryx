@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text } from "react-native";
 
 interface FakeCreditCardProps {
   cardNumber?: string;
@@ -8,13 +8,13 @@ interface FakeCreditCardProps {
 }
 
 const CARD_COLORS = [
-  '#1E40AF',
-  '#7C3AED',
-  '#DB2777',
-  '#DC2626',
-  '#EA580C',
-  '#059669',
-  '#0891B2',
+  "#1E40AF",
+  "#7C3AED",
+  "#DB2777",
+  "#DC2626",
+  "#EA580C",
+  "#059669",
+  "#0891B2",
 ];
 
 export function FakeCreditCard({
@@ -24,30 +24,32 @@ export function FakeCreditCard({
   backgroundColor,
 }: FakeCreditCardProps) {
   const formatCardNumber = (number: string) => {
-    const cleaned = number.replace(/\s/g, '');
+    const cleaned = number.replace(/\s/g, "");
     const chunks = cleaned.match(/.{1,4}/g) || [];
-    return chunks.map((chunk, index) => {
-      if (index < chunks.length - 1 || chunk.length === 4) {
-        return chunk;
-      }
-      return chunk + '•'.repeat(4 - chunk.length);
-    }).join(' ');
+    return chunks
+      .map((chunk, index) => {
+        if (index < chunks.length - 1 || chunk.length === 4) {
+          return chunk;
+        }
+        return chunk + "•".repeat(4 - chunk.length);
+      })
+      .join(" ");
   };
 
-  const displayCardNumber = cardNumber 
+  const displayCardNumber = cardNumber
     ? formatCardNumber(cardNumber)
-    : '•••• •••• •••• ••••';
+    : "•••• •••• •••• ••••";
 
-  const displayName = cardholderName || 'CARDHOLDER NAME';
-  const displayExpiry = expiryDate || 'MM/YY';
+  const displayName = cardholderName || "CARDHOLDER NAME";
+  const displayExpiry = expiryDate || "MM/YY";
 
   return (
     <View className="w-full items-center mb-6">
-      <View 
+      <View
         className="rounded-xl overflow-hidden p-4 justify-between"
         style={{
           backgroundColor: backgroundColor || CARD_COLORS[0],
-          width: '100%',
+          width: "100%",
           maxWidth: 320,
           height: 200,
         }}
@@ -63,13 +65,17 @@ export function FakeCreditCard({
 
           <View className="flex-row justify-between items-end">
             <View className="flex-1 mr-3">
-              <Text className="text-[9px] text-text-primary/60 mb-0.5">Cardholder Name</Text>
+              <Text className="text-[9px] text-text-primary/60 mb-0.5">
+                Cardholder Name
+              </Text>
               <Text className="text-xs font-semibold text-text-primary">
                 {displayName}
               </Text>
             </View>
             <View>
-              <Text className="text-[9px] text-text-primary/60 mb-0.5">Expires</Text>
+              <Text className="text-[9px] text-text-primary/60 mb-0.5">
+                Expires
+              </Text>
               <Text className="text-xs font-semibold text-text-primary">
                 {displayExpiry}
               </Text>

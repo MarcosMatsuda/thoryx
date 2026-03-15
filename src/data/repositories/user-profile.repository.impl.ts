@@ -1,34 +1,37 @@
-import { UserProfile, UserProfileInput } from '@domain/entities/user-profile.entity';
-import { UserProfileRepository } from '@domain/repositories/user-profile.repository';
-import { SecureStorageAdapter } from '@infrastructure/storage/secure-storage.adapter';
+import {
+  UserProfile,
+  UserProfileInput,
+} from "@domain/entities/user-profile.entity";
+import { UserProfileRepository } from "@domain/repositories/user-profile.repository";
+import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 
 export class UserProfileRepositoryImpl implements UserProfileRepository {
   private storage: SecureStorageAdapter;
-  private readonly PROFILE_KEY = 'user_profile';
+  private readonly PROFILE_KEY = "user_profile";
 
   constructor() {
     this.storage = new SecureStorageAdapter(
-      'user-profile-storage',
-      'thoryx-mmkv-encryption-key-2026'
+      "user-profile-storage",
+      "thoryx-mmkv-encryption-key-2026",
     );
   }
 
   async save(profileInput: UserProfileInput): Promise<UserProfile> {
     try {
       const existingProfile = await this.get();
-      
+
       const profile: UserProfile = {
         name: profileInput.name,
         photoUri: profileInput.photoUri || null, // Ensure photoUri is either string or null, not undefined
         createdAt: existingProfile?.createdAt || new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       await this.storage.set(this.PROFILE_KEY, JSON.stringify(profile));
       return profile;
     } catch (error) {
-      console.error('Error saving user profile:', error);
-      throw new Error('Failed to save user profile');
+      console.error("Error saving user profile:", error);
+      throw new Error("Failed to save user profile");
     }
   }
 
@@ -44,10 +47,10 @@ export class UserProfileRepositoryImpl implements UserProfileRepository {
         ...profile,
         photoUri: profile.photoUri || null, // Ensure photoUri is null if not present or undefined
         createdAt: new Date(profile.createdAt),
-        updatedAt: new Date(profile.updatedAt)
+        updatedAt: new Date(profile.updatedAt),
       };
     } catch (error) {
-      console.error('Error loading user profile:', error);
+      console.error("Error loading user profile:", error);
       return null;
     }
   }
