@@ -1,0 +1,48 @@
+name: Notify Maestro — CodeRabbit Review
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  notify:
+    name: Notify Maestro
+    runs-on: ubuntu-latest
+    if: github.event.review.user.login == 'coderabbitai[bot]'
+    steps:
+      - name: Build message
+        id: msg
+        run: |
+          STATE="${{ github.event.review.state }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+
+          case "$STATE" in
+            approved)
+              EMOJI="✅"
+              STATUS="APPROVED — sem blockers"
+              ;;
+            changes_requested)
+              EMOJI="❌"
+              STATUS="CHANGES REQUESTED — há blockers"
+              ;;
+            *)
+              EMOJI="💬"
+              STATUS="COMMENTED — sem blocker formal"
+              ;;
+          esac
+
+          MSG="${EMOJI} CodeRabbit finalizou o review do PR #${PR_NUMBER}.\n*Status:* ${STATUS}\n*PR:* ${PR_TITLE}\n${PR_URL}"
+          echo "text=${MSG}" >> $GITHUB_OUTPUT
+
+      - name: Post to #maestro-agent
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg channel "C0AL2R8S858" \
+            --arg text "${{ steps.msg.outputs.text }}" \
+            '{channel: $channel, text: $text}')
+          curl -s -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"

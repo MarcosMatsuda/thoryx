@@ -11,7 +11,7 @@ export default function EmergencyTab() {
   useFocusEffect(
     useCallback(() => {
       refresh();
-    }, []),
+    }, [refresh]),
   );
 
   if (isLoading) {

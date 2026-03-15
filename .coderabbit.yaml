@@ -5,7 +5,6 @@ reviews:
   # Trigger auto-reviews on these branches
   base_branches:
     - develop
-    - develop_sprint-*
     - main
 
   # Review settings
@@ -20,10 +19,3 @@ reviews:
       instructions: "Review test coverage, edge cases, and mock setup"
     - path: "**/*.test.tsx"
       instructions: "Review React Testing Library tests, accessibility, and user interactions"
-
-# Excluded paths (no review needed)
-excluded_paths:
-  - "*.md"
-  - "*.json"
-  - ".env*"
-  - "node_modules/**"

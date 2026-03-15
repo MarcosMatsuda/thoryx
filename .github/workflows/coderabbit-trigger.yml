@@ -1,0 +1,40 @@
+name: Trigger CodeRabbit Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - develop
+      - main
+
+jobs:
+  trigger-review:
+    name: Trigger CodeRabbit
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post CodeRabbit trigger comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const alreadyTriggered = comments.some(
+              (c) =>
+                c.user.login === "github-actions[bot]" &&
+                c.body.includes("@coderabbitai review")
+            );
+
+            if (!alreadyTriggered) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: "@coderabbitai review",
+              });
+            }

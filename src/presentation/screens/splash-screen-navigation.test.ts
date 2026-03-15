@@ -20,14 +20,14 @@ describe("SplashScreen as Dumb Component", () => {
 
     it("should import View and Image from react-native", () => {
       const fileContent = fs.readFileSync(componentPath, "utf8");
-      expect(fileContent).toContain("from 'react-native'");
+      expect(fileContent).toContain('from "react-native"');
       expect(fileContent).toContain("View");
       expect(fileContent).toContain("Image");
     });
 
     it("should import Animated from react-native-reanimated", () => {
       const fileContent = fs.readFileSync(componentPath, "utf8");
-      expect(fileContent).toContain("from 'react-native-reanimated'");
+      expect(fileContent).toContain('from "react-native-reanimated"');
       expect(fileContent).toContain("Animated");
     });
   });

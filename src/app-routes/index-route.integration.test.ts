@@ -30,13 +30,13 @@ describe("Index Route (app/index.tsx)", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
       expect(fileContent).toContain("useState");
       expect(fileContent).toContain("useEffect");
-      expect(fileContent).toContain("from 'react'");
+      expect(fileContent).toContain('from "react"');
     });
 
     it("should import useRouter from expo-router", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
       expect(fileContent).toContain("useRouter");
-      expect(fileContent).toContain("from 'expo-router'");
+      expect(fileContent).toContain('from "expo-router"');
     });
 
     it("should import SplashScreen from presentation screens", () => {
@@ -110,17 +110,17 @@ describe("Index Route (app/index.tsx)", () => {
     it("should navigate to /unlock if PIN exists", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
       expect(fileContent).toContain(
-        "router.replace(hasPinSaved ? '/unlock' : '/pin-setup')",
+        'router.replace(hasPinSaved ? "/unlock" : "/pin-setup")',
       );
-      expect(fileContent).toContain("'/unlock'");
+      expect(fileContent).toContain('"/unlock"');
     });
 
     it("should navigate to /pin-setup if PIN does not exist", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
       expect(fileContent).toContain(
-        "router.replace(hasPinSaved ? '/unlock' : '/pin-setup')",
+        'router.replace(hasPinSaved ? "/unlock" : "/pin-setup")',
       );
-      expect(fileContent).toContain("'/pin-setup'");
+      expect(fileContent).toContain('"/pin-setup"');
     });
 
     it("should navigate only when splashDone and hasPinSaved are set", () => {

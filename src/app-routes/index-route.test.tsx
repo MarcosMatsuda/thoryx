@@ -6,6 +6,8 @@
 import React from "react";
 import { render, act } from "@testing-library/react-native";
 import { useRouter } from "expo-router";
+import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
+import { CheckPinExistsUseCase } from "@domain/use-cases/check-pin-exists.use-case";
 import IndexScreen from "../../app/index";
 
 // Mock the dependencies
@@ -14,10 +16,13 @@ jest.mock("expo-router", () => ({
 }));
 
 jest.mock("@presentation/screens/splash-screen", () => {
-  const React = require("react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const ReactInFactory = require("react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { Text } = require("react-native");
   return {
-    SplashScreen: () => React.createElement(Text, null, "SplashScreen"),
+    SplashScreen: () =>
+      ReactInFactory.createElement(Text, null, "SplashScreen"),
   };
 });
 
@@ -28,6 +33,9 @@ jest.mock("@data/repositories/pin.repository.impl", () => ({
 jest.mock("@domain/use-cases/check-pin-exists.use-case", () => ({
   CheckPinExistsUseCase: jest.fn(),
 }));
+
+const MockPinRepositoryImpl = jest.mocked(PinRepositoryImpl);
+const MockCheckPinExistsUseCase = jest.mocked(CheckPinExistsUseCase);
 
 describe("IndexScreen", () => {
   const mockReplace = jest.fn();
@@ -45,15 +53,10 @@ describe("IndexScreen", () => {
 
   it("should check PIN existence on mount", async () => {
     const mockExecute = jest.fn().mockResolvedValue(true);
-    const MockPinRepositoryImpl =
-      require("@data/repositories/pin.repository.impl").PinRepositoryImpl;
-    const MockCheckPinExistsUseCase =
-      require("@domain/use-cases/check-pin-exists.use-case").CheckPinExistsUseCase;
-
-    MockPinRepositoryImpl.mockImplementation(() => ({}));
-    MockCheckPinExistsUseCase.mockImplementation(() => ({
-      execute: mockExecute,
-    }));
+    MockPinRepositoryImpl.mockImplementation(() => ({}) as PinRepositoryImpl);
+    MockCheckPinExistsUseCase.mockImplementation(
+      () => ({ execute: mockExecute }) as unknown as CheckPinExistsUseCase,
+    );
 
     render(<IndexScreen />);
 
@@ -64,15 +67,10 @@ describe("IndexScreen", () => {
 
   it("should navigate to /unlock when PIN exists", async () => {
     const mockExecute = jest.fn().mockResolvedValue(true);
-    const MockPinRepositoryImpl =
-      require("@data/repositories/pin.repository.impl").PinRepositoryImpl;
-    const MockCheckPinExistsUseCase =
-      require("@domain/use-cases/check-pin-exists.use-case").CheckPinExistsUseCase;
-
-    MockPinRepositoryImpl.mockImplementation(() => ({}));
-    MockCheckPinExistsUseCase.mockImplementation(() => ({
-      execute: mockExecute,
-    }));
+    MockPinRepositoryImpl.mockImplementation(() => ({}) as PinRepositoryImpl);
+    MockCheckPinExistsUseCase.mockImplementation(
+      () => ({ execute: mockExecute }) as unknown as CheckPinExistsUseCase,
+    );
 
     jest.useFakeTimers();
 
@@ -89,15 +87,10 @@ describe("IndexScreen", () => {
 
   it("should navigate to /pin-setup when PIN does not exist", async () => {
     const mockExecute = jest.fn().mockResolvedValue(false);
-    const MockPinRepositoryImpl =
-      require("@data/repositories/pin.repository.impl").PinRepositoryImpl;
-    const MockCheckPinExistsUseCase =
-      require("@domain/use-cases/check-pin-exists.use-case").CheckPinExistsUseCase;
-
-    MockPinRepositoryImpl.mockImplementation(() => ({}));
-    MockCheckPinExistsUseCase.mockImplementation(() => ({
-      execute: mockExecute,
-    }));
+    MockPinRepositoryImpl.mockImplementation(() => ({}) as PinRepositoryImpl);
+    MockCheckPinExistsUseCase.mockImplementation(
+      () => ({ execute: mockExecute }) as unknown as CheckPinExistsUseCase,
+    );
 
     jest.useFakeTimers();
 
@@ -116,15 +109,10 @@ describe("IndexScreen", () => {
     const mockExecute = jest
       .fn()
       .mockRejectedValue(new Error("PIN check failed"));
-    const MockPinRepositoryImpl =
-      require("@data/repositories/pin.repository.impl").PinRepositoryImpl;
-    const MockCheckPinExistsUseCase =
-      require("@domain/use-cases/check-pin-exists.use-case").CheckPinExistsUseCase;
-
-    MockPinRepositoryImpl.mockImplementation(() => ({}));
-    MockCheckPinExistsUseCase.mockImplementation(() => ({
-      execute: mockExecute,
-    }));
+    MockPinRepositoryImpl.mockImplementation(() => ({}) as PinRepositoryImpl);
+    MockCheckPinExistsUseCase.mockImplementation(
+      () => ({ execute: mockExecute }) as unknown as CheckPinExistsUseCase,
+    );
 
     jest.useFakeTimers();
 
@@ -141,15 +129,10 @@ describe("IndexScreen", () => {
 
   it("should not navigate before splash timer completes", async () => {
     const mockExecute = jest.fn().mockResolvedValue(true);
-    const MockPinRepositoryImpl =
-      require("@data/repositories/pin.repository.impl").PinRepositoryImpl;
-    const MockCheckPinExistsUseCase =
-      require("@domain/use-cases/check-pin-exists.use-case").CheckPinExistsUseCase;
-
-    MockPinRepositoryImpl.mockImplementation(() => ({}));
-    MockCheckPinExistsUseCase.mockImplementation(() => ({
-      execute: mockExecute,
-    }));
+    MockPinRepositoryImpl.mockImplementation(() => ({}) as PinRepositoryImpl);
+    MockCheckPinExistsUseCase.mockImplementation(
+      () => ({ execute: mockExecute }) as unknown as CheckPinExistsUseCase,
+    );
 
     jest.useFakeTimers();
 
@@ -179,15 +162,10 @@ describe("IndexScreen", () => {
         }),
     );
 
-    const MockPinRepositoryImpl =
-      require("@data/repositories/pin.repository.impl").PinRepositoryImpl;
-    const MockCheckPinExistsUseCase =
-      require("@domain/use-cases/check-pin-exists.use-case").CheckPinExistsUseCase;
-
-    MockPinRepositoryImpl.mockImplementation(() => ({}));
-    MockCheckPinExistsUseCase.mockImplementation(() => ({
-      execute: mockExecute,
-    }));
+    MockPinRepositoryImpl.mockImplementation(() => ({}) as PinRepositoryImpl);
+    MockCheckPinExistsUseCase.mockImplementation(
+      () => ({ execute: mockExecute }) as unknown as CheckPinExistsUseCase,
+    );
 
     jest.useFakeTimers();
 
