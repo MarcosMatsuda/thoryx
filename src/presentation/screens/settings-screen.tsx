@@ -188,16 +188,24 @@ export function SettingsScreen() {
 
           {/* Profile Section */}
           <SettingsSection title="PROFILE">
-            <View className="items-center py-4 border-b border-gray-200">
+            <Pressable
+              className="flex-row items-center px-4 py-4 border-b border-border-subtle"
+              onPress={() => router.push("/profile-setup")}
+            >
               <UserAvatar
                 photoUri={profile?.photoUri}
-                size={64}
-                onPress={() => router.push("/profile-setup")}
+                size={48}
               />
-              <Text className="mt-3 font-semibold">
-                {profile?.name || "Guest"}
-              </Text>
-            </View>
+              <View className="flex-1 ml-4">
+                <Text className="text-base md:text-lg font-semibold text-text-primary">
+                  {profile?.name || "Guest"}
+                </Text>
+                <Text className="text-sm text-text-secondary mt-1">
+                  Tap to edit profile
+                </Text>
+              </View>
+              <Text className="text-xl text-text-tertiary">›</Text>
+            </Pressable>
           </SettingsSection>
 
           {/* Security Section */}
