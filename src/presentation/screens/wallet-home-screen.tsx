@@ -1,13 +1,13 @@
 import { ActionCard } from "@presentation/components/action-card";
 import { SvgIcon } from "@presentation/components/svg-icon";
+import { UserAvatar } from "@presentation/components/user-avatar";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { useDocuments } from "@presentation/hooks/use-documents";
 import { useUserProfile } from "@presentation/hooks/use-user-profile";
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useRouter, useFocusEffect } from "expo-router";
+import React, { useEffect } from "react";
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   ScrollView,
   Text,
@@ -19,9 +19,19 @@ export function WalletHomeScreen() {
   const router = useRouter();
   const { documents, isLoading: documentsLoading } = useDocuments();
   const { cards, isLoading: cardsLoading } = useCreditCards();
-  const { profile, isLoading: profileLoading } = useUserProfile();
+  const {
+    profile,
+    isLoading: profileLoading,
+    reloadProfile,
+  } = useUserProfile();
 
   const isLoading = profileLoading || documentsLoading || cardsLoading;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      reloadProfile();
+    }, [reloadProfile]),
+  );
 
   // Redirect to profile setup if no profile exists
   useEffect(() => {
@@ -68,22 +78,8 @@ export function WalletHomeScreen() {
         <View className="px-6 pt-4">
           <View className="flex-row items-center justify-between mb-6">
             <View className="flex-row items-center">
-              <View className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden mr-3">
-                {profile?.photoUri ? (
-                  <Image
-                    source={{ uri: profile.photoUri }}
-                    className="w-full h-full"
-                    resizeMode="cover"
-                  />
-                ) : (
-                  <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-                    <Text className="text-xl md:text-2xl text-text-primary">
-                      👤
-                    </Text>
-                  </View>
-                )}
-              </View>
-              <View>
+              <UserAvatar photoUri={profile?.photoUri} size={48} />
+              <View className="ml-3">
                 <Text className="text-xs md:text-sm text-text-secondary mb-1">
                   Welcome back,
                 </Text>
