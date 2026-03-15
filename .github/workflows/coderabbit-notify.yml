@@ -10,68 +10,54 @@ jobs:
   notify:
     name: Notify Maestro
     runs-on: ubuntu-latest
+    # Trigger only once: prefer formal review; fall back to comment when CodeRabbit
+    # posts its summary (which contains the pre_merge_checks section) without a formal review.
+    # Deduplicated: formal review takes priority — if both fire, the review fires first
+    # and the comment condition won't re-trigger (CodeRabbit posts summary before formal review).
     if: |
       (github.event_name == 'pull_request_review' && github.event.review.user.login == 'coderabbitai[bot]') ||
-      (github.event_name == 'issue_comment' && github.event.comment.user.login == 'coderabbitai' &&
+      (github.event_name == 'issue_comment' && github.event.comment.user.login == 'coderabbitai[bot]' &&
        github.event.issue.pull_request != null &&
-       (contains(github.event.comment.body, 'No actionable comments were generated') ||
-        contains(github.event.comment.body, 'pre_merge_checks_walkthrough')))
+       contains(github.event.comment.body, 'pre_merge_checks_walkthrough_start'))
     steps:
       - name: Extract PR info
         id: pr_info
         run: |
           if [ "${{ github.event_name }}" = "pull_request_review" ]; then
-            PR_NUMBER=${{ github.event.pull_request.number }}
-            PR_TITLE="${{ github.event.pull_request.title }}"
-            PR_URL="${{ github.event.pull_request.html_url }}"
-            STATE="${{ github.event.review.state }}"
+            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+            echo "pr_url=${{ github.event.pull_request.html_url }}" >> $GITHUB_OUTPUT
+            echo "state=${{ github.event.review.state }}" >> $GITHUB_OUTPUT
           else
             PR_NUMBER=${{ github.event.issue.number }}
-            # Extract PR title and URL from API (issue_comment doesn't include PR details directly)
-            PR_DATA=$(gh pr view $PR_NUMBER --json title,url)
-            PR_TITLE=$(echo "$PR_DATA" | grep -o '"title":"[^"]*"' | cut -d'"' -f4)
-            PR_URL=$(echo "$PR_DATA" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
-            # Infer status from comment content
-            if grep -q "No actionable comments were generated" <<< "${{ github.event.comment.body }}"; then
-              STATE="approved"
-            elif grep -q "changes requested\|blocker\|critical" <<< "${{ github.event.comment.body }}"; then
-              STATE="changes_requested"
-            else
-              STATE="commented"
-            fi
+            PR_TITLE=$(gh pr view $PR_NUMBER --json title --jq '.title')
+            PR_URL=$(gh pr view $PR_NUMBER --json url --jq '.url')
+            # When CodeRabbit posts without formal review → treat as COMMENTED
+            STATE="commented"
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
+            echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+            echo "state=$STATE" >> $GITHUB_OUTPUT
           fi
-          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-          echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
-          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
-          echo "state=$STATE" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build message
         id: msg
         run: |
-          STATE="${{ steps.pr_info.outputs.state }}"
-          PR_NUMBER="${{ steps.pr_info.outputs.pr_number }}"
-          PR_TITLE="${{ steps.pr_info.outputs.pr_title }}"
-          PR_URL="${{ steps.pr_info.outputs.pr_url }}"
-
-          case "$STATE" in
+          case "${{ steps.pr_info.outputs.state }}" in
             approved)
-              EMOJI="✅"
               STATUS="APPROVED"
               ;;
             changes_requested)
-              EMOJI="❌"
               STATUS="CHANGES_REQUESTED"
               ;;
             *)
-              EMOJI="💬"
               STATUS="COMMENTED"
               ;;
           esac
 
-          # Maestro pattern: 🚀 [CODERABBIT-REVIEW-COMPLETE] for automatic detection
-          MSG="🚀 [CODERABBIT-REVIEW-COMPLETE]\nPR: #${PR_NUMBER}\nTitle: ${PR_TITLE}\nStatus: ${STATUS}\n${PR_URL}"
+          MSG="🚀 [CODERABBIT-REVIEW-COMPLETE]\nPR: #${{ steps.pr_info.outputs.pr_number }}\nTitle: ${{ steps.pr_info.outputs.pr_title }}\nStatus: ${STATUS}\n${{ steps.pr_info.outputs.pr_url }}"
           echo "text=${MSG}" >> $GITHUB_OUTPUT
 
       - name: Post to #maestro-agent
