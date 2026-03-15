@@ -184,14 +184,29 @@ export function SettingsScreen() {
 
           {/* Profile Section */}
           <SettingsSection title="PROFILE">
-            <View className="items-center py-4 border-b border-gray-200">
-              <UserAvatar 
-                photoUri={profile?.photoUri}
-                size={64}
-                onPress={() => router.push('/profile-setup')}
-              />
-              <Text className="mt-3 font-semibold">{profile?.name || 'Sem nome'}</Text>
-            </View>
+            <Pressable
+              onPress={() => router.push("/profile-setup")}
+              className="p-4 active:bg-surface-hover"
+            >
+              <View className="flex-row items-center">
+                <View className="mr-4">
+                  <UserAvatar
+                    photoUri={profile?.photoUri}
+                    size={64}
+                    onPress={() => router.push("/profile-setup")}
+                  />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-lg md:text-xl font-bold text-text-primary mb-1">
+                    {profile?.name || "Set up profile"}
+                  </Text>
+                  <Text className="text-sm md:text-base text-text-secondary">
+                    Tap to edit profile
+                  </Text>
+                </View>
+                <Text className="text-text-secondary text-xl">›</Text>
+              </View>
+            </Pressable>
           </SettingsSection>
 
           {/* Security Section */}
