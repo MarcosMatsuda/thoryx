@@ -1,14 +1,36 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { useUserProfile } from '@presentation/hooks/use-user-profile';
+import { useProfilePhoto } from '@presentation/hooks/use-profile-photo';
+import { UserAvatar } from '@presentation/components/user-avatar';
 
 export function ProfileSetupScreen() {
   const router = useRouter();
-  const { saveProfile } = useUserProfile();
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const { profile, saveProfile, reloadProfile } = useUserProfile();
+  const { pickImage, isLoading: isPhotoLoading } = useProfilePhoto(reloadProfile);
   const [name, setName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      reloadProfile();
+    }, [])
+  );
+
+  useEffect(() => {
+    if (profile?.photoUri) {
+      setPhotoUri(profile.photoUri);
+    }
+  }, [profile?.photoUri]);
+
+  useEffect(() => {
+    if (profile?.name) {
+      setName(profile.name);
+    }
+  }, [profile]);
 
   const handleSave = async () => {
     if (name.trim().length < 2) {
@@ -16,30 +38,72 @@ export function ProfileSetupScreen() {
       return;
     }
 
-    setIsLoading(true);
+    setIsSaving(true);
     const result = await saveProfile({ name: name.trim() });
-    setIsLoading(false);
+    setIsSaving(false);
 
     if (result.success) {
-      // Navigate to main app after profile setup
-      router.replace('/(tabs)');
+      // Use router.canGoBack() to decide navigation
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/(tabs)');
+      }
     } else {
       Alert.alert('Error', result.message);
     }
   };
 
+  const handleSelectPhoto = async () => {
+    Alert.alert(
+      'Choose Profile Photo',
+      'Select an option to choose your profile photo',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Take Photo', 
+          onPress: async () => {
+            const newPhotoUri = await pickImage('camera');
+            if (newPhotoUri) {
+              setPhotoUri(newPhotoUri);
+            }
+          }
+        },
+        { 
+          text: 'Choose from Gallery', 
+          onPress: async () => {
+            const newPhotoUri = await pickImage('gallery');
+            if (newPhotoUri) {
+              setPhotoUri(newPhotoUri);
+            }
+          }
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background-primary px-6" edges={['top']}>
       <View className="flex-1 justify-center">
-        <View className="items-center mb-8">
-          <View className="w-24 h-24 bg-primary-main/20 rounded-full items-center justify-center mb-6">
-            <Text className="text-5xl">👤</Text>
-          </View>
-          <Text className="text-2xl font-bold text-text-primary mb-2">Welcome to Thoryx</Text>
-          <Text className="text-base text-text-secondary text-center">
-            Let&apos;s set up your profile to get started
-          </Text>
+        <View className="items-center mb-6">
+          <UserAvatar 
+            photoUri={photoUri}
+            size={80}
+            onPress={handleSelectPhoto}
+          />
+          <Pressable onPress={handleSelectPhoto} className="mt-3">
+            <Text className="text-sm text-primary-main font-semibold">
+              {photoUri ? 'Alterar imagem' : 'Escolher imagem'}
+            </Text>
+          </Pressable>
         </View>
+
+        <Text className="text-2xl font-bold text-text-primary mb-2 text-center">
+          {profile ? 'Edit Profile' : 'Welcome to Thoryx'}
+        </Text>
+        <Text className="text-base text-text-secondary text-center mb-8">
+          {profile ? 'Update your profile information' : 'Let&apos;s set up your profile to get started'}
+        </Text>
 
         <View className="mb-6">
           <Text className="text-sm font-semibold text-text-secondary mb-2">YOUR NAME</Text>
@@ -49,20 +113,20 @@ export function ProfileSetupScreen() {
             placeholderTextColor="#9CA3AF"
             value={name}
             onChangeText={setName}
-            autoFocus
-            editable={!isLoading}
+            autoFocus={!profile?.name}
+            editable={!isSaving && !isPhotoLoading}
           />
         </View>
 
         <Pressable
-          className={`bg-primary-main rounded-xl py-4 items-center ${isLoading ? 'opacity-50' : 'active:opacity-80'}`}
+          className={`bg-primary-main rounded-xl py-4 items-center ${isSaving ? 'opacity-50' : 'active:opacity-80'}`}
           onPress={handleSave}
-          disabled={isLoading}
+          disabled={isSaving || isPhotoLoading}
         >
-          {isLoading ? (
+          {isSaving ? (
             <ActivityIndicator color="#FFFFFF" />
           ) : (
-            <Text className="text-white font-bold text-base">Continue</Text>
+            <Text className="text-white font-bold text-base">{profile ? 'Save Changes' : 'Continue'}</Text>
           )}
         </Pressable>
       </View>
