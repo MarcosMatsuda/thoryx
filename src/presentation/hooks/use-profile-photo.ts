@@ -84,24 +84,24 @@ export function useProfilePhoto(onPhotoUpdate?: OnPhotoUpdateCallback) {
         "Choose Profile Photo",
         "Select an option to choose your profile photo",
         [
-          { 
-            text: "Cancel", 
+          {
+            text: "Cancel",
             style: "cancel",
-            onPress: () => resolve(null)
+            onPress: () => resolve(null),
           },
-          { 
-            text: "Take Photo", 
+          {
+            text: "Take Photo",
             onPress: async () => {
               const uri = await pickImage("camera");
               resolve(uri);
-            }
+            },
           },
-          { 
-            text: "Choose from Gallery", 
+          {
+            text: "Choose from Gallery",
             onPress: async () => {
               const uri = await pickImage("gallery");
               resolve(uri);
-            }
+            },
           },
         ],
       );

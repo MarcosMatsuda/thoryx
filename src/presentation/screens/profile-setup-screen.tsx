@@ -17,8 +17,11 @@ export function ProfileSetupScreen() {
   const router = useRouter();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const { profile, saveProfile, reloadProfile } = useUserProfile();
-  const { pickImage, showImagePickerOptions, isLoading: isPhotoLoading } =
-    useProfilePhoto();
+  const {
+    pickImage,
+    showImagePickerOptions,
+    isLoading: isPhotoLoading,
+  } = useProfilePhoto();
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -50,7 +53,7 @@ export function ProfileSetupScreen() {
     }
 
     setIsSaving(true);
-    const result = await saveProfile({ 
+    const result = await saveProfile({
       name: name.trim(),
       photoUri: photoUri ?? undefined, // ← Incluir photoUri
     });
