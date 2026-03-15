@@ -17,8 +17,8 @@ export function ProfileSetupScreen() {
   const router = useRouter();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const { profile, saveProfile, reloadProfile } = useUserProfile();
-  const { pickImage, isLoading: isPhotoLoading } =
-    useProfilePhoto(reloadProfile);
+  const { pickImage, showImagePickerOptions, isLoading: isPhotoLoading } =
+    useProfilePhoto();
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -50,7 +50,10 @@ export function ProfileSetupScreen() {
     }
 
     setIsSaving(true);
-    const result = await saveProfile({ name: name.trim() });
+    const result = await saveProfile({ 
+      name: name.trim(),
+      photoUri: photoUri ?? undefined, // ← Incluir photoUri
+    });
     setIsSaving(false);
 
     if (result.success) {
@@ -66,31 +69,10 @@ export function ProfileSetupScreen() {
   };
 
   const handleSelectPhoto = async () => {
-    Alert.alert(
-      "Choose Profile Photo",
-      "Select an option to choose your profile photo",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Take Photo",
-          onPress: async () => {
-            const newPhotoUri = await pickImage("camera");
-            if (newPhotoUri) {
-              setPhotoUri(newPhotoUri);
-            }
-          },
-        },
-        {
-          text: "Choose from Gallery",
-          onPress: async () => {
-            const newPhotoUri = await pickImage("gallery");
-            if (newPhotoUri) {
-              setPhotoUri(newPhotoUri);
-            }
-          },
-        },
-      ],
-    );
+    const newUri = await showImagePickerOptions();
+    if (newUri) {
+      setPhotoUri(newUri); // ← Apenas atualiza estado local
+    }
   };
 
   return (

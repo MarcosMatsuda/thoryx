@@ -1,15 +1,11 @@
 import { useState, useCallback } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
-import { UpdateProfilePhotoUseCase } from "@domain/use-cases/update-profile-photo.use-case";
-import { UserProfileRepositoryImpl } from "@data/repositories/user-profile.repository.impl";
 
 type OnPhotoUpdateCallback = () => void;
 
 export function useProfilePhoto(onPhotoUpdate?: OnPhotoUpdateCallback) {
   const [isLoading, setIsLoading] = useState(false);
-  const repository = new UserProfileRepositoryImpl();
-  const updatePhotoUseCase = new UpdateProfilePhotoUseCase(repository);
 
   const requestPermissions = useCallback(async () => {
     const { status: cameraStatus } =
@@ -65,17 +61,7 @@ export function useProfilePhoto(onPhotoUpdate?: OnPhotoUpdateCallback) {
 
         if (!result.canceled && result.assets && result.assets.length > 0) {
           const photoUri = result.assets[0].uri;
-
-          const updateResult = await updatePhotoUseCase.execute(photoUri);
-
-          if (updateResult.success) {
-            Alert.alert("Success", updateResult.message, [{ text: "OK" }]);
-            onPhotoUpdate?.();
-            return photoUri;
-          } else {
-            Alert.alert("Error", updateResult.message, [{ text: "OK" }]);
-            return null;
-          }
+          return photoUri; // ← SÓ RETORNA URI, sem persistir
         }
 
         return null;
@@ -89,49 +75,42 @@ export function useProfilePhoto(onPhotoUpdate?: OnPhotoUpdateCallback) {
         setIsLoading(false);
       }
     },
-    [requestPermissions, updatePhotoUseCase, onPhotoUpdate],
+    [requestPermissions],
   );
 
-  const showImagePickerOptions = useCallback(() => {
-    Alert.alert(
-      "Choose Profile Photo",
-      "Select an option to choose your profile photo",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Take Photo", onPress: () => pickImage("camera") },
-        { text: "Choose from Gallery", onPress: () => pickImage("gallery") },
-      ],
-    );
+  const showImagePickerOptions = useCallback(async () => {
+    return new Promise<string | null>((resolve) => {
+      Alert.alert(
+        "Choose Profile Photo",
+        "Select an option to choose your profile photo",
+        [
+          { 
+            text: "Cancel", 
+            style: "cancel",
+            onPress: () => resolve(null)
+          },
+          { 
+            text: "Take Photo", 
+            onPress: async () => {
+              const uri = await pickImage("camera");
+              resolve(uri);
+            }
+          },
+          { 
+            text: "Choose from Gallery", 
+            onPress: async () => {
+              const uri = await pickImage("gallery");
+              resolve(uri);
+            }
+          },
+        ],
+      );
+    });
   }, [pickImage]);
-
-  const removePhoto = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const result = await updatePhotoUseCase.execute(null);
-
-      if (result.success) {
-        Alert.alert("Success", result.message, [{ text: "OK" }]);
-        onPhotoUpdate?.();
-        return true;
-      } else {
-        Alert.alert("Error", result.message, [{ text: "OK" }]);
-        return false;
-      }
-    } catch (error) {
-      console.error("Error removing photo:", error);
-      Alert.alert("Error", "Failed to remove photo. Please try again.", [
-        { text: "OK" },
-      ]);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [updatePhotoUseCase, onPhotoUpdate]);
 
   return {
     pickImage,
     showImagePickerOptions,
-    removePhoto,
     isLoading,
     requestPermissions,
   };
