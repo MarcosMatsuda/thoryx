@@ -10,7 +10,8 @@ reviews:
 
   # Review settings
   review_status: auto
-  review_comment_lgtm: false
+  review_comment_lgtm: true  # Submit official GitHub review (APPROVED or CHANGES_REQUESTED)
+  fail_review_on_blocker: true  # Mark as CHANGES_REQUESTED if critical issues found
 
   # What to review
   path_instructions:
