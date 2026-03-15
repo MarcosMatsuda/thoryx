@@ -1,0 +1,29 @@
+reviews:
+  # Enable automatic reviews
+  auto_review_enabled: true
+
+  # Trigger auto-reviews on these branches
+  base_branches:
+    - develop
+    - develop_sprint-*
+    - main
+
+  # Review settings
+  review_status: auto
+  review_comment_lgtm: false
+
+  # What to review
+  path_instructions:
+    - path: "src/**"
+      instructions: "Review code quality, security, and adherence to Clean Architecture patterns"
+    - path: "**/*.test.ts"
+      instructions: "Review test coverage, edge cases, and mock setup"
+    - path: "**/*.test.tsx"
+      instructions: "Review React Testing Library tests, accessibility, and user interactions"
+
+# Excluded paths (no review needed)
+excluded_paths:
+  - "*.md"
+  - "*.json"
+  - ".env*"
+  - "node_modules/**"
