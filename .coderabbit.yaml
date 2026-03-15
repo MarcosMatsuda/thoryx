@@ -5,7 +5,6 @@ reviews:
   # Trigger auto-reviews on these branches
   base_branches:
     - develop
-    - develop_sprint-*
     - main
 
   # Review settings
