@@ -23,7 +23,7 @@ describe("Splash Route Integration", () => {
     it("should import SplashScreen from the correct path", () => {
       const fileContent = fs.readFileSync(splashRoutePath, "utf8");
       expect(fileContent).toContain(
-        "from '@/src/presentation/screens/splash-screen'",
+        'from "@/src/presentation/screens/splash-screen"',
       );
       expect(fileContent).toContain("SplashScreen");
     });
