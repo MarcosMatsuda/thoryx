@@ -65,7 +65,7 @@ describe("SplashScreen Component", () => {
     );
     const componentCode = fs.readFileSync(componentPath, "utf8");
 
-    expect(componentCode).toContain("from 'react-native'");
+    expect(componentCode).toContain('from "react-native"');
     expect(componentCode).toContain("View");
     expect(componentCode).toContain("Image");
   });

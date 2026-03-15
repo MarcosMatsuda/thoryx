@@ -7,6 +7,7 @@ describe("CheckPinExistsUseCase", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => {});
 
     mockRepository = {
       verify: jest.fn(),
@@ -16,6 +17,10 @@ describe("CheckPinExistsUseCase", () => {
     } as any;
 
     useCase = new CheckPinExistsUseCase(mockRepository);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe("PIN existence check", () => {
