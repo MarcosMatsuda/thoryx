@@ -192,10 +192,7 @@ export function SettingsScreen() {
               className="flex-row items-center px-4 py-4 border-b border-border-subtle"
               onPress={() => router.push("/profile-setup")}
             >
-              <UserAvatar
-                photoUri={profile?.photoUri}
-                size={48}
-              />
+              <UserAvatar photoUri={profile?.photoUri} size={48} />
               <View className="flex-1 ml-4">
                 <Text className="text-base md:text-lg font-semibold text-text-primary">
                   {profile?.name || "Guest"}
