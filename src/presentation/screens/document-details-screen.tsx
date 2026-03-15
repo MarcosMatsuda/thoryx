@@ -1,19 +1,25 @@
-import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { DocumentPhotoCarousel } from '@presentation/components/document-photo-carousel';
-import { DetailRow } from '@presentation/components/detail-row';
-import { ActionButtonLarge } from '@presentation/components/action-button-large';
-import { InfoBanner } from '@presentation/components/info-banner';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { DocumentRepositoryImpl } from '@data/repositories/document.repository.impl';
-import { Document } from '@domain/entities/document.entity';
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { DocumentPhotoCarousel } from "@presentation/components/document-photo-carousel";
+import { DetailRow } from "@presentation/components/detail-row";
+import { ActionButtonLarge } from "@presentation/components/action-button-large";
+import { InfoBanner } from "@presentation/components/info-banner";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { useState, useEffect } from "react";
+import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
+import { Document } from "@domain/entities/document.entity";
 
 export function DocumentDetailsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { documentId } = params as { documentId?: string };
-  
+
   const [document, setDocument] = useState<Document | null>(null);
   const [frontPhotoUri, setFrontPhotoUri] = useState<string | null>(null);
   const [backPhotoUri, setBackPhotoUri] = useState<string | null>(null);
@@ -34,7 +40,7 @@ export function DocumentDetailsScreen() {
       setIsLoading(true);
       const repository = new DocumentRepositoryImpl();
       const doc = await repository.findById(documentId);
-      
+
       if (doc) {
         setDocument(doc);
         const frontUri = await repository.decryptPhoto(doc.frontPhotoEncrypted);
@@ -43,7 +49,7 @@ export function DocumentDetailsScreen() {
         setBackPhotoUri(backUri);
       }
     } catch (error) {
-      console.error('Error loading document:', error);
+      console.error("Error loading document:", error);
     } finally {
       setIsLoading(false);
     }
@@ -51,18 +57,18 @@ export function DocumentDetailsScreen() {
 
   const getDocumentTitle = (type: string) => {
     switch (type) {
-      case 'CNH':
+      case "CNH":
         return "Driver's License";
-      case 'RG':
-        return 'National ID';
+      case "RG":
+        return "National ID";
       default:
-        return 'Document';
+        return "Document";
     }
   };
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
+      <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#3B82F6" />
         </View>
@@ -72,19 +78,21 @@ export function DocumentDetailsScreen() {
 
   if (!document) {
     return (
-      <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
+      <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
-          <Text className="text-lg text-text-secondary">Document not found</Text>
+          <Text className="text-lg text-text-secondary">
+            Document not found
+          </Text>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
-          <Pressable 
+          <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
@@ -93,21 +101,23 @@ export function DocumentDetailsScreen() {
           <Text className="text-lg font-bold text-text-primary">
             {getDocumentTitle(document.type)}
           </Text>
-          <Pressable 
+          <Pressable
             className="w-10 h-10 items-center justify-center"
-            onPress={() => router.push({ pathname: '/add-document', params: { documentId: document.id } })}
+            onPress={() =>
+              router.push({
+                pathname: "/add-document",
+                params: { documentId: document.id },
+              })
+            }
           >
             <Text className="text-xl text-primary-main">✏️</Text>
           </Pressable>
         </View>
 
-        <ScrollView 
-          className="flex-1" 
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="py-6">
             {frontPhotoUri && backPhotoUri && (
-              <DocumentPhotoCarousel 
+              <DocumentPhotoCarousel
                 frontPhotoUri={frontPhotoUri}
                 backPhotoUri={backPhotoUri}
               />
@@ -121,40 +131,37 @@ export function DocumentDetailsScreen() {
               </View>
 
               <View className="bg-background-secondary rounded-2xl px-4">
-                <DetailRow 
-                  label="Full Name" 
-                  value={document.fullName} 
+                <DetailRow label="Full Name" value={document.fullName} />
+                <DetailRow
+                  label="Document Number"
+                  value={document.documentNumber}
                 />
-                <DetailRow 
-                  label="Document Number" 
-                  value={document.documentNumber} 
-                />
-                <DetailRow 
-                  label="Date of Birth" 
-                  value={document.dateOfBirth} 
-                />
+                <DetailRow label="Date of Birth" value={document.dateOfBirth} />
                 <View className="flex-row justify-between items-center py-4">
-                  <Text className="text-sm text-text-secondary">Expiry Date</Text>
-                  <Text className="text-base font-semibold text-text-primary">{document.expiryDate}</Text>
+                  <Text className="text-sm text-text-secondary">
+                    Expiry Date
+                  </Text>
+                  <Text className="text-base font-semibold text-text-primary">
+                    {document.expiryDate}
+                  </Text>
                 </View>
               </View>
             </View>
           </View>
 
           <View className="px-6">
-
-          <View className="gap-3 mb-6">
-            <ActionButtonLarge
-              icon="🔗"
-              label="Share Securely"
-              variant="primary"
-            />
-            <ActionButtonLarge
-              icon="📱"
-              label="Show QR Code"
-              variant="secondary"
-            />
-          </View>
+            <View className="gap-3 mb-6">
+              <ActionButtonLarge
+                icon="🔗"
+                label="Share Securely"
+                variant="primary"
+              />
+              <ActionButtonLarge
+                icon="📱"
+                label="Show QR Code"
+                variant="secondary"
+              />
+            </View>
 
             <InfoBanner
               icon="🔒"

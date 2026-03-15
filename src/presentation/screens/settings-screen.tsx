@@ -1,26 +1,34 @@
-import { View, Text, ScrollView, Pressable, Alert, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'expo-router';
-import { useUserProfile } from '@presentation/hooks/use-user-profile';
-import { useBiometry } from '@presentation/hooks/use-biometry';
-import { useProfilePhoto } from '@presentation/hooks/use-profile-photo';
-import { SettingsSection } from '@presentation/components/settings-section';
-import { SettingsItem } from '@presentation/components/settings-item';
-import { SecureStorageAdapter } from '@infrastructure/storage/secure-storage.adapter';
-import { AuthService } from '@infrastructure/services/auth.service';
-import { APP_CONFIG } from '@shared/constants/app';
+import { View, Text, ScrollView, Pressable, Alert, Image } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useState, useEffect } from "react";
+import { useRouter } from "expo-router";
+import { useUserProfile } from "@presentation/hooks/use-user-profile";
+import { useBiometry } from "@presentation/hooks/use-biometry";
+import { useProfilePhoto } from "@presentation/hooks/use-profile-photo";
+import { SettingsSection } from "@presentation/components/settings-section";
+import { SettingsItem } from "@presentation/components/settings-item";
+import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
+import { AuthService } from "@infrastructure/services/auth.service";
+import { APP_CONFIG } from "@shared/constants/app";
 
-const BIOMETRY_ENABLED_KEY = 'biometry_enabled';
-const storage = new SecureStorageAdapter('settings-storage', 'thoryx-mmkv-encryption-key-2026');
+const BIOMETRY_ENABLED_KEY = "biometry_enabled";
+const storage = new SecureStorageAdapter(
+  "settings-storage",
+  "thoryx-mmkv-encryption-key-2026",
+);
 
 export function SettingsScreen() {
   const router = useRouter();
   const { profile, reloadProfile } = useUserProfile();
-  const { isAvailable: biometryAvailable, getBiometryName, authenticate } = useBiometry();
-  const { showImagePickerOptions, isLoading: isPhotoLoading } = useProfilePhoto(reloadProfile);
+  const {
+    isAvailable: biometryAvailable,
+    getBiometryName,
+    authenticate,
+  } = useBiometry();
+  const { showImagePickerOptions, isLoading: isPhotoLoading } =
+    useProfilePhoto(reloadProfile);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
-  const [autoLockTimeout, setAutoLockTimeout] = useState('5 minutes');
+  const [autoLockTimeout, setAutoLockTimeout] = useState("5 minutes");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
@@ -30,147 +38,144 @@ export function SettingsScreen() {
   const loadBiometryPreference = async () => {
     try {
       const enabled = await storage.get(BIOMETRY_ENABLED_KEY);
-      if (enabled === 'true') {
+      if (enabled === "true") {
         setBiometricEnabled(true);
       }
     } catch (error) {
-      console.error('Error loading biometry preference:', error);
+      console.error("Error loading biometry preference:", error);
     }
   };
 
   const handleChangePin = () => {
-    router.push('/change-pin');
+    router.push("/change-pin");
   };
 
   const handleBiometricToggle = async (value: boolean) => {
     if (!biometryAvailable) {
       Alert.alert(
-        'Not Available',
-        'Biometric authentication is not available on this device or not set up.',
-        [{ text: 'OK' }]
+        "Not Available",
+        "Biometric authentication is not available on this device or not set up.",
+        [{ text: "OK" }],
       );
       return;
     }
 
     if (value) {
       // Test biometry before enabling
-      const result = await authenticate('Enable biometric lock');
+      const result = await authenticate("Enable biometric lock");
       if (result.success) {
-        await storage.set(BIOMETRY_ENABLED_KEY, 'true');
+        await storage.set(BIOMETRY_ENABLED_KEY, "true");
         setBiometricEnabled(true);
         Alert.alert(
-          'Enabled',
+          "Enabled",
           `${getBiometryName()} has been enabled for unlocking the app.`,
-          [{ text: 'OK' }]
+          [{ text: "OK" }],
         );
       } else {
         Alert.alert(
-          'Authentication Failed',
-          result.error || 'Could not verify biometric authentication.',
-          [{ text: 'OK' }]
+          "Authentication Failed",
+          result.error || "Could not verify biometric authentication.",
+          [{ text: "OK" }],
         );
       }
     } else {
-      await storage.set(BIOMETRY_ENABLED_KEY, 'false');
+      await storage.set(BIOMETRY_ENABLED_KEY, "false");
       setBiometricEnabled(false);
-      Alert.alert(
-        'Disabled',
-        'Biometric lock has been disabled.',
-        [{ text: 'OK' }]
-      );
+      Alert.alert("Disabled", "Biometric lock has been disabled.", [
+        { text: "OK" },
+      ]);
     }
   };
 
   const handleAutoLockTimeout = () => {
-    Alert.alert(
-      'Auto-lock Timeout',
-      'Choose when to lock the app',
-      [
-        { text: '1 minute', onPress: () => setAutoLockTimeout('1 minute') },
-        { text: '5 minutes', onPress: () => setAutoLockTimeout('5 minutes') },
-        { text: '15 minutes', onPress: () => setAutoLockTimeout('15 minutes') },
-        { text: '30 minutes', onPress: () => setAutoLockTimeout('30 minutes') },
-        { text: 'Never', onPress: () => setAutoLockTimeout('Never') },
-        { text: 'Cancel', style: 'cancel' },
-      ]
-    );
+    Alert.alert("Auto-lock Timeout", "Choose when to lock the app", [
+      { text: "1 minute", onPress: () => setAutoLockTimeout("1 minute") },
+      { text: "5 minutes", onPress: () => setAutoLockTimeout("5 minutes") },
+      { text: "15 minutes", onPress: () => setAutoLockTimeout("15 minutes") },
+      { text: "30 minutes", onPress: () => setAutoLockTimeout("30 minutes") },
+      { text: "Never", onPress: () => setAutoLockTimeout("Never") },
+      { text: "Cancel", style: "cancel" },
+    ]);
   };
 
   const handleLogout = async () => {
-    Alert.alert(
-      'Log Out',
-      'Are you sure you want to log out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Log Out',
-          style: 'destructive',
-          onPress: async () => {
-            setIsLoggingOut(true);
-            try {
-              const authService = new AuthService();
-              const result = await authService.logout();
-              
-              if (result.success) {
-                // Navigate to unlock screen (index will show unlock since PIN still exists)
-                router.replace('/unlock');
-              } else {
-                Alert.alert('Error', result.error || 'Failed to log out. Please try again.');
-              }
-            } catch (error) {
-              console.error('Error during logout:', error);
-              Alert.alert('Error', 'Failed to log out. Please try again.');
-            } finally {
-              setIsLoggingOut(false);
+    Alert.alert("Log Out", "Are you sure you want to log out?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Log Out",
+        style: "destructive",
+        onPress: async () => {
+          setIsLoggingOut(true);
+          try {
+            const authService = new AuthService();
+            const result = await authService.logout();
+
+            if (result.success) {
+              // Navigate to unlock screen (index will show unlock since PIN still exists)
+              router.replace("/unlock");
+            } else {
+              Alert.alert(
+                "Error",
+                result.error || "Failed to log out. Please try again.",
+              );
             }
-          },
+          } catch (error) {
+            console.error("Error during logout:", error);
+            Alert.alert("Error", "Failed to log out. Please try again.");
+          } finally {
+            setIsLoggingOut(false);
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleClearData = () => {
     Alert.alert(
-      'Clear All Data',
-      'This will remove all your documents, cards, and settings. This action cannot be undone.',
+      "Clear All Data",
+      "This will remove all your documents, cards, and settings. This action cannot be undone.",
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: "Cancel", style: "cancel" },
         {
-          text: 'Clear',
-          style: 'destructive',
+          text: "Clear",
+          style: "destructive",
           onPress: async () => {
             try {
               // Use AuthService to clear all data consistently
               const authService = new AuthService();
               await authService.clearAllData();
-              
+
               // Also clear the local settings storage
               await storage.clear();
 
-              router.replace('/pin-setup');
-              Alert.alert('Success', 'All data has been cleared. Please restart the app.');
+              router.replace("/pin-setup");
+              Alert.alert(
+                "Success",
+                "All data has been cleared. Please restart the app.",
+              );
             } catch (error) {
-              console.error('Error clearing data:', error);
-              Alert.alert('Error', 'Failed to clear all data. Please try again.');
+              console.error("Error clearing data:", error);
+              Alert.alert(
+                "Error",
+                "Failed to clear all data. Please try again.",
+              );
             }
           },
         },
-      ]
+      ],
     );
   };
 
-
-
   const handleTermsOfService = () => {
-    router.push('/terms-of-service');
+    router.push("/terms-of-service");
   };
 
   const handlePrivacyPolicy = () => {
-    router.push('/privacy-policy');
+    router.push("/privacy-policy");
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="pt-4 pb-8">
           <Text className="text-2xl md:text-3xl font-bold text-text-primary mb-6 px-6">
@@ -180,7 +185,7 @@ export function SettingsScreen() {
           {/* Profile Section */}
           <SettingsSection title="PROFILE">
             <Pressable
-              onPress={() => router.push('/profile-setup')}
+              onPress={() => router.push("/profile-setup")}
               className="p-4 active:bg-surface-hover"
             >
               <View className="flex-row items-center">
@@ -213,12 +218,12 @@ export function SettingsScreen() {
                     </View>
                   </Pressable>
                   <Text className="text-xs text-center mt-1 text-primary-main font-medium">
-                    {profile?.photoUri ? 'Alterar imagem' : 'Escolher imagem'}
+                    {profile?.photoUri ? "Alterar imagem" : "Escolher imagem"}
                   </Text>
                 </View>
                 <View className="flex-1">
                   <Text className="text-lg md:text-xl font-bold text-text-primary mb-1">
-                    {profile?.name || 'Set up profile'}
+                    {profile?.name || "Set up profile"}
                   </Text>
                   <Text className="text-sm md:text-base text-text-secondary">
                     Tap to edit profile
@@ -238,7 +243,11 @@ export function SettingsScreen() {
               isFirst
             />
             <SettingsItem
-              label={biometryAvailable ? `${getBiometryName()}` : 'Biometric Lock (Not Available)'}
+              label={
+                biometryAvailable
+                  ? `${getBiometryName()}`
+                  : "Biometric Lock (Not Available)"
+              }
               icon={<Text className="text-xl">👆</Text>}
               switchValue={biometricEnabled}
               onSwitchChange={handleBiometricToggle}

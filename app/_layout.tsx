@@ -41,8 +41,14 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen name="emergency" options={{ headerShown: false }} />
-          <Stack.Screen name="emergency-setup" options={{ headerShown: false }} />
-          <Stack.Screen name="add-credit-card" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="emergency-setup"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="add-credit-card"
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="document-details"
             options={{ headerShown: false }}

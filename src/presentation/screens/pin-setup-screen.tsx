@@ -5,9 +5,9 @@ import { PinConfirmationBottomSheet } from "@presentation/components/pin-confirm
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from 'expo-router';
-import { PinRepositoryImpl } from '@data/repositories/pin.repository.impl';
-import { SavePinUseCase } from '@domain/use-cases/save-pin.use-case';
+import { useRouter } from "expo-router";
+import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
+import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
 
 const PIN_LENGTH = 6;
 
@@ -42,21 +42,24 @@ export function PinSetupScreen() {
       try {
         const repository = new PinRepositoryImpl();
         const savePinUseCase = new SavePinUseCase(repository);
-        
+
         const result = await savePinUseCase.execute({ pin });
-        
+
         if (result.success) {
           setShowConfirmation(false);
-          router.push('/(tabs)');
+          router.push("/(tabs)");
         }
       } catch (error) {
-        console.error('Error saving PIN:', error);
+        console.error("Error saving PIN:", error);
       }
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top", "bottom"]}>
+    <SafeAreaView
+      className="flex-1 bg-background-primary"
+      edges={["top", "bottom"]}
+    >
       <View className="flex-1 w-full max-w-[500px] self-center">
         <View className="px-4 md:px-8 pt-8">
           <View className="items-center">
@@ -75,7 +78,8 @@ export function PinSetupScreen() {
                 Create Your Security PIN
               </Text>
               <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
-                This PIN will be used to authorize transactions and secure your wallet.
+                This PIN will be used to authorize transactions and secure your
+                wallet.
               </Text>
             </View>
 
@@ -106,22 +110,32 @@ export function PinSetupScreen() {
             />
           </View>
 
-          <Pressable 
+          <Pressable
             className={`rounded-xl py-4 items-center ${
-              pin.length === PIN_LENGTH 
-                ? 'bg-primary-main active:bg-primary-dark' 
-                : 'bg-ui-border'
+              pin.length === PIN_LENGTH
+                ? "bg-primary-main active:bg-primary-dark"
+                : "bg-ui-border"
             }`}
             disabled={pin.length !== PIN_LENGTH}
             onPress={handleConfirm}
           >
             <View className="flex-row items-center">
-              <Text className={`text-base font-bold mr-2 ${
-                pin.length === PIN_LENGTH ? 'text-text-primary' : 'text-text-secondary'
-              }`}>
+              <Text
+                className={`text-base font-bold mr-2 ${
+                  pin.length === PIN_LENGTH
+                    ? "text-text-primary"
+                    : "text-text-secondary"
+                }`}
+              >
                 Confirm and Continue
               </Text>
-              <Text className={pin.length === PIN_LENGTH ? 'text-text-primary' : 'text-text-secondary'}>
+              <Text
+                className={
+                  pin.length === PIN_LENGTH
+                    ? "text-text-primary"
+                    : "text-text-secondary"
+                }
+              >
                 →
               </Text>
             </View>

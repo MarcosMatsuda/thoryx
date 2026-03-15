@@ -7,34 +7,34 @@ export const DesignTokens = {
   colors: {
     // Primary colors
     primary: {
-      main: '#135BEC',
-      light: '#4A7FEF',
-      dark: '#0D42B0',
+      main: "#135BEC",
+      light: "#4A7FEF",
+      dark: "#0D42B0",
     },
     // Background colors
     background: {
-      primary: '#0A1929',
-      secondary: '#132F4C',
-      tertiary: '#1A2F45',
+      primary: "#0A1929",
+      secondary: "#132F4C",
+      tertiary: "#1A2F45",
     },
     // Text colors
     text: {
-      primary: '#FFFFFF',
-      secondary: '#B2BAC2',
-      tertiary: '#8B95A0',
+      primary: "#FFFFFF",
+      secondary: "#B2BAC2",
+      tertiary: "#8B95A0",
     },
     // Status colors
     status: {
-      success: '#4CAF50',
-      error: '#F44336',
-      warning: '#FF9800',
-      info: '#2196F3',
+      success: "#4CAF50",
+      error: "#F44336",
+      warning: "#FF9800",
+      info: "#2196F3",
     },
     // UI colors
     ui: {
-      border: '#1E3A52',
-      divider: '#1A2F45',
-      overlay: 'rgba(10, 25, 41, 0.8)',
+      border: "#1E3A52",
+      divider: "#1A2F45",
+      overlay: "rgba(10, 25, 41, 0.8)",
     },
   },
 
@@ -59,10 +59,10 @@ export const DesignTokens = {
 
   typography: {
     fontFamily: {
-      regular: 'System',
-      medium: 'System',
-      semiBold: 'System',
-      bold: 'System',
+      regular: "System",
+      medium: "System",
+      semiBold: "System",
+      bold: "System",
     },
     fontSize: {
       xs: 12,
@@ -80,30 +80,30 @@ export const DesignTokens = {
       relaxed: 1.75,
     },
     fontWeight: {
-      regular: '400' as const,
-      medium: '500' as const,
-      semiBold: '600' as const,
-      bold: '700' as const,
+      regular: "400" as const,
+      medium: "500" as const,
+      semiBold: "600" as const,
+      bold: "700" as const,
     },
   },
 
   shadows: {
     sm: {
-      shadowColor: '#000',
+      shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 4,
       elevation: 2,
     },
     md: {
-      shadowColor: '#000',
+      shadowColor: "#000",
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.15,
       shadowRadius: 8,
       elevation: 4,
     },
     lg: {
-      shadowColor: '#000',
+      shadowColor: "#000",
       shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.2,
       shadowRadius: 16,
@@ -118,9 +118,9 @@ export const DesignTokens = {
       slow: 500,
     },
     easing: {
-      easeIn: 'ease-in',
-      easeOut: 'ease-out',
-      easeInOut: 'ease-in-out',
+      easeIn: "ease-in",
+      easeOut: "ease-out",
+      easeInOut: "ease-in-out",
     },
   },
 } as const;

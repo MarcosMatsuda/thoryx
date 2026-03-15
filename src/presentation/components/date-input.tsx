@@ -1,4 +1,4 @@
-import { View, Text, Pressable, TextInput } from 'react-native';
+import { View, Text, Pressable, TextInput } from "react-native";
 
 interface DateInputProps {
   label: string;
@@ -8,12 +8,12 @@ interface DateInputProps {
   onChangeText?: (text: string) => void;
 }
 
-export function DateInput({ 
-  label, 
-  value, 
+export function DateInput({
+  label,
+  value,
   placeholder = "DD/MM/YYYY",
   onPress,
-  onChangeText
+  onChangeText,
 }: DateInputProps) {
   return (
     <View className="mb-4">

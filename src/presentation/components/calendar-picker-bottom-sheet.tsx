@@ -1,5 +1,5 @@
-import { View, Text, Pressable, Modal } from 'react-native';
-import { useState } from 'react';
+import { View, Text, Pressable, Modal } from "react-native";
+import { useState } from "react";
 
 interface CalendarPickerBottomSheetProps {
   visible: boolean;
@@ -16,15 +16,25 @@ export function CalendarPickerBottomSheet({
 }: CalendarPickerBottomSheetProps) {
   const [currentMonth, setCurrentMonth] = useState(selectedDate || new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(
-    selectedDate ? selectedDate.getDate() : null
+    selectedDate ? selectedDate.getDate() : null,
   );
 
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
-  const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -35,11 +45,11 @@ export function CalendarPickerBottomSheet({
     const startingDayOfWeek = firstDay.getDay();
 
     const days: (number | null)[] = [];
-    
+
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(null);
     }
-    
+
     for (let i = 1; i <= daysInMonth; i++) {
       days.push(i);
     }
@@ -48,19 +58,27 @@ export function CalendarPickerBottomSheet({
   };
 
   const handlePreviousMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1),
+    );
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1),
+    );
   };
 
   const handlePreviousYear = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear() - 1, currentMonth.getMonth()));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear() - 1, currentMonth.getMonth()),
+    );
   };
 
   const handleNextYear = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear() + 1, currentMonth.getMonth()));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear() + 1, currentMonth.getMonth()),
+    );
   };
 
   const handleDayPress = (day: number) => {
@@ -72,7 +90,7 @@ export function CalendarPickerBottomSheet({
       const date = new Date(
         currentMonth.getFullYear(),
         currentMonth.getMonth(),
-        selectedDay
+        selectedDay,
       );
       onSelectDate(date);
       onClose();
@@ -88,11 +106,8 @@ export function CalendarPickerBottomSheet({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <Pressable 
-        className="flex-1 bg-black/50 justify-end"
-        onPress={onClose}
-      >
-        <Pressable 
+      <Pressable className="flex-1 bg-black/50 justify-end" onPress={onClose}>
+        <Pressable
           className="bg-background-secondary rounded-t-3xl"
           onPress={(e) => e.stopPropagation()}
         >
@@ -113,7 +128,8 @@ export function CalendarPickerBottomSheet({
                 <Text className="text-xl text-text-primary">‹</Text>
               </Pressable>
               <Text className="text-xl md:text-2xl font-bold text-text-primary">
-                {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                {monthNames[currentMonth.getMonth()]}{" "}
+                {currentMonth.getFullYear()}
               </Text>
               <Pressable
                 className="w-10 h-10 items-center justify-center active:opacity-60"
@@ -146,14 +162,16 @@ export function CalendarPickerBottomSheet({
                     <Pressable
                       className={`flex-1 items-center justify-center rounded-full ${
                         selectedDay === day
-                          ? 'bg-primary-main'
-                          : 'active:bg-background-tertiary'
+                          ? "bg-primary-main"
+                          : "active:bg-background-tertiary"
                       }`}
                       onPress={() => handleDayPress(day)}
                     >
                       <Text
                         className={`text-base font-medium ${
-                          selectedDay === day ? 'text-text-primary' : 'text-text-primary'
+                          selectedDay === day
+                            ? "text-text-primary"
+                            : "text-text-primary"
                         }`}
                       >
                         {day}
@@ -169,15 +187,15 @@ export function CalendarPickerBottomSheet({
             <Pressable
               className={`rounded-xl py-4 items-center mb-4 ${
                 selectedDay
-                  ? 'bg-primary-main active:bg-primary-dark'
-                  : 'bg-ui-border'
+                  ? "bg-primary-main active:bg-primary-dark"
+                  : "bg-ui-border"
               }`}
               disabled={!selectedDay}
               onPress={handleConfirm}
             >
               <Text
                 className={`text-base font-bold ${
-                  selectedDay ? 'text-text-primary' : 'text-text-secondary'
+                  selectedDay ? "text-text-primary" : "text-text-secondary"
                 }`}
               >
                 Select Date

@@ -1,5 +1,5 @@
-import { View, Text, Pressable, Modal } from 'react-native';
-import { useState } from 'react';
+import { View, Text, Pressable, Modal } from "react-native";
+import { useState } from "react";
 
 interface DropdownOption {
   label: string;
@@ -14,16 +14,16 @@ interface DropdownInputProps {
   onSelect?: (value: string) => void;
 }
 
-export function DropdownInput({ 
-  label, 
-  value, 
+export function DropdownInput({
+  label,
+  value,
   placeholder = "Select type",
   options = [],
-  onSelect
+  onSelect,
 }: DropdownInputProps) {
   const [showOptions, setShowOptions] = useState(false);
 
-  const selectedLabel = options.find(opt => opt.value === value)?.label;
+  const selectedLabel = options.find((opt) => opt.value === value)?.label;
 
   return (
     <View className="mb-4">
@@ -39,7 +39,7 @@ export function DropdownInput({
       </Pressable>
 
       <Modal visible={showOptions} transparent animationType="slide">
-        <Pressable 
+        <Pressable
           className="flex-1 bg-black/70 justify-end"
           onPress={() => setShowOptions(false)}
         >
@@ -47,7 +47,9 @@ export function DropdownInput({
             className="bg-background-primary rounded-t-3xl p-6"
             onPress={(e) => e.stopPropagation()}
           >
-            <Text className="text-lg font-bold text-text-primary mb-4">{label}</Text>
+            <Text className="text-lg font-bold text-text-primary mb-4">
+              {label}
+            </Text>
             {options.map((option) => (
               <Pressable
                 key={option.value}
@@ -57,9 +59,13 @@ export function DropdownInput({
                   setShowOptions(false);
                 }}
               >
-                <Text className={`text-base ${
-                  value === option.value ? 'text-primary-main font-bold' : 'text-text-primary'
-                }`}>
+                <Text
+                  className={`text-base ${
+                    value === option.value
+                      ? "text-primary-main font-bold"
+                      : "text-text-primary"
+                  }`}
+                >
                   {option.label}
                 </Text>
               </Pressable>

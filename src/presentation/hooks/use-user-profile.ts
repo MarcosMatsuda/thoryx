@@ -1,8 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import { UserProfile, UserProfileInput } from '@domain/entities/user-profile.entity';
-import { UserProfileRepositoryImpl } from '@data/repositories/user-profile.repository.impl';
-import { GetUserProfileUseCase } from '@domain/use-cases/get-user-profile.use-case';
-import { SaveUserProfileUseCase } from '@domain/use-cases/save-user-profile.use-case';
+import { useState, useEffect, useCallback } from "react";
+import {
+  UserProfile,
+  UserProfileInput,
+} from "@domain/entities/user-profile.entity";
+import { UserProfileRepositoryImpl } from "@data/repositories/user-profile.repository.impl";
+import { GetUserProfileUseCase } from "@domain/use-cases/get-user-profile.use-case";
+import { SaveUserProfileUseCase } from "@domain/use-cases/save-user-profile.use-case";
 
 export function useUserProfile() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -20,7 +23,7 @@ export function useUserProfile() {
       const userProfile = await getUserProfileUseCase.execute();
       setProfile(userProfile);
     } catch (err) {
-      setError('Failed to load profile');
+      setError("Failed to load profile");
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -32,7 +35,7 @@ export function useUserProfile() {
       setIsLoading(true);
       setError(null);
       const result = await saveUserProfileUseCase.execute(input);
-      
+
       if (result.success && result.profile) {
         setProfile(result.profile);
         return { success: true, message: result.message };
@@ -41,7 +44,7 @@ export function useUserProfile() {
         return { success: false, message: result.message };
       }
     } catch (err) {
-      const errorMessage = 'Failed to save profile';
+      const errorMessage = "Failed to save profile";
       setError(errorMessage);
       return { success: false, message: errorMessage };
     } finally {
@@ -58,6 +61,6 @@ export function useUserProfile() {
     isLoading,
     error,
     saveProfile,
-    reloadProfile: loadProfile
+    reloadProfile: loadProfile,
   };
 }

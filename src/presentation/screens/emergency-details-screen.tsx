@@ -1,8 +1,14 @@
-import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { useEmergencyInfo } from '@presentation/hooks/use-emergency-info';
-import { useCallback } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useEmergencyInfo } from "@presentation/hooks/use-emergency-info";
+import { useCallback } from "react";
 
 export function EmergencyDetailsScreen() {
   const router = useRouter();
@@ -11,11 +17,11 @@ export function EmergencyDetailsScreen() {
   useFocusEffect(
     useCallback(() => {
       refresh();
-    }, [])
+    }, []),
   );
 
   const handleEditPress = () => {
-    router.push('/emergency-setup');
+    router.push("/emergency-setup");
   };
 
   if (isLoading) {
@@ -28,10 +34,10 @@ export function EmergencyDetailsScreen() {
 
   if (!emergencyInfo) {
     return (
-      <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
+      <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
         <View className="flex-1">
           <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
-            <Pressable 
+            <Pressable
               className="w-10 h-10 items-center justify-center"
               onPress={() => router.back()}
             >
@@ -40,23 +46,24 @@ export function EmergencyDetailsScreen() {
             <Text className="text-lg font-bold text-text-primary">
               Emergency Profile
             </Text>
-            <Pressable 
+            <Pressable
               className="w-10 h-10 items-center justify-center"
               onPress={handleEditPress}
             >
               <Text className="text-xl text-primary-main">✏️</Text>
             </Pressable>
           </View>
-          
+
           <View className="flex-1 items-center justify-center px-6">
             <Text className="text-2xl mb-2">🚨</Text>
             <Text className="text-lg font-bold text-text-primary mb-2 text-center">
               No Emergency Information
             </Text>
             <Text className="text-sm text-text-secondary text-center mb-6">
-              Set up your emergency profile to help first responders in case of emergency.
+              Set up your emergency profile to help first responders in case of
+              emergency.
             </Text>
-            <Pressable 
+            <Pressable
               className="bg-primary-main rounded-xl py-3 px-6 active:bg-primary-dark"
               onPress={handleEditPress}
             >
@@ -71,10 +78,10 @@ export function EmergencyDetailsScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
-          <Pressable 
+          <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
@@ -83,7 +90,7 @@ export function EmergencyDetailsScreen() {
           <Text className="text-lg font-bold text-text-primary">
             Emergency Profile
           </Text>
-          <Pressable 
+          <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={handleEditPress}
           >
@@ -91,10 +98,7 @@ export function EmergencyDetailsScreen() {
           </Pressable>
         </View>
 
-        <ScrollView 
-          className="flex-1" 
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="px-6 py-6">
             {emergencyInfo.lockScreenVisible && (
               <View className="bg-primary-main/10 rounded-2xl p-4 mb-6 border border-primary-main/30">
@@ -105,7 +109,9 @@ export function EmergencyDetailsScreen() {
                       Lock Screen Accessibility
                     </Text>
                     <Text className="text-xs text-text-secondary leading-5">
-                      This information will be accessible to first responders from the lock screen without a passcode in case of emergency.
+                      This information will be accessible to first responders
+                      from the lock screen without a passcode in case of
+                      emergency.
                     </Text>
                   </View>
                 </View>
@@ -195,7 +201,7 @@ export function EmergencyDetailsScreen() {
                     </Text>
                   </View>
                   <Text className="text-sm text-text-secondary">
-                    {emergencyInfo.medications.join(', ')}
+                    {emergencyInfo.medications.join(", ")}
                   </Text>
                 </View>
               )}
@@ -211,14 +217,17 @@ export function EmergencyDetailsScreen() {
 
                 {emergencyInfo.contacts.map((contact, index) => {
                   const initials = contact.fullName
-                    .split(' ')
-                    .map(n => n[0])
-                    .join('')
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
                     .toUpperCase()
                     .substring(0, 2);
 
                   return (
-                    <View key={contact.id} className="bg-background-secondary rounded-xl p-4 mb-3">
+                    <View
+                      key={contact.id}
+                      className="bg-background-secondary rounded-xl p-4 mb-3"
+                    >
                       <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center flex-1">
                           {index === 0 ? (

@@ -11,8 +11,11 @@ import { useBiometry } from "@presentation/hooks/use-biometry";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 
 const PIN_LENGTH = 6;
-const BIOMETRY_ENABLED_KEY = 'biometry_enabled';
-const storage = new SecureStorageAdapter('settings-storage', 'thoryx-mmkv-encryption-key-2026');
+const BIOMETRY_ENABLED_KEY = "biometry_enabled";
+const storage = new SecureStorageAdapter(
+  "settings-storage",
+  "thoryx-mmkv-encryption-key-2026",
+);
 
 export function UnlockWalletScreen() {
   const [pin, setPin] = useState("");
@@ -20,7 +23,11 @@ export function UnlockWalletScreen() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [biometryEnabled, setBiometryEnabled] = useState(false);
   const router = useRouter();
-  const { isAvailable: biometryAvailable, authenticate, getBiometryName } = useBiometry();
+  const {
+    isAvailable: biometryAvailable,
+    authenticate,
+    getBiometryName,
+  } = useBiometry();
 
   useEffect(() => {
     checkBiometryEnabled();
@@ -29,9 +36,9 @@ export function UnlockWalletScreen() {
   const checkBiometryEnabled = async () => {
     try {
       const enabled = await storage.get(BIOMETRY_ENABLED_KEY);
-      setBiometryEnabled(enabled === 'true' && biometryAvailable);
+      setBiometryEnabled(enabled === "true" && biometryAvailable);
     } catch (error) {
-      console.error('Error checking biometry enabled:', error);
+      console.error("Error checking biometry enabled:", error);
       setBiometryEnabled(false);
     }
   };
@@ -46,10 +53,10 @@ export function UnlockWalletScreen() {
     try {
       setIsAuthenticating(true);
       const result = await authenticate("Unlock your wallet");
-      
+
       if (result.success) {
         // Navigate to main app (tabs)
-        router.replace('/(tabs)');
+        router.replace("/(tabs)");
       } else {
         // Show error message if authentication failed
         if (result.error) {
@@ -76,7 +83,7 @@ export function UnlockWalletScreen() {
       if (result.success) {
         setError(false);
         // Navigate to main app (tabs) and reset stack
-        router.replace('/(tabs)');
+        router.replace("/(tabs)");
       } else {
         setError(true);
         setTimeout(() => {
@@ -137,15 +144,14 @@ export function UnlockWalletScreen() {
                 Unlock Wallet
               </Text>
               <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
-                {biometryEnabled 
+                {biometryEnabled
                   ? `Use ${getBiometryName()} or enter your PIN to access your documents`
-                  : "Enter your PIN to access your documents"
-                }
+                  : "Enter your PIN to access your documents"}
               </Text>
             </View>
 
             {biometryEnabled && !isAuthenticating && (
-              <Pressable 
+              <Pressable
                 className="mt-2 mb-2 px-6 py-3 bg-primary-main/10 rounded-xl active:opacity-70"
                 onPress={handleBiometricAuth}
               >
@@ -193,10 +199,7 @@ export function UnlockWalletScreen() {
         </View>
 
         <View className="items-center pb-8">
-          <Pressable
-            className="py-3"
-            onPress={() => router.push('/emergency')}
-          >
+          <Pressable className="py-3" onPress={() => router.push("/emergency")}>
             <Text className="text-base md:text-lg text-primary-main font-semibold">
               Emergency Details
             </Text>

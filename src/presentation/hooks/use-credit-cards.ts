@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { CreditCard } from '@domain/entities/credit-card.entity';
-import { CreditCardRepositoryImpl } from '@data/repositories/credit-card.repository.impl';
-import { GetAllCreditCardsUseCase } from '@domain/use-cases/get-all-credit-cards.use-case';
+import { useState, useEffect } from "react";
+import { CreditCard } from "@domain/entities/credit-card.entity";
+import { CreditCardRepositoryImpl } from "@data/repositories/credit-card.repository.impl";
+import { GetAllCreditCardsUseCase } from "@domain/use-cases/get-all-credit-cards.use-case";
 
 export function useCreditCards() {
   const [cards, setCards] = useState<CreditCard[]>([]);
@@ -15,7 +15,7 @@ export function useCreditCards() {
       const loadedCards = await getAllCardsUseCase.execute();
       setCards(loadedCards);
     } catch (error) {
-      console.error('Error loading cards:', error);
+      console.error("Error loading cards:", error);
     } finally {
       setIsLoading(false);
     }
@@ -28,6 +28,6 @@ export function useCreditCards() {
   return {
     cards,
     isLoading,
-    reload: loadCards
+    reload: loadCards,
   };
 }

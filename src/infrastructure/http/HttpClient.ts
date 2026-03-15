@@ -21,27 +21,41 @@ export class HttpClient {
     this.timeout = config.timeout || 30000;
   }
 
-  async get<T>(path: string, headers?: Record<string, string>): Promise<HttpResponse<T>> {
-    return this.request<T>('GET', path, undefined, headers);
+  async get<T>(
+    path: string,
+    headers?: Record<string, string>,
+  ): Promise<HttpResponse<T>> {
+    return this.request<T>("GET", path, undefined, headers);
   }
 
-  async post<T>(path: string, body?: any, headers?: Record<string, string>): Promise<HttpResponse<T>> {
-    return this.request<T>('POST', path, body, headers);
+  async post<T>(
+    path: string,
+    body?: any,
+    headers?: Record<string, string>,
+  ): Promise<HttpResponse<T>> {
+    return this.request<T>("POST", path, body, headers);
   }
 
-  async put<T>(path: string, body?: any, headers?: Record<string, string>): Promise<HttpResponse<T>> {
-    return this.request<T>('PUT', path, body, headers);
+  async put<T>(
+    path: string,
+    body?: any,
+    headers?: Record<string, string>,
+  ): Promise<HttpResponse<T>> {
+    return this.request<T>("PUT", path, body, headers);
   }
 
-  async delete<T>(path: string, headers?: Record<string, string>): Promise<HttpResponse<T>> {
-    return this.request<T>('DELETE', path, undefined, headers);
+  async delete<T>(
+    path: string,
+    headers?: Record<string, string>,
+  ): Promise<HttpResponse<T>> {
+    return this.request<T>("DELETE", path, undefined, headers);
   }
 
   private async request<T>(
     method: string,
     path: string,
     body?: any,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<HttpResponse<T>> {
     const url = `${this.baseURL}${path}`;
     const mergedHeaders = { ...this.defaultHeaders, ...headers };

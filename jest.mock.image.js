@@ -1,1 +1,1 @@
-module.exports = 'test-image-path';
+module.exports = "test-image-path";

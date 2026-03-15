@@ -5,6 +5,7 @@ This folder contains the application screens (containers).
 ## Structure
 
 Screens should:
+
 - Use domain use cases for business logic
 - Manage local UI state
 - Compose presentation components
@@ -13,9 +14,9 @@ Screens should:
 ## Example
 
 ```typescript
-import { useState, useEffect } from 'react';
-import { GetUserByIdUseCase } from '@domain/use-cases/GetUserByIdUseCase';
-import { UserRepository } from '@data/repositories/UserRepository';
+import { useState, useEffect } from "react";
+import { GetUserByIdUseCase } from "@domain/use-cases/GetUserByIdUseCase";
+import { UserRepository } from "@data/repositories/UserRepository";
 
 export function UserProfileScreen({ userId }: { userId: string }) {
   const [user, setUser] = useState(null);
@@ -26,7 +27,7 @@ export function UserProfileScreen({ userId }: { userId: string }) {
       // Manual dependency injection
       const repository = new UserRepository(localDataSource);
       const useCase = new GetUserByIdUseCase(repository);
-      
+
       const userData = await useCase.execute(userId);
       setUser(userData);
       setLoading(false);

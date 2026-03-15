@@ -1,4 +1,4 @@
-import { PinRepository } from '@domain/repositories/pin.repository';
+import { PinRepository } from "@domain/repositories/pin.repository";
 
 export class VerifyPinUseCase {
   constructor(private pinRepository: PinRepository) {}
@@ -8,7 +8,7 @@ export class VerifyPinUseCase {
       if (!pin || pin.length !== 6) {
         return {
           success: false,
-          message: 'PIN must be 6 digits'
+          message: "PIN must be 6 digits",
         };
       }
 
@@ -17,18 +17,18 @@ export class VerifyPinUseCase {
       if (isValid) {
         return {
           success: true,
-          message: 'PIN verified successfully'
+          message: "PIN verified successfully",
         };
       } else {
         return {
           success: false,
-          message: 'Invalid PIN'
+          message: "Invalid PIN",
         };
       }
     } catch (error) {
       return {
         success: false,
-        message: 'Failed to verify PIN'
+        message: "Failed to verify PIN",
       };
     }
   }

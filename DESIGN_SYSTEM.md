@@ -5,6 +5,7 @@ Design system based on Stitch "thorix app" project, implemented with **NativeWin
 ## 🎨 Color Palette
 
 ### Primary Colors
+
 ```typescript
 primary: {
   main: '#135BEC',    // Main brand color
@@ -14,6 +15,7 @@ primary: {
 ```
 
 ### Background Colors
+
 ```typescript
 background: {
   primary: '#0A1929',     // Main background (dark navy)
@@ -23,6 +25,7 @@ background: {
 ```
 
 ### Text Colors
+
 ```typescript
 text: {
   primary: '#FFFFFF',     // Primary text (white)
@@ -32,6 +35,7 @@ text: {
 ```
 
 ### Status Colors
+
 ```typescript
 status: {
   success: '#4CAF50',
@@ -71,6 +75,7 @@ borderRadius: {
 ## 📝 Typography
 
 ### Font Sizes
+
 ```typescript
 fontSize: {
   xs: 12,       // Extra small
@@ -85,6 +90,7 @@ fontSize: {
 ```
 
 ### Font Weights
+
 ```typescript
 fontWeight: {
   regular: '400',
@@ -95,6 +101,7 @@ fontWeight: {
 ```
 
 ### Line Heights
+
 ```typescript
 lineHeight: {
   tight: 1.2,
@@ -106,38 +113,47 @@ lineHeight: {
 ## 🎭 Components
 
 ### PinDot
+
 Visual indicator for PIN entry progress.
 
 **Props:**
+
 - `filled: boolean` - Whether the dot is filled
 
 **Usage:**
+
 ```typescript
 <PinDot filled={true} />
 ```
 
 ### NumericKey
+
 Individual key in the numeric keypad.
 
 **Props:**
+
 - `value: string` - The key value
 - `onPress: (value: string) => void` - Callback when pressed
 - `isBackspace?: boolean` - Whether this is the backspace key
 
 **Usage:**
+
 ```typescript
 <NumericKey value="1" onPress={handlePress} />
 <NumericKey value="⌫" onPress={handleBackspace} isBackspace />
 ```
 
 ### NumericKeypad
+
 Full numeric keypad (0-9 + backspace).
 
 **Props:**
+
 - `onKeyPress: (value: string) => void` - Callback for number keys
 - `onBackspace: () => void` - Callback for backspace
 
 **Usage:**
+
 ```typescript
 <NumericKeypad
   onKeyPress={(value) => setPin(pin + value)}
@@ -148,9 +164,11 @@ Full numeric keypad (0-9 + backspace).
 ## 📱 Screens
 
 ### UnlockWalletScreen
+
 PIN entry screen with biometric authentication option.
 
 **Features:**
+
 - 6-digit PIN entry
 - Visual feedback with pin dots
 - Numeric keypad
@@ -160,6 +178,7 @@ PIN entry screen with biometric authentication option.
 - Lock icon with concentric circles
 
 **Layout:**
+
 - Dark background (#0A1929)
 - Centered content
 - Lock icon at top
@@ -180,12 +199,14 @@ PIN entry screen with biometric authentication option.
 ## 📐 Layout Guidelines
 
 ### Mobile (390px width)
+
 - Padding: 32px horizontal
 - Content max-width: 100%
 - Keypad: 3 columns, centered
 - Icon size: 200px outer circle
 
 ### Spacing Between Elements
+
 - Icon to badge: 32px
 - Badge to title: 24px
 - Title to subtitle: 8px
@@ -196,18 +217,21 @@ PIN entry screen with biometric authentication option.
 ## 🔐 Security UI Patterns
 
 ### Secure Storage Badge
+
 - Small badge with lock icon
 - "SECURE STORAGE" text in caps
 - Blue background with low opacity
 - Positioned above main title
 
 ### PIN Entry Feedback
+
 - 6 dots representing PIN length
 - Filled dots use primary blue
 - Empty dots show border only
 - Smooth fill animation (future)
 
 ### Biometric Prompt
+
 - Subtitle mentions "FaceID or PIN"
 - Icon suggests security
 - Clear call to action
@@ -242,22 +266,22 @@ import { View, Text } from 'react-native';
 ### Using Design Tokens (Alternative)
 
 ```typescript
-import { DesignTokens } from '@presentation/theme/design-tokens';
+import { DesignTokens } from "@presentation/theme/design-tokens";
 
 // Colors
-backgroundColor: DesignTokens.colors.background.primary
-color: DesignTokens.colors.text.primary
+backgroundColor: DesignTokens.colors.background.primary;
+color: DesignTokens.colors.text.primary;
 
 // Spacing
-padding: DesignTokens.spacing.lg
-gap: DesignTokens.spacing.md
+padding: DesignTokens.spacing.lg;
+gap: DesignTokens.spacing.md;
 
 // Border Radius
-borderRadius: DesignTokens.borderRadius.md
+borderRadius: DesignTokens.borderRadius.md;
 
 // Typography
-fontSize: DesignTokens.typography.fontSize.lg
-fontWeight: DesignTokens.typography.fontWeight.semiBold
+fontSize: DesignTokens.typography.fontSize.lg;
+fontWeight: DesignTokens.typography.fontWeight.semiBold;
 ```
 
 ### Responsive Breakpoints
@@ -266,6 +290,7 @@ fontWeight: DesignTokens.typography.fontWeight.semiBold
 - **Tablet/Desktop**: >= 768px (use `md:` prefix)
 
 Example:
+
 ```tsx
 // Small on mobile, large on tablet
 <View className="w-32 md:w-48 h-32 md:h-48" />

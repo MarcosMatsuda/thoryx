@@ -1,19 +1,19 @@
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput } from "react-native";
 
 interface TextInputFieldProps {
   label: string;
   value?: string;
   placeholder?: string;
   onChangeText?: (text: string) => void;
-  keyboardType?: 'default' | 'numeric' | 'email-address';
+  keyboardType?: "default" | "numeric" | "email-address";
 }
 
-export function TextInputField({ 
-  label, 
-  value, 
+export function TextInputField({
+  label,
+  value,
   placeholder,
   onChangeText,
-  keyboardType = 'default'
+  keyboardType = "default",
 }: TextInputFieldProps) {
   return (
     <View className="mb-4">

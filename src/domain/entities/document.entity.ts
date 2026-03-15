@@ -1,4 +1,4 @@
-export type DocumentType = 'CNH' | 'RG';
+export type DocumentType = "CNH" | "RG";
 
 export interface Document {
   id: string;

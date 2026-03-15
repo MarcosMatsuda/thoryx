@@ -118,7 +118,7 @@ export interface Product {
 
 ```typescript
 // src/domain/repositories/IProductRepository.ts
-import { Product } from '@domain/entities/Product';
+import { Product } from "@domain/entities/Product";
 
 export interface IProductRepository {
   findById(id: string): Promise<Product | null>;
@@ -130,15 +130,15 @@ export interface IProductRepository {
 
 ```typescript
 // src/domain/use-cases/GetProductByIdUseCase.ts
-import { Product } from '@domain/entities/Product';
-import { IProductRepository } from '@domain/repositories/IProductRepository';
+import { Product } from "@domain/entities/Product";
+import { IProductRepository } from "@domain/repositories/IProductRepository";
 
 export class GetProductByIdUseCase {
   constructor(private readonly repository: IProductRepository) {}
 
   async execute(productId: string): Promise<Product | null> {
     if (!productId) {
-      throw new Error('Product ID is required');
+      throw new Error("Product ID is required");
     }
     return await this.repository.findById(productId);
   }
@@ -149,9 +149,9 @@ export class GetProductByIdUseCase {
 
 ```typescript
 // src/data/repositories/ProductRepository.ts
-import { Product } from '@domain/entities/Product';
-import { IProductRepository } from '@domain/repositories/IProductRepository';
-import { HttpClient } from '@infrastructure/http/HttpClient';
+import { Product } from "@domain/entities/Product";
+import { IProductRepository } from "@domain/repositories/IProductRepository";
+import { HttpClient } from "@infrastructure/http/HttpClient";
 
 export class ProductRepository implements IProductRepository {
   constructor(private readonly httpClient: HttpClient) {}
@@ -162,7 +162,7 @@ export class ProductRepository implements IProductRepository {
   }
 
   async findAll(): Promise<Product[]> {
-    const response = await this.httpClient.get<Product[]>('/products');
+    const response = await this.httpClient.get<Product[]>("/products");
     return response.data;
   }
 }

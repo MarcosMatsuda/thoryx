@@ -1,7 +1,14 @@
-import { View, ScrollView, Pressable, Dimensions, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { FakeCreditCard, CARD_COLORS } from './fake-credit-card';
-import { CreditCard } from '@domain/entities/credit-card.entity';
-import { useRef, useEffect } from 'react';
+import {
+  View,
+  ScrollView,
+  Pressable,
+  Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from "react-native";
+import { FakeCreditCard, CARD_COLORS } from "./fake-credit-card";
+import { CreditCard } from "@domain/entities/credit-card.entity";
+import { useRef, useEffect } from "react";
 
 interface CreditCardCarouselProps {
   cards: CreditCard[];
@@ -9,10 +16,14 @@ interface CreditCardCarouselProps {
   selectedIndex: number;
 }
 
-export function CreditCardCarousel({ cards, onCardSelect, selectedIndex }: CreditCardCarouselProps) {
+export function CreditCardCarousel({
+  cards,
+  onCardSelect,
+  selectedIndex,
+}: CreditCardCarouselProps) {
   const scrollViewRef = useRef<ScrollView>(null);
   const cardWidth = 320;
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
   const cardSpacing = 20;
   const sideCardPeek = 40;
 
@@ -26,7 +37,7 @@ export function CreditCardCarousel({ cards, onCardSelect, selectedIndex }: Credi
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(offsetX / (cardWidth + cardSpacing));
-    
+
     if (index !== selectedIndex && index >= 0 && index < cards.length) {
       onCardSelect(cards[index], index);
     }
@@ -52,10 +63,10 @@ export function CreditCardCarousel({ cards, onCardSelect, selectedIndex }: Credi
         {cards.map((card, index) => (
           <View
             key={card.id}
-            style={{ 
+            style={{
               width: cardWidth,
               marginRight: index < cards.length - 1 ? cardSpacing : 0,
-              opacity: selectedIndex === index ? 1 : 0.4
+              opacity: selectedIndex === index ? 1 : 0.4,
             }}
           >
             <FakeCreditCard
@@ -74,7 +85,7 @@ export function CreditCardCarousel({ cards, onCardSelect, selectedIndex }: Credi
             <View
               key={index}
               className={`w-2 h-2 rounded-full ${
-                selectedIndex === index ? 'bg-primary-main' : 'bg-ui-border'
+                selectedIndex === index ? "bg-primary-main" : "bg-ui-border"
               }`}
             />
           ))}

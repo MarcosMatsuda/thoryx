@@ -1,5 +1,5 @@
-import { EmergencyInfoRepository } from '@domain/repositories/emergency-info.repository';
-import { EmergencyInfo } from '@domain/entities/emergency-info.entity';
+import { EmergencyInfoRepository } from "@domain/repositories/emergency-info.repository";
+import { EmergencyInfo } from "@domain/entities/emergency-info.entity";
 
 export class GetEmergencyInfoUseCase {
   constructor(private emergencyInfoRepository: EmergencyInfoRepository) {}
@@ -8,7 +8,7 @@ export class GetEmergencyInfoUseCase {
     try {
       return await this.emergencyInfoRepository.get();
     } catch (error) {
-      console.error('Error getting emergency info:', error);
+      console.error("Error getting emergency info:", error);
       return null;
     }
   }

@@ -12,18 +12,22 @@ A funcionalidade de foto de perfil foi implementada com sucesso na tela de Setti
 ## Mudanças Realizadas
 
 ### 1. Modelo de Dados
+
 - **Arquivo:** `src/domain/entities/user-profile.entity.ts`
 - **Alteração:** Adicionado campo `photoUri?: string` nas interfaces `UserProfile` e `UserProfileInput`
 
 ### 2. Camada de Dados
+
 - **Arquivo:** `src/data/repositories/user-profile.repository.impl.ts`
 - **Alteração:** Atualizado método `save()` para persistir o campo `photoUri`
 
 ### 3. Casos de Uso
+
 - **Arquivo:** `src/domain/use-cases/update-profile-photo.use-case.ts` (NOVO)
 - **Funcionalidade:** Use case específico para atualizar apenas a foto do perfil
 
 ### 4. Hooks
+
 - **Arquivo:** `src/presentation/hooks/use-profile-photo.ts` (NOVO)
 - **Funcionalidade:** Hook completo para gerenciar:
   - Permissões de câmera e galeria
@@ -32,6 +36,7 @@ A funcionalidade de foto de perfil foi implementada com sucesso na tela de Setti
   - Tratamento de erros
 
 ### 5. Interface do Usuário
+
 - **Arquivo:** `src/presentation/screens/settings-screen.tsx`
 - **Alterações:**
   - Avatar agora é clicável
@@ -75,15 +80,18 @@ A funcionalidade de foto de perfil foi implementada com sucesso na tela de Setti
 ## Considerações Técnicas
 
 ### Dependências Utilizadas
+
 - `expo-image-picker` (já estava instalado)
 - `expo-camera` (já estava instalado)
 
 ### Performance
+
 - Imagens são armazenadas como URIs (não base64)
 - Qualidade ajustada para 0.8 (balance entre qualidade/tamanho)
 - Processamento assíncrono para não bloquear UI
 
 ### Segurança
+
 - Armazenamento via SecureStorage (MMKV criptografado)
 - Permissões solicitadas apenas quando necessário
 - Dados de perfil isolados por storage key
@@ -91,11 +99,13 @@ A funcionalidade de foto de perfil foi implementada com sucesso na tela de Setti
 ## Testes Realizados
 
 ### Testes Unitários Implícitos
+
 - ✅ TypeScript compila sem erros
 - ✅ ESLint passa (apenas warnings existentes)
 - ✅ Interfaces consistentes em todo o fluxo
 
 ### Testes Manuais Necessários
+
 1. Testar fluxo completo (sem foto → selecionar foto → ver foto)
 2. Testar persistência (fechar/reabrir app)
 3. Testar permissões (negar/aceitar)

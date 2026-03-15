@@ -1,5 +1,5 @@
-import * as SecureStore from 'expo-secure-store';
-import { ILocalDataSource } from '@data/sources/ILocalDataSource';
+import * as SecureStore from "expo-secure-store";
+import { ILocalDataSource } from "@data/sources/ILocalDataSource";
 
 export class SecureStorageAdapter<T> implements ILocalDataSource<T> {
   async get(key: string): Promise<T | null> {
@@ -35,10 +35,14 @@ export class SecureStorageAdapter<T> implements ILocalDataSource<T> {
   }
 
   async getAll(): Promise<T[]> {
-    throw new Error('SecureStore does not support listing all keys. Consider using AsyncStorage for this use case.');
+    throw new Error(
+      "SecureStore does not support listing all keys. Consider using AsyncStorage for this use case.",
+    );
   }
 
   async clear(): Promise<void> {
-    throw new Error('SecureStore does not support clearing all items. You must remove items individually.');
+    throw new Error(
+      "SecureStore does not support clearing all items. You must remove items individually.",
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { SettingsScreen } from '@presentation/screens/settings-screen';
+import { SettingsScreen } from "@presentation/screens/settings-screen";
 
 export default function Settings() {
   return <SettingsScreen />;

@@ -1,4 +1,7 @@
-import { UserProfile, UserProfileInput } from '@domain/entities/user-profile.entity';
+import {
+  UserProfile,
+  UserProfileInput,
+} from "@domain/entities/user-profile.entity";
 
 export interface UserProfileRepository {
   save(profile: UserProfileInput): Promise<UserProfile>;

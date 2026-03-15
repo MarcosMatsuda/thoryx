@@ -1,4 +1,4 @@
-import { Pin, PinInput } from '@domain/entities/pin.entity';
+import { Pin, PinInput } from "@domain/entities/pin.entity";
 
 export interface PinRepository {
   save(pinInput: PinInput): Promise<Pin>;

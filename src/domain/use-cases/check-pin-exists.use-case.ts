@@ -1,4 +1,4 @@
-import { PinRepository } from '@domain/repositories/pin.repository';
+import { PinRepository } from "@domain/repositories/pin.repository";
 
 export class CheckPinExistsUseCase {
   constructor(private pinRepository: PinRepository) {}
@@ -7,7 +7,7 @@ export class CheckPinExistsUseCase {
     try {
       return await this.pinRepository.exists();
     } catch (error) {
-      console.error('Error checking PIN existence:', error);
+      console.error("Error checking PIN existence:", error);
       return false;
     }
   }

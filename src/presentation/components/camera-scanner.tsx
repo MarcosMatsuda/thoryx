@@ -1,12 +1,14 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useEffect, useRef, useState } from 'react';
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { useEffect, useRef, useState } from "react";
 
 let TextRecognition: any = null;
 try {
-  TextRecognition = require('expo-text-recognition');
+  TextRecognition = require("expo-text-recognition");
 } catch (error) {
-  console.log('expo-text-recognition not available in Expo Go. OCR will be disabled.');
+  console.log(
+    "expo-text-recognition not available in Expo Go. OCR will be disabled.",
+  );
 }
 
 interface CameraScannerProps {
@@ -31,16 +33,17 @@ export function CameraScanner({ onCardDataExtracted }: CameraScannerProps) {
   const extractCardData = (text: string) => {
     const cardNumber = text.match(/\d{4}\s?\d{4}\s?\d{4}\s?\d{4}/)?.[0];
     const expiryDate = text.match(/\d{2}\/\d{2,4}/)?.[0];
-    
-    const lines = text.split('\n').filter(line => line.trim().length > 0);
-    const cardholderName = lines.find(line => 
-      /^[A-Z\s]{5,}$/.test(line.trim()) && 
-      !line.includes('CARD') && 
-      !line.includes('CREDIT')
+
+    const lines = text.split("\n").filter((line) => line.trim().length > 0);
+    const cardholderName = lines.find(
+      (line) =>
+        /^[A-Z\s]{5,}$/.test(line.trim()) &&
+        !line.includes("CARD") &&
+        !line.includes("CREDIT"),
     );
 
     return {
-      cardNumber: cardNumber?.replace(/\s/g, ''),
+      cardNumber: cardNumber?.replace(/\s/g, ""),
       expiryDate,
       cardholderName: cardholderName?.trim(),
     };
@@ -54,23 +57,28 @@ export function CameraScanner({ onCardDataExtracted }: CameraScannerProps) {
         if (photo) {
           if (TextRecognition) {
             try {
-              const textLines = await TextRecognition.getTextFromFrame(photo.uri, false);
-              const fullText = textLines.join('\n');
+              const textLines = await TextRecognition.getTextFromFrame(
+                photo.uri,
+                false,
+              );
+              const fullText = textLines.join("\n");
               const cardData = extractCardData(fullText);
-              
+
               if (onCardDataExtracted) {
                 onCardDataExtracted(cardData);
               }
             } catch (ocrError) {
-              console.warn('OCR failed:', ocrError);
-              console.log('User can fill fields manually.');
+              console.warn("OCR failed:", ocrError);
+              console.log("User can fill fields manually.");
             }
           } else {
-            console.log('OCR not available in Expo Go. User can fill fields manually.');
+            console.log(
+              "OCR not available in Expo Go. User can fill fields manually.",
+            );
           }
         }
       } catch (error) {
-        console.error('Error scanning card:', error);
+        console.error("Error scanning card:", error);
       } finally {
         setIsScanning(false);
       }
@@ -91,11 +99,13 @@ export function CameraScanner({ onCardDataExtracted }: CameraScannerProps) {
         <Text className="text-text-primary text-center mb-4">
           Camera permission is required to scan cards
         </Text>
-        <Pressable 
+        <Pressable
           className="bg-primary-main rounded-xl px-6 py-3"
           onPress={requestPermission}
         >
-          <Text className="text-text-primary font-semibold">Grant Permission</Text>
+          <Text className="text-text-primary font-semibold">
+            Grant Permission
+          </Text>
         </Pressable>
       </View>
     );
@@ -103,11 +113,7 @@ export function CameraScanner({ onCardDataExtracted }: CameraScannerProps) {
 
   return (
     <View className="w-full rounded-2xl aspect-[4/3] overflow-hidden mb-6">
-      <CameraView 
-        ref={cameraRef}
-        style={styles.camera}
-        facing="back"
-      >
+      <CameraView ref={cameraRef} style={styles.camera} facing="back">
         <View className="flex-1 items-center justify-center">
           <View className="absolute top-[18%] left-[8%] w-16 h-16 border-l-[6px] border-t-[6px] border-primary-main rounded-tl-3xl" />
           <View className="absolute top-[18%] right-[8%] w-16 h-16 border-r-[6px] border-t-[6px] border-primary-main rounded-tr-3xl" />
@@ -123,20 +129,18 @@ export function CameraScanner({ onCardDataExtracted }: CameraScannerProps) {
           </View>
 
           <View className="absolute bottom-6 left-0 right-0 items-center">
-            <Pressable 
+            <Pressable
               className={`rounded-full px-6 py-3 flex-row items-center justify-center ${
-                isScanning 
-                  ? 'bg-ui-border' 
-                  : 'bg-primary-main active:bg-primary-dark'
+                isScanning
+                  ? "bg-ui-border"
+                  : "bg-primary-main active:bg-primary-dark"
               }`}
               onPress={handleScan}
               disabled={isScanning}
             >
-              <Text className="text-lg mr-2">
-                {isScanning ? '⏳' : '📷'}
-              </Text>
+              <Text className="text-lg mr-2">{isScanning ? "⏳" : "📷"}</Text>
               <Text className="text-base font-bold text-text-primary">
-                {isScanning ? 'Scanning...' : 'Scan Card'}
+                {isScanning ? "Scanning..." : "Scan Card"}
               </Text>
             </Pressable>
           </View>

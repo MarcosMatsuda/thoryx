@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable } from "react-native";
 
 interface SelectableDocumentItemProps {
   icon: string;
@@ -15,7 +15,7 @@ export function SelectableDocumentItem({
   subtitle,
   selected,
   onToggle,
-  iconBg = 'bg-primary-main/10'
+  iconBg = "bg-primary-main/10",
 }: SelectableDocumentItemProps) {
   return (
     <Pressable
@@ -23,12 +23,14 @@ export function SelectableDocumentItem({
       onPress={onToggle}
     >
       <View className="flex-row items-center flex-1">
-        <View className={`w-6 h-6 rounded-full border-2 mr-4 items-center justify-center ${
-          selected ? 'bg-primary-main border-primary-main' : 'border-ui-border'
-        }`}>
-          {selected && (
-            <Text className="text-white text-xs font-bold">✓</Text>
-          )}
+        <View
+          className={`w-6 h-6 rounded-full border-2 mr-4 items-center justify-center ${
+            selected
+              ? "bg-primary-main border-primary-main"
+              : "border-ui-border"
+          }`}
+        >
+          {selected && <Text className="text-white text-xs font-bold">✓</Text>}
         </View>
 
         <View className="flex-1">
@@ -41,7 +43,9 @@ export function SelectableDocumentItem({
         </View>
       </View>
 
-      <View className={`w-10 h-10 md:w-12 md:h-12 ${iconBg} rounded-lg items-center justify-center ml-3`}>
+      <View
+        className={`w-10 h-10 md:w-12 md:h-12 ${iconBg} rounded-lg items-center justify-center ml-3`}
+      >
         <Text className="text-xl md:text-2xl">{icon}</Text>
       </View>
     </Pressable>

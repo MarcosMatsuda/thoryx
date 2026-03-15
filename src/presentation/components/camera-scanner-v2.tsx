@@ -1,15 +1,15 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
-import { useEffect, useState } from 'react';
-import { FakeCreditCard } from './fake-credit-card';
+import { useEffect, useState } from "react";
+import { FakeCreditCard } from "./fake-credit-card";
 
 let VisionCamera: any = null;
 let OCRPlugin: any = null;
 
 try {
-  VisionCamera = require('react-native-vision-camera');
-  OCRPlugin = require('vision-camera-ocr');
+  VisionCamera = require("react-native-vision-camera");
+  OCRPlugin = require("vision-camera-ocr");
 } catch (error) {
-  console.log('Vision Camera not available. Using fallback mode.');
+  console.log("Vision Camera not available. Using fallback mode.");
 }
 
 interface CameraScannerV2Props {
@@ -23,16 +23,16 @@ interface CameraScannerV2Props {
   expiryDate?: string;
 }
 
-export function CameraScannerV2({ 
+export function CameraScannerV2({
   onCardDataExtracted,
   cardNumber,
   cardholderName,
-  expiryDate 
+  expiryDate,
 }: CameraScannerV2Props) {
   const [hasPermission, setHasPermission] = useState(false);
   const [isVisionCameraAvailable, setIsVisionCameraAvailable] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const device = VisionCamera ? VisionCamera.useCameraDevice('back') : null;
+  const device = VisionCamera ? VisionCamera.useCameraDevice("back") : null;
 
   useEffect(() => {
     checkPermissions();
@@ -41,11 +41,12 @@ export function CameraScannerV2({
   const checkPermissions = async () => {
     if (VisionCamera && VisionCamera.Camera) {
       try {
-        const cameraPermission = await VisionCamera.Camera.requestCameraPermission();
-        setHasPermission(cameraPermission === 'granted');
+        const cameraPermission =
+          await VisionCamera.Camera.requestCameraPermission();
+        setHasPermission(cameraPermission === "granted");
         setIsVisionCameraAvailable(true);
       } catch (error) {
-        console.log('Vision Camera not available, using fallback');
+        console.log("Vision Camera not available, using fallback");
         setIsVisionCameraAvailable(false);
       }
     } else {
@@ -71,11 +72,13 @@ export function CameraScannerV2({
         <Text className="text-text-primary text-center mb-4">
           Camera permission is required to scan cards
         </Text>
-        <Pressable 
+        <Pressable
           className="bg-primary-main rounded-xl px-6 py-3"
           onPress={checkPermissions}
         >
-          <Text className="text-text-primary font-semibold">Grant Permission</Text>
+          <Text className="text-text-primary font-semibold">
+            Grant Permission
+          </Text>
         </Pressable>
       </View>
     );
@@ -93,11 +96,7 @@ export function CameraScannerV2({
 
   return (
     <View className="w-full rounded-2xl aspect-[4/3] overflow-hidden mb-6">
-      <Camera
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={true}
-      >
+      <Camera style={StyleSheet.absoluteFill} device={device} isActive={true}>
         <View className="flex-1 items-center justify-center">
           <View className="absolute top-[18%] left-[8%] w-16 h-16 border-l-[6px] border-t-[6px] border-primary-main rounded-tl-3xl" />
           <View className="absolute top-[18%] right-[8%] w-16 h-16 border-r-[6px] border-t-[6px] border-primary-main rounded-tr-3xl" />

@@ -1,7 +1,7 @@
-import { View, Text, Pressable, Modal } from 'react-native';
-import { useState, useEffect } from 'react';
-import { PinDot } from './pin-dot';
-import { NumericKeypad } from './numeric-keypad';
+import { View, Text, Pressable, Modal } from "react-native";
+import { useState, useEffect } from "react";
+import { PinDot } from "./pin-dot";
+import { NumericKeypad } from "./numeric-keypad";
 
 interface PinConfirmationBottomSheetProps {
   visible: boolean;
@@ -20,9 +20,9 @@ export function PinConfirmationBottomSheet({
   onClose,
   onConfirm,
   originalPin,
-  title = 'Confirm Your PIN',
-  subtitle = 'Please re-enter your 6-digit PIN to verify.',
-  context = 'Initial PIN Setup',
+  title = "Confirm Your PIN",
+  subtitle = "Please re-enter your 6-digit PIN to verify.",
+  context = "Initial PIN Setup",
 }: PinConfirmationBottomSheetProps) {
   const [confirmPin, setConfirmPin] = useState("");
   const [error, setError] = useState(false);
@@ -68,11 +68,11 @@ export function PinConfirmationBottomSheet({
       animationType="slide"
       onRequestClose={handleClose}
     >
-      <Pressable 
+      <Pressable
         className="flex-1 bg-black/70 justify-end"
         onPress={handleClose}
       >
-        <Pressable 
+        <Pressable
           className="bg-background-primary rounded-t-3xl h-[80%]"
           onPress={(e) => e.stopPropagation()}
         >
@@ -105,8 +105,8 @@ export function PinConfirmationBottomSheet({
               <View className="items-center mt-6">
                 <View className="flex-row gap-3 md:gap-5">
                   {Array.from({ length: PIN_LENGTH }).map((_, index) => (
-                    <PinDot 
-                      key={index} 
+                    <PinDot
+                      key={index}
                       filled={index < confirmPin.length}
                       error={error && confirmPin.length === PIN_LENGTH}
                     />

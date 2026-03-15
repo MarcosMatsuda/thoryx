@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
-import { View, Image } from 'react-native';
+import { useEffect } from "react";
+import { View, Image } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   Easing,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
 export function SplashScreen() {
   const opacity = useSharedValue(0);
@@ -25,10 +25,13 @@ export function SplashScreen() {
   });
 
   return (
-    <View testID="splash-container" className="flex-1 bg-primary-main items-center justify-center">
+    <View
+      testID="splash-container"
+      className="flex-1 bg-primary-main items-center justify-center"
+    >
       <Animated.View style={animatedStyle}>
         <Image
-          source={require('../../../assets/images/splash-icon.png')}
+          source={require("../../../assets/images/splash-icon.png")}
           className="w-48 h-48"
           resizeMode="contain"
           accessibilityLabel="Thoryx Logo"

@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
-import { ReactNode } from 'react';
+import { View, Text } from "react-native";
+import { ReactNode } from "react";
 
 interface SettingsSectionProps {
   title: string;
