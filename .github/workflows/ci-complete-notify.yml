@@ -27,12 +27,15 @@ jobs:
             JOBS="(see GitHub Actions for details)"
           fi
 
-          MSG="$EMOJI CI $STATUS
-Branch: $BRANCH
-Jobs: $JOBS
-Workflow: https://github.com/$REPO/actions/runs/$RUN_ID"
+          TEXT=$(cat <<EOF
+          $EMOJI CI $STATUS
+          Branch: $BRANCH
+          Jobs: $JOBS
+          Workflow: https://github.com/$REPO/actions/runs/$RUN_ID
+          EOF
+          )
 
           curl -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
             --data-urlencode "channel=C0AL2R8S858" \
-            --data-urlencode "text=$MSG"
+            --data-urlencode "text=$TEXT"
