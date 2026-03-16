@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { EmergencyInfo } from "@domain/entities/emergency-info.entity";
 import { EmergencyInfoRepositoryImpl } from "@data/repositories/emergency-info.repository.impl";
 import { GetEmergencyInfoUseCase } from "@domain/use-cases/get-emergency-info.use-case";
@@ -13,7 +13,7 @@ export function useEmergencyInfo() {
     loadEmergencyInfo();
   }, []);
 
-  const loadEmergencyInfo = async () => {
+  const loadEmergencyInfo = useCallback(async () => {
     try {
       setIsLoading(true);
       const repository = new EmergencyInfoRepositoryImpl();
@@ -26,11 +26,9 @@ export function useEmergencyInfo() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const refresh = () => {
-    loadEmergencyInfo();
-  };
+  const refresh = loadEmergencyInfo;
 
   return {
     emergencyInfo,
