@@ -1,0 +1,74 @@
+name: Notify Maestro — CI Complete
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+jobs:
+  notify-maestro:
+    name: Notify Maestro in Slack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract PR and CI info
+        id: ci_info
+        run: |
+          WORKFLOW_CONCLUSION="${{ github.event.workflow_run.conclusion }}"
+          WORKFLOW_HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
+          WORKFLOW_RUN_ID="${{ github.event.workflow_run.id }}"
+          REPO="${{ github.repository }}"
+
+          # Get PR number from branch name (feat/task-N-* → #N)
+          if [[ "$WORKFLOW_HEAD_BRANCH" =~ ^(feat|fix)/.*-([0-9]+)-.* ]]; then
+            ISSUE_NUM="${BASH_REMATCH[2]}"
+          else
+            ISSUE_NUM="unknown"
+          fi
+
+          echo "conclusion=$WORKFLOW_CONCLUSION" >> $GITHUB_OUTPUT
+          echo "branch=$WORKFLOW_HEAD_BRANCH" >> $GITHUB_OUTPUT
+          echo "issue_num=$ISSUE_NUM" >> $GITHUB_OUTPUT
+          echo "workflow_run_id=$WORKFLOW_RUN_ID" >> $GITHUB_OUTPUT
+
+      - name: Build Slack message
+        id: slack_msg
+        run: |
+          CONCLUSION="${{ steps.ci_info.outputs.conclusion }}"
+          BRANCH="${{ steps.ci_info.outputs.branch }}"
+          ISSUE_NUM="${{ steps.ci_info.outputs.issue_num }}"
+          WORKFLOW_RUN_ID="${{ steps.ci_info.outputs.workflow_run_id }}"
+
+          if [ "$CONCLUSION" = "success" ]; then
+            EMOJI="✅"
+            STATUS="PASSED"
+            JOBS_STATUS="audit ✅ | lint ✅ | typecheck ✅ | tests ✅"
+          else
+            EMOJI="❌"
+            STATUS="FAILED"
+            JOBS_STATUS="(check GitHub Actions for details)"
+          fi
+
+          PR_URL="https://github.com/${{ github.repository }}/pull/${ISSUE_NUM}"
+          WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${WORKFLOW_RUN_ID}"
+
+          MSG="${EMOJI} CI ${STATUS}
+Branch: ${BRANCH}
+Jobs: ${JOBS_STATUS}
+PR: ${PR_URL}
+Details: ${WORKFLOW_URL}"
+
+          echo "text=$MSG" >> $GITHUB_OUTPUT
+
+      - name: Post to #maestro-agent
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg channel "C0AL2R8S858" \
+            --arg text "${{ steps.slack_msg.outputs.text }}" \
+            '{channel: $channel, text: $text}')
+
+          echo "Payload: $PAYLOAD"
+
+          curl -s -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" | jq '.'
