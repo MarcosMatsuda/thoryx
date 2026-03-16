@@ -1,0 +1,41 @@
+name: Notify Maestro — CI Complete
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+jobs:
+  notify-maestro:
+    name: Notify Maestro in Slack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack when CI completes
+        run: |
+          CONCLUSION="${{ github.event.workflow_run.conclusion }}"
+          BRANCH="${{ github.event.workflow_run.head_branch }}"
+          RUN_ID="${{ github.event.workflow_run.id }}"
+          REPO="${{ github.repository }}"
+
+          if [ "$CONCLUSION" = "success" ]; then
+            EMOJI="✅"
+            STATUS="PASSED"
+            JOBS="audit ✅ | lint ✅ | typecheck ✅ | tests ✅"
+          else
+            EMOJI="❌"
+            STATUS="FAILED"
+            JOBS="(see GitHub Actions for details)"
+          fi
+
+          TEXT=$(cat <<EOF
+          $EMOJI CI $STATUS
+          Branch: $BRANCH
+          Jobs: $JOBS
+          Workflow: https://github.com/$REPO/actions/runs/$RUN_ID
+          EOF
+          )
+
+          curl -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            --data-urlencode "channel=C0AL2R8S858" \
+            --data-urlencode "text=$TEXT"
