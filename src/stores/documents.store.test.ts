@@ -9,19 +9,29 @@ describe("useDocumentsStore", () => {
   const mockDocuments: Document[] = [
     {
       id: "doc-1",
-      name: "RG",
-      type: "identification",
-      fileUrl: "https://example.com/doc1.pdf",
-      uploadedAt: new Date(),
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      type: "RG",
+      documentNumber: "123456789",
+      fullName: "John Doe",
+      dateOfBirth: "1990-01-01",
+      expiryDate: "2030-01-01",
+      frontPhotoEncrypted: "encrypted-front-1",
+      backPhotoEncrypted: "encrypted-back-1",
+      isAutoLockEnabled: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       id: "doc-2",
-      name: "Comprovante de Residência",
-      type: "address",
-      fileUrl: "https://example.com/doc2.pdf",
-      uploadedAt: new Date(),
-      expiresAt: null,
+      type: "CNH",
+      documentNumber: "987654321",
+      fullName: "Jane Smith",
+      dateOfBirth: "1985-05-15",
+      expiryDate: "2025-05-15",
+      frontPhotoEncrypted: "encrypted-front-2",
+      backPhotoEncrypted: "encrypted-back-2",
+      isAutoLockEnabled: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   ];
 
@@ -236,21 +246,21 @@ describe("useDocumentsStore", () => {
       await store.loadDocuments();
 
       expect(store.documents[0]).toHaveProperty("id");
-      expect(store.documents[0]).toHaveProperty("name");
       expect(store.documents[0]).toHaveProperty("type");
-      expect(store.documents[0]).toHaveProperty("fileUrl");
+      expect(store.documents[0]).toHaveProperty("documentNumber");
+      expect(store.documents[0]).toHaveProperty("fullName");
     });
 
-    it("should handle documents with null expiration", async () => {
-      const docsWithoutExpiry = [
+    it("should handle documents with auto-lock disabled", async () => {
+      const docsWithoutAutoLock = [
         {
           ...mockDocuments[0],
-          expiresAt: null,
+          isAutoLockEnabled: false,
         },
       ];
 
       const mockGetAllDocumentsUseCase = {
-        execute: jest.fn().mockResolvedValue(docsWithoutExpiry),
+        execute: jest.fn().mockResolvedValue(docsWithoutAutoLock),
       };
 
       (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
@@ -260,7 +270,7 @@ describe("useDocumentsStore", () => {
       const store = useDocumentsStore.getState();
       await store.loadDocuments();
 
-      expect(store.documents[0].expiresAt).toBeNull();
+      expect(store.documents[0].isAutoLockEnabled).toBe(false);
     });
   });
 
@@ -309,11 +319,16 @@ describe("useDocumentsStore", () => {
     it("should handle very large document arrays", async () => {
       const largeDocumentArray = Array.from({ length: 1000 }, (_, i) => ({
         id: `doc-${i}`,
-        name: `Document ${i}`,
-        type: "generic",
-        fileUrl: `https://example.com/doc${i}.pdf`,
-        uploadedAt: new Date(),
-        expiresAt: null,
+        type: i % 2 === 0 ? "RG" : "CNH",
+        documentNumber: `${100000000 + i}`,
+        fullName: `Person ${i}`,
+        dateOfBirth: `199${i % 10}-01-01`,
+        expiryDate: `2030-01-01`,
+        frontPhotoEncrypted: `encrypted-front-${i}`,
+        backPhotoEncrypted: `encrypted-back-${i}`,
+        isAutoLockEnabled: i % 3 === 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }));
 
       const mockGetAllDocumentsUseCase = {

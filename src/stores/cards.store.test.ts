@@ -11,9 +11,8 @@ describe("useCardsStore", () => {
       id: "card-1",
       lastFourDigits: "1234",
       cardholderName: "John Doe",
-      brand: "Visa",
+      cardNumber: "4111111111111234",
       expiryDate: "12/25",
-      isDefault: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -21,9 +20,8 @@ describe("useCardsStore", () => {
       id: "card-2",
       lastFourDigits: "5678",
       cardholderName: "John Doe",
-      brand: "Mastercard",
+      cardNumber: "5555555555555678",
       expiryDate: "06/26",
-      isDefault: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -242,9 +240,8 @@ describe("useCardsStore", () => {
       expect(store.cards[0]).toHaveProperty("id");
       expect(store.cards[0]).toHaveProperty("lastFourDigits");
       expect(store.cards[0]).toHaveProperty("cardholderName");
-      expect(store.cards[0]).toHaveProperty("brand");
+      expect(store.cards[0]).toHaveProperty("cardNumber");
       expect(store.cards[0]).toHaveProperty("expiryDate");
-      expect(store.cards[0]).toHaveProperty("isDefault");
     });
 
     it("should preserve card metadata", async () => {
@@ -260,27 +257,8 @@ describe("useCardsStore", () => {
       await store.loadCards();
 
       expect(store.cards[0].lastFourDigits).toBe("1234");
-      expect(store.cards[0].brand).toBe("Visa");
-      expect(store.cards[0].isDefault).toBe(true);
-    });
-
-    it("should handle default card flag correctly", async () => {
-      const mockGetAllCreditCardsUseCase = {
-        execute: jest.fn().mockResolvedValue(mockCards),
-      };
-
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
-
-      const store = useCardsStore.getState();
-      await store.loadCards();
-
-      const defaultCard = store.cards.find((card) => card.isDefault);
-      const nonDefaultCard = store.cards.find((card) => !card.isDefault);
-
-      expect(defaultCard?.id).toBe("card-1");
-      expect(nonDefaultCard?.id).toBe("card-2");
+      expect(store.cards[0].cardholderName).toBe("John Doe");
+      expect(store.cards[0].expiryDate).toBe("12/25");
     });
   });
 
@@ -298,8 +276,8 @@ describe("useCardsStore", () => {
       await store.loadCards();
 
       expect(store.cards).toHaveLength(2);
-      expect(store.cards.map((c) => c.brand)).toContain("Visa");
-      expect(store.cards.map((c) => c.brand)).toContain("Mastercard");
+      expect(store.cards.map((c) => c.lastFourDigits)).toContain("1234");
+      expect(store.cards.map((c) => c.lastFourDigits)).toContain("5678");
     });
 
     it("should load single card correctly", async () => {
@@ -316,7 +294,7 @@ describe("useCardsStore", () => {
       await store.loadCards();
 
       expect(store.cards).toHaveLength(1);
-      expect(store.cards[0].brand).toBe("Visa");
+      expect(store.cards[0].lastFourDigits).toBe("1234");
     });
   });
 
@@ -367,9 +345,8 @@ describe("useCardsStore", () => {
         id: `card-${i}`,
         lastFourDigits: `${String(i).padStart(4, "0")}`,
         cardholderName: "John Doe",
-        brand: i % 2 === 0 ? "Visa" : "Mastercard",
+        cardNumber: `411111111111${String(i).padStart(4, "0")}`,
         expiryDate: "12/25",
-        isDefault: i === 0,
         createdAt: new Date(),
         updatedAt: new Date(),
       }));
@@ -406,16 +383,16 @@ describe("useCardsStore", () => {
       expect(store.cards).toEqual([]);
     });
 
-    it("should handle different card brands correctly", async () => {
-      const multipleCardBrands = [
-        { ...mockCards[0], brand: "Visa" },
-        { ...mockCards[1], brand: "Mastercard" },
-        { ...mockCards[0], id: "card-3", brand: "Elo" },
-        { ...mockCards[0], id: "card-4", brand: "American Express" },
+    it("should handle multiple cards with different last four digits correctly", async () => {
+      const multipleCards = [
+        { ...mockCards[0], id: "card-3", lastFourDigits: "1111" },
+        { ...mockCards[1], id: "card-4", lastFourDigits: "2222" },
+        { ...mockCards[0], id: "card-5", lastFourDigits: "3333" },
+        { ...mockCards[1], id: "card-6", lastFourDigits: "4444" },
       ];
 
       const mockGetAllCreditCardsUseCase = {
-        execute: jest.fn().mockResolvedValue(multipleCardBrands),
+        execute: jest.fn().mockResolvedValue(multipleCards),
       };
 
       (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
@@ -426,11 +403,11 @@ describe("useCardsStore", () => {
       await store.loadCards();
 
       expect(store.cards).toHaveLength(4);
-      const brands = store.cards.map((c) => c.brand);
-      expect(brands).toContain("Visa");
-      expect(brands).toContain("Mastercard");
-      expect(brands).toContain("Elo");
-      expect(brands).toContain("American Express");
+      const lastFourDigits = store.cards.map((c) => c.lastFourDigits);
+      expect(lastFourDigits).toContain("1111");
+      expect(lastFourDigits).toContain("2222");
+      expect(lastFourDigits).toContain("3333");
+      expect(lastFourDigits).toContain("4444");
     });
   });
 });

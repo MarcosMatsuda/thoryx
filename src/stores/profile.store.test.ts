@@ -9,20 +9,15 @@ jest.mock("@data/repositories/user-profile.repository.impl");
 
 describe("useProfileStore", () => {
   const mockProfile: UserProfile = {
-    id: "user-123",
     name: "John Doe",
-    email: "john@example.com",
-    phone: "123456789",
-    cpf: "12345678900",
+    photoUri: "https://example.com/photo.jpg",
     createdAt: new Date(),
     updatedAt: new Date(),
   };
 
   const mockProfileInput: UserProfileInput = {
     name: "John Doe",
-    email: "john@example.com",
-    phone: "123456789",
-    cpf: "12345678900",
+    photoUri: "https://example.com/photo.jpg",
   };
 
   beforeEach(() => {
