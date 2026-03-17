@@ -10,9 +10,11 @@ import "react-native-reanimated";
 import "../global.css";
 
 import { useColorScheme } from "@presentation/hooks/use-color-scheme";
+import { usePreventScreenCapture } from "expo-screen-capture";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  usePreventScreenCapture();
 
   return (
     <SafeAreaProvider>
