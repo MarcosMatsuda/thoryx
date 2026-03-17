@@ -37,6 +37,7 @@ describe("useDocumentsStore", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useDocumentsStore.setState({ documents: [], isLoading: false });
   });
 
   describe("Initial state", () => {
@@ -59,23 +60,21 @@ describe("useDocumentsStore", () => {
 
   describe("loadDocuments action", () => {
     it("should load documents successfully", async () => {
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
+      await loadDocuments();
 
-      const store = useDocumentsStore.getState();
-      await store.loadDocuments();
-
-      expect(store.documents).toEqual(mockDocuments);
-      expect(store.isLoading).toBe(false);
+      const state = useDocumentsStore.getState();
+      expect(state.documents).toEqual(mockDocuments);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should set isLoading to true during load", async () => {
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest
           .fn()
           .mockImplementation(
@@ -85,170 +84,144 @@ describe("useDocumentsStore", () => {
               ),
           ),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
+      await loadDocuments();
 
-      const store = useDocumentsStore.getState();
-      const loadPromise = store.loadDocuments();
-
-      await loadPromise;
-
-      expect(mockGetAllDocumentsUseCase.execute).toHaveBeenCalled();
-      expect(store.isLoading).toBe(false);
+      expect(mockUseCase.execute).toHaveBeenCalled();
+      expect(useDocumentsStore.getState().isLoading).toBe(false);
     });
 
     it("should handle error when loading documents fails", async () => {
-      const mockGetAllDocumentsUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("Network error")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
+      await loadDocuments();
 
-      const store = useDocumentsStore.getState();
-      await store.loadDocuments();
-
-      expect(store.documents).toEqual([]);
-      expect(store.isLoading).toBe(false);
+      const state = useDocumentsStore.getState();
+      expect(state.documents).toEqual([]);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should call use case execute method", async () => {
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
+      await loadDocuments();
 
-      const store = useDocumentsStore.getState();
-      await store.loadDocuments();
-
-      expect(mockGetAllDocumentsUseCase.execute).toHaveBeenCalled();
+      expect(mockUseCase.execute).toHaveBeenCalled();
     });
 
     it("should load empty array when no documents exist", async () => {
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue([]),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
+      await loadDocuments();
 
-      const store = useDocumentsStore.getState();
-      await store.loadDocuments();
-
-      expect(store.documents).toEqual([]);
-      expect(store.isLoading).toBe(false);
+      const state = useDocumentsStore.getState();
+      expect(state.documents).toEqual([]);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should handle server error gracefully", async () => {
-      const mockGetAllDocumentsUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("500 Internal Server Error")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("500 Internal Server Error")),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
-
-      const store = useDocumentsStore.getState();
+      const { loadDocuments } = useDocumentsStore.getState();
 
       // Should not throw
-      await expect(store.loadDocuments()).resolves.toBeUndefined();
-      expect(store.isLoading).toBe(false);
+      await expect(loadDocuments()).resolves.toBeUndefined();
+      expect(useDocumentsStore.getState().isLoading).toBe(false);
     });
 
     it("should replace previous documents on new load", async () => {
       const firstBatch = [mockDocuments[0]];
       const secondBatch = mockDocuments;
 
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn(),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
-
-      const store = useDocumentsStore.getState();
+      const { loadDocuments } = useDocumentsStore.getState();
 
       // Load first batch
-      mockGetAllDocumentsUseCase.execute.mockResolvedValueOnce(firstBatch);
-      await store.loadDocuments();
-      expect(store.documents).toEqual(firstBatch);
+      mockUseCase.execute.mockResolvedValueOnce(firstBatch);
+      await loadDocuments();
+      expect(useDocumentsStore.getState().documents).toEqual(firstBatch);
 
       // Load second batch
-      mockGetAllDocumentsUseCase.execute.mockResolvedValueOnce(secondBatch);
-      await store.loadDocuments();
-      expect(store.documents).toEqual(secondBatch);
+      mockUseCase.execute.mockResolvedValueOnce(secondBatch);
+      await loadDocuments();
+      expect(useDocumentsStore.getState().documents).toEqual(secondBatch);
     });
   });
 
   describe("reset action", () => {
     it("should reset documents to empty array", async () => {
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
-
-      const store = useDocumentsStore.getState();
+      const { loadDocuments, reset } = useDocumentsStore.getState();
 
       // Load documents
-      await store.loadDocuments();
-      expect(store.documents).toEqual(mockDocuments);
+      await loadDocuments();
+      expect(useDocumentsStore.getState().documents).toEqual(mockDocuments);
 
       // Reset
-      store.reset();
+      reset();
 
-      expect(store.documents).toEqual([]);
-      expect(store.isLoading).toBe(false);
+      const state = useDocumentsStore.getState();
+      expect(state.documents).toEqual([]);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should reset isLoading flag", () => {
-      const store = useDocumentsStore.getState();
+      const { reset } = useDocumentsStore.getState();
 
-      store.reset();
+      reset();
 
-      expect(store.isLoading).toBe(false);
+      expect(useDocumentsStore.getState().isLoading).toBe(false);
     });
 
     it("should be callable on initial state without error", () => {
-      const store = useDocumentsStore.getState();
+      const { reset } = useDocumentsStore.getState();
 
       // Should not throw
-      expect(() => store.reset()).not.toThrow();
-      expect(store.documents).toEqual([]);
+      expect(() => reset()).not.toThrow();
+      expect(useDocumentsStore.getState().documents).toEqual([]);
     });
   });
 
   describe("Document structure validation", () => {
     it("should maintain document structure after load", async () => {
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
+      await loadDocuments();
 
-      const store = useDocumentsStore.getState();
-      await store.loadDocuments();
-
-      expect(store.documents[0]).toHaveProperty("id");
-      expect(store.documents[0]).toHaveProperty("type");
-      expect(store.documents[0]).toHaveProperty("documentNumber");
-      expect(store.documents[0]).toHaveProperty("fullName");
+      const { documents } = useDocumentsStore.getState();
+      expect(documents[0]).toHaveProperty("id");
+      expect(documents[0]).toHaveProperty("type");
+      expect(documents[0]).toHaveProperty("documentNumber");
+      expect(documents[0]).toHaveProperty("fullName");
     });
 
     it("should handle documents with auto-lock disabled", async () => {
@@ -259,59 +232,51 @@ describe("useDocumentsStore", () => {
         },
       ];
 
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(docsWithoutAutoLock),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
+      await loadDocuments();
 
-      const store = useDocumentsStore.getState();
-      await store.loadDocuments();
-
-      expect(store.documents[0].isAutoLockEnabled).toBe(false);
+      const { documents } = useDocumentsStore.getState();
+      expect(documents[0].isAutoLockEnabled).toBe(false);
     });
   });
 
   describe("Concurrent operations", () => {
     it("should handle multiple sequential loads", async () => {
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
 
-      const store = useDocumentsStore.getState();
+      await loadDocuments();
+      expect(useDocumentsStore.getState().documents).toEqual(mockDocuments);
 
-      await store.loadDocuments();
-      expect(store.documents).toEqual(mockDocuments);
-
-      await store.loadDocuments();
-      expect(store.documents).toEqual(mockDocuments);
+      await loadDocuments();
+      expect(useDocumentsStore.getState().documents).toEqual(mockDocuments);
     });
 
     it("should handle reset between loads", async () => {
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments, reset } = useDocumentsStore.getState();
 
-      const store = useDocumentsStore.getState();
+      await loadDocuments();
+      expect(useDocumentsStore.getState().documents.length).toBeGreaterThan(0);
 
-      await store.loadDocuments();
-      expect(store.documents.length).toBeGreaterThan(0);
+      reset();
+      expect(useDocumentsStore.getState().documents).toEqual([]);
 
-      store.reset();
-      expect(store.documents).toEqual([]);
-
-      await store.loadDocuments();
-      expect(store.documents).toEqual(mockDocuments);
+      await loadDocuments();
+      expect(useDocumentsStore.getState().documents).toEqual(mockDocuments);
     });
   });
 
@@ -331,36 +296,28 @@ describe("useDocumentsStore", () => {
         updatedAt: new Date(),
       }));
 
-      const mockGetAllDocumentsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(largeDocumentArray),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
+      const { loadDocuments } = useDocumentsStore.getState();
+      await loadDocuments();
 
-      const store = useDocumentsStore.getState();
-      await store.loadDocuments();
-
-      expect(store.documents).toHaveLength(1000);
+      expect(useDocumentsStore.getState().documents).toHaveLength(1000);
     });
 
     it("should handle TypeError gracefully", async () => {
-      const mockGetAllDocumentsUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new TypeError("Unexpected token")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new TypeError("Unexpected token")),
       };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllDocumentsUseCase,
-      );
-
-      const store = useDocumentsStore.getState();
+      const { loadDocuments } = useDocumentsStore.getState();
 
       // Should not throw
-      await expect(store.loadDocuments()).resolves.toBeUndefined();
-      expect(store.documents).toEqual([]);
+      await expect(loadDocuments()).resolves.toBeUndefined();
+      expect(useDocumentsStore.getState().documents).toEqual([]);
     });
   });
 });

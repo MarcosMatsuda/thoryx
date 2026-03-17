@@ -27,22 +27,9 @@ describe("useCardsStore", () => {
     },
   ];
 
-  let mockGetAllCreditCardsUseCase: jest.Mocked<GetAllCreditCardsUseCase>;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetAllCreditCardsUseCase = {
-      execute: jest.fn(),
-    } as any;
-    
-    // Mock the GetAllCreditCardsUseCase constructor
-    (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockGetAllCreditCardsUseCase);
-    
-    // Mock the repository constructor
-    const mockRepository = {
-      getAll: jest.fn(),
-    };
-    (require("@data/repositories/credit-card.repository.impl").CreditCardRepositoryImpl as jest.Mock).mockImplementation(() => mockRepository);
+    useCardsStore.setState({ cards: [], isLoading: false });
   });
 
   describe("Initial state", () => {
@@ -65,17 +52,21 @@ describe("useCardsStore", () => {
 
   describe("loadCards action", () => {
     it("should load cards successfully", async () => {
-      mockGetAllCreditCardsUseCase.execute.mockResolvedValue(mockCards);
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(mockCards),
+      };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
       const state = useCardsStore.getState();
-      await state.loadCards();
-
       expect(state.cards).toEqual(mockCards);
       expect(state.isLoading).toBe(false);
     });
 
     it("should set isLoading to true during load", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest
           .fn()
           .mockImplementation(
@@ -85,265 +76,227 @@ describe("useCardsStore", () => {
               ),
           ),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
-      const state = useCardsStore.getState();
-      const loadPromise = state.loadCards();
-
-      await loadPromise;
-
-      expect(mockGetAllCreditCardsUseCase.execute).toHaveBeenCalled();
-      expect(state.isLoading).toBe(false);
+      expect(mockUseCase.execute).toHaveBeenCalled();
+      expect(useCardsStore.getState().isLoading).toBe(false);
     });
 
     it("should handle error when loading cards fails", async () => {
-      const mockGetAllCreditCardsUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("Network error")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
       const state = useCardsStore.getState();
-      await state.loadCards();
-
       expect(state.cards).toEqual([]);
       expect(state.isLoading).toBe(false);
     });
 
     it("should call use case execute method", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
-      const state = useCardsStore.getState();
-      await state.loadCards();
-
-      expect(mockGetAllCreditCardsUseCase.execute).toHaveBeenCalled();
+      expect(mockUseCase.execute).toHaveBeenCalled();
     });
 
     it("should load empty array when no cards exist", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue([]),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
       const state = useCardsStore.getState();
-      await state.loadCards();
-
       expect(state.cards).toEqual([]);
       expect(state.isLoading).toBe(false);
     });
 
     it("should handle server error gracefully", async () => {
-      const mockGetAllCreditCardsUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("500 Internal Server Error")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("500 Internal Server Error")),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
-
-      const state = useCardsStore.getState();
+      const { loadCards } = useCardsStore.getState();
 
       // Should not throw
-      await expect(state.loadCards()).resolves.toBeUndefined();
-      expect(state.isLoading).toBe(false);
+      await expect(loadCards()).resolves.toBeUndefined();
+      expect(useCardsStore.getState().isLoading).toBe(false);
     });
 
     it("should replace previous cards on new load", async () => {
       const firstBatch = [mockCards[0]];
       const secondBatch = mockCards;
 
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn(),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
-
-      const state = useCardsStore.getState();
+      const { loadCards } = useCardsStore.getState();
 
       // Load first batch
-      mockGetAllCreditCardsUseCase.execute.mockResolvedValueOnce(firstBatch);
-      await state.loadCards();
-      expect(state.cards).toEqual(firstBatch);
+      mockUseCase.execute.mockResolvedValueOnce(firstBatch);
+      await loadCards();
+      expect(useCardsStore.getState().cards).toEqual(firstBatch);
 
       // Load second batch
-      mockGetAllCreditCardsUseCase.execute.mockResolvedValueOnce(secondBatch);
-      await state.loadCards();
-      expect(state.cards).toEqual(secondBatch);
+      mockUseCase.execute.mockResolvedValueOnce(secondBatch);
+      await loadCards();
+      expect(useCardsStore.getState().cards).toEqual(secondBatch);
     });
   });
 
   describe("reset action", () => {
     it("should reset cards to empty array", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
-
-      const state = useCardsStore.getState();
+      const { loadCards, reset } = useCardsStore.getState();
 
       // Load cards
-      await state.loadCards();
-      expect(state.cards).toEqual(mockCards);
+      await loadCards();
+      expect(useCardsStore.getState().cards).toEqual(mockCards);
 
       // Reset
-      state.reset();
+      reset();
 
+      const state = useCardsStore.getState();
       expect(state.cards).toEqual([]);
       expect(state.isLoading).toBe(false);
     });
 
     it("should reset isLoading flag", () => {
-      const state = useCardsStore.getState();
+      const { reset } = useCardsStore.getState();
 
-      state.reset();
+      reset();
 
-      expect(state.isLoading).toBe(false);
+      expect(useCardsStore.getState().isLoading).toBe(false);
     });
 
     it("should be callable on initial state without error", () => {
-      const state = useCardsStore.getState();
+      const { reset } = useCardsStore.getState();
 
       // Should not throw
-      expect(() => state.reset()).not.toThrow();
-      expect(state.cards).toEqual([]);
+      expect(() => reset()).not.toThrow();
+      expect(useCardsStore.getState().cards).toEqual([]);
     });
   });
 
   describe("Card structure validation", () => {
     it("should maintain card structure after load", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
-      const state = useCardsStore.getState();
-      await state.loadCards();
-
-      expect(state.cards[0]).toHaveProperty("id");
-      expect(state.cards[0]).toHaveProperty("lastFourDigits");
-      expect(state.cards[0]).toHaveProperty("cardholderName");
-      expect(state.cards[0]).toHaveProperty("cardNumber");
-      expect(state.cards[0]).toHaveProperty("expiryDate");
+      const { cards } = useCardsStore.getState();
+      expect(cards[0]).toHaveProperty("id");
+      expect(cards[0]).toHaveProperty("lastFourDigits");
+      expect(cards[0]).toHaveProperty("cardholderName");
+      expect(cards[0]).toHaveProperty("cardNumber");
+      expect(cards[0]).toHaveProperty("expiryDate");
     });
 
     it("should preserve card metadata", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
-      const state = useCardsStore.getState();
-      await state.loadCards();
-
-      expect(state.cards[0].lastFourDigits).toBe("1234");
-      expect(state.cards[0].cardholderName).toBe("John Doe");
-      expect(state.cards[0].expiryDate).toBe("12/25");
+      const { cards } = useCardsStore.getState();
+      expect(cards[0].lastFourDigits).toBe("1234");
+      expect(cards[0].cardholderName).toBe("John Doe");
+      expect(cards[0].expiryDate).toBe("12/25");
     });
   });
 
   describe("Card filtering", () => {
     it("should load multiple cards correctly", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
-      const state = useCardsStore.getState();
-      await state.loadCards();
-
-      expect(state.cards).toHaveLength(2);
-      expect(state.cards.map((c: any) => c.lastFourDigits)).toContain("1234");
-      expect(state.cards.map((c: any) => c.lastFourDigits)).toContain("5678");
+      const { cards } = useCardsStore.getState();
+      expect(cards).toHaveLength(2);
+      expect(cards.map((c) => c.lastFourDigits)).toContain("1234");
+      expect(cards.map((c) => c.lastFourDigits)).toContain("5678");
     });
 
     it("should load single card correctly", async () => {
       const singleCard = [mockCards[0]];
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(singleCard),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
-      const state = useCardsStore.getState();
-      await state.loadCards();
-
-      expect(state.cards).toHaveLength(1);
-      expect(state.cards[0].lastFourDigits).toBe("1234");
+      const { cards } = useCardsStore.getState();
+      expect(cards).toHaveLength(1);
+      expect(cards[0].lastFourDigits).toBe("1234");
     });
   });
 
   describe("Concurrent operations", () => {
     it("should handle multiple sequential loads", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
 
-      const state = useCardsStore.getState();
+      await loadCards();
+      expect(useCardsStore.getState().cards).toEqual(mockCards);
 
-      await state.loadCards();
-      expect(state.cards).toEqual(mockCards);
-
-      await state.loadCards();
-      expect(state.cards).toEqual(mockCards);
+      await loadCards();
+      expect(useCardsStore.getState().cards).toEqual(mockCards);
     });
 
     it("should handle reset between loads", async () => {
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards, reset } = useCardsStore.getState();
 
-      const state = useCardsStore.getState();
+      await loadCards();
+      expect(useCardsStore.getState().cards.length).toBeGreaterThan(0);
 
-      await state.loadCards();
-      expect(state.cards.length).toBeGreaterThan(0);
+      reset();
+      expect(useCardsStore.getState().cards).toEqual([]);
 
-      state.reset();
-      expect(state.cards).toEqual([]);
-
-      await state.loadCards();
-      expect(state.cards).toEqual(mockCards);
+      await loadCards();
+      expect(useCardsStore.getState().cards).toEqual(mockCards);
     });
   });
 
@@ -359,36 +312,28 @@ describe("useCardsStore", () => {
         updatedAt: new Date(),
       }));
 
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(largeCardArray),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
-      const state = useCardsStore.getState();
-      await state.loadCards();
-
-      expect(state.cards).toHaveLength(100);
+      expect(useCardsStore.getState().cards).toHaveLength(100);
     });
 
     it("should handle TypeError gracefully", async () => {
-      const mockGetAllCreditCardsUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new TypeError("Unexpected token")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new TypeError("Unexpected token")),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
-
-      const state = useCardsStore.getState();
+      const { loadCards } = useCardsStore.getState();
 
       // Should not throw
-      await expect(state.loadCards()).resolves.toBeUndefined();
-      expect(state.cards).toEqual([]);
+      await expect(loadCards()).resolves.toBeUndefined();
+      expect(useCardsStore.getState().cards).toEqual([]);
     });
 
     it("should handle multiple cards with different last four digits correctly", async () => {
@@ -399,19 +344,17 @@ describe("useCardsStore", () => {
         { ...mockCards[1], id: "card-6", lastFourDigits: "4444" },
       ];
 
-      const mockGetAllCreditCardsUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(multipleCards),
       };
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const { loadCards } = useCardsStore.getState();
+      await loadCards();
 
-      const state = useCardsStore.getState();
-      await state.loadCards();
-
-      expect(state.cards).toHaveLength(4);
-      const lastFourDigits = state.cards.map((c: any) => c.lastFourDigits);
+      const { cards } = useCardsStore.getState();
+      expect(cards).toHaveLength(4);
+      const lastFourDigits = cards.map((c) => c.lastFourDigits);
       expect(lastFourDigits).toContain("1111");
       expect(lastFourDigits).toContain("2222");
       expect(lastFourDigits).toContain("3333");

@@ -18,49 +18,47 @@ interface ProfileState {
   reset: () => void;
 }
 
-export const useProfileStore = create<ProfileState>((set: any, get: any) => {
-  const repository = new UserProfileRepositoryImpl();
-  const getUserProfileUseCase = new GetUserProfileUseCase(repository);
-  const saveUserProfileUseCase = new SaveUserProfileUseCase(repository);
+export const useProfileStore = create<ProfileState>((set) => ({
+  profile: null,
+  isLoading: false,
+  error: null,
 
-  return {
-    profile: null,
-    isLoading: false,
-    error: null,
+  loadProfile: async () => {
+    try {
+      set({ isLoading: true, error: null });
+      const repository = new UserProfileRepositoryImpl();
+      const getUserProfileUseCase = new GetUserProfileUseCase(repository);
+      const profile = await getUserProfileUseCase.execute();
+      set({ profile, isLoading: false });
+    } catch (error) {
+      console.error("Error loading profile:", error);
+      set({ error: "Failed to load profile", isLoading: false });
+    }
+  },
 
-    loadProfile: async () => {
-      try {
-        set({ isLoading: true, error: null });
-        const profile = await getUserProfileUseCase.execute();
-        set({ profile, isLoading: false });
-      } catch (error) {
-        console.error("Error loading profile:", error);
-        set({ error: "Failed to load profile", isLoading: false });
+  saveProfile: async (input: UserProfileInput) => {
+    try {
+      set({ isLoading: true, error: null });
+      const repository = new UserProfileRepositoryImpl();
+      const saveUserProfileUseCase = new SaveUserProfileUseCase(repository);
+      const result = await saveUserProfileUseCase.execute(input);
+
+      if (result.success && result.profile) {
+        set({ profile: result.profile, isLoading: false });
+        return { success: true, message: result.message };
+      } else {
+        set({ error: result.message, isLoading: false });
+        return { success: false, message: result.message };
       }
-    },
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      const errorMessage = "Failed to save profile";
+      set({ error: errorMessage, isLoading: false });
+      return { success: false, message: errorMessage };
+    }
+  },
 
-    saveProfile: async (input: UserProfileInput) => {
-      try {
-        set({ isLoading: true, error: null });
-        const result = await saveUserProfileUseCase.execute(input);
-
-        if (result.success && result.profile) {
-          set({ profile: result.profile, isLoading: false });
-          return { success: true, message: result.message };
-        } else {
-          set({ error: result.message, isLoading: false });
-          return { success: false, message: result.message };
-        }
-      } catch (error) {
-        console.error("Error saving profile:", error);
-        const errorMessage = "Failed to save profile";
-        set({ error: errorMessage, isLoading: false });
-        return { success: false, message: errorMessage };
-      }
-    },
-
-    reset: () => {
-      set({ profile: null, isLoading: false, error: null });
-    },
-  };
-});
+  reset: () => {
+    set({ profile: null, isLoading: false, error: null });
+  },
+}));

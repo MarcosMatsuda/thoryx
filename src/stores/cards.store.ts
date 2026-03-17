@@ -10,27 +10,24 @@ interface CardsState {
   reset: () => void;
 }
 
-export const useCardsStore = create<CardsState>((set: any) => {
-  const repository = new CreditCardRepositoryImpl();
-  const getAllCreditCardsUseCase = new GetAllCreditCardsUseCase(repository);
+export const useCardsStore = create<CardsState>((set) => ({
+  cards: [],
+  isLoading: false,
 
-  return {
-    cards: [],
-    isLoading: false,
+  loadCards: async () => {
+    try {
+      set({ isLoading: true });
+      const repository = new CreditCardRepositoryImpl();
+      const getAllCreditCardsUseCase = new GetAllCreditCardsUseCase(repository);
+      const cards = await getAllCreditCardsUseCase.execute();
+      set({ cards, isLoading: false });
+    } catch (error) {
+      console.error("Error loading cards:", error);
+      set({ isLoading: false });
+    }
+  },
 
-    loadCards: async () => {
-      try {
-        set({ isLoading: true });
-        const cards = await getAllCreditCardsUseCase.execute();
-        set({ cards, isLoading: false });
-      } catch (error) {
-        console.error("Error loading cards:", error);
-        set({ isLoading: false });
-      }
-    },
-
-    reset: () => {
-      set({ cards: [], isLoading: false });
-    },
-  };
-});
+  reset: () => {
+    set({ cards: [], isLoading: false });
+  },
+}));

@@ -10,27 +10,24 @@ interface DocumentsState {
   reset: () => void;
 }
 
-export const useDocumentsStore = create<DocumentsState>((set: any) => {
-  const repository = new DocumentRepositoryImpl();
-  const getAllDocumentsUseCase = new GetAllDocumentsUseCase(repository);
+export const useDocumentsStore = create<DocumentsState>((set) => ({
+  documents: [],
+  isLoading: false,
 
-  return {
-    documents: [],
-    isLoading: false,
+  loadDocuments: async () => {
+    try {
+      set({ isLoading: true });
+      const repository = new DocumentRepositoryImpl();
+      const getAllDocumentsUseCase = new GetAllDocumentsUseCase(repository);
+      const documents = await getAllDocumentsUseCase.execute();
+      set({ documents, isLoading: false });
+    } catch (error) {
+      console.error("Error loading documents:", error);
+      set({ isLoading: false });
+    }
+  },
 
-    loadDocuments: async () => {
-      try {
-        set({ isLoading: true });
-        const documents = await getAllDocumentsUseCase.execute();
-        set({ documents, isLoading: false });
-      } catch (error) {
-        console.error("Error loading documents:", error);
-        set({ isLoading: false });
-      }
-    },
-
-    reset: () => {
-      set({ documents: [], isLoading: false });
-    },
-  };
-});
+  reset: () => {
+    set({ documents: [], isLoading: false });
+  },
+}));

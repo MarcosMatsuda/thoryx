@@ -22,6 +22,7 @@ describe("useProfileStore", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useProfileStore.setState({ profile: null, isLoading: false, error: null });
   });
 
   describe("Initial state", () => {
@@ -36,7 +37,7 @@ describe("useProfileStore", () => {
 
   describe("loadProfile action", () => {
     it("should set isLoading to true while loading", async () => {
-      const mockGetUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest
           .fn()
           .mockImplementation(
@@ -44,164 +45,135 @@ describe("useProfileStore", () => {
               new Promise((resolve) => setTimeout(() => resolve(mockProfile), 10)),
           ),
       };
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockGetUserProfileUseCase,
-      );
+      const { loadProfile } = useProfileStore.getState();
+      await loadProfile();
 
-      const store = useProfileStore.getState();
-
-      const loadPromise = store.loadProfile();
-      // Check that isLoading is true during async operation (if detectable)
-      // This is a timing-dependent test, so we check the final state
-      await loadPromise;
-
-      expect(mockGetUserProfileUseCase.execute).toHaveBeenCalled();
+      expect(mockUseCase.execute).toHaveBeenCalled();
     });
 
     it("should load profile successfully and set it in state", async () => {
-      const mockGetUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockGetUserProfileUseCase,
-      );
+      const { loadProfile } = useProfileStore.getState();
+      await loadProfile();
 
-      const store = useProfileStore.getState();
-      await store.loadProfile();
-
-      expect(store.profile).toEqual(mockProfile);
-      expect(store.isLoading).toBe(false);
-      expect(store.error).toBeNull();
+      const state = useProfileStore.getState();
+      expect(state.profile).toEqual(mockProfile);
+      expect(state.isLoading).toBe(false);
+      expect(state.error).toBeNull();
     });
 
     it("should handle error when loading profile fails", async () => {
-      const mockGetUserProfileUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("Network error")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockGetUserProfileUseCase,
-      );
+      const { loadProfile } = useProfileStore.getState();
+      await loadProfile();
 
-      const store = useProfileStore.getState();
-      await store.loadProfile();
-
-      expect(store.profile).toBeNull();
-      expect(store.isLoading).toBe(false);
-      expect(store.error).toBe("Failed to load profile");
+      const state = useProfileStore.getState();
+      expect(state.profile).toBeNull();
+      expect(state.isLoading).toBe(false);
+      expect(state.error).toBe("Failed to load profile");
     });
 
     it("should clear previous error on successful load", async () => {
-      const mockGetUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockGetUserProfileUseCase,
-      );
-
-      const store = useProfileStore.getState();
+      const { loadProfile } = useProfileStore.getState();
 
       // Set an error first
-      store.loadProfile();
-      await store.loadProfile();
+      await loadProfile();
+      await loadProfile();
 
-      expect(store.error).toBeNull();
+      expect(useProfileStore.getState().error).toBeNull();
     });
   });
 
   describe("saveProfile action", () => {
     it("should save profile successfully and update state", async () => {
-      const mockSaveUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue({
           success: true,
           profile: mockProfile,
           message: "Profile saved",
         }),
       };
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockSaveUserProfileUseCase,
-      );
+      const { saveProfile } = useProfileStore.getState();
+      const result = await saveProfile(mockProfileInput);
 
-      const store = useProfileStore.getState();
-      const result = await store.saveProfile(mockProfileInput);
-
+      const state = useProfileStore.getState();
       expect(result.success).toBe(true);
       expect(result.message).toBe("Profile saved");
-      expect(store.profile).toEqual(mockProfile);
-      expect(store.isLoading).toBe(false);
-      expect(store.error).toBeNull();
+      expect(state.profile).toEqual(mockProfile);
+      expect(state.isLoading).toBe(false);
+      expect(state.error).toBeNull();
     });
 
     it("should call useCase with correct input", async () => {
-      const mockSaveUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue({
           success: true,
           profile: mockProfile,
           message: "Profile saved",
         }),
       };
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockSaveUserProfileUseCase,
-      );
+      const { saveProfile } = useProfileStore.getState();
+      await saveProfile(mockProfileInput);
 
-      const store = useProfileStore.getState();
-      await store.saveProfile(mockProfileInput);
-
-      expect(mockSaveUserProfileUseCase.execute).toHaveBeenCalledWith(
-        mockProfileInput,
-      );
+      expect(mockUseCase.execute).toHaveBeenCalledWith(mockProfileInput);
     });
 
     it("should handle save failure gracefully", async () => {
-      const mockSaveUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue({
           success: false,
           message: "Validation failed",
         }),
       };
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockSaveUserProfileUseCase,
-      );
+      const { saveProfile } = useProfileStore.getState();
+      const result = await saveProfile(mockProfileInput);
 
-      const store = useProfileStore.getState();
-      const result = await store.saveProfile(mockProfileInput);
-
+      const state = useProfileStore.getState();
       expect(result.success).toBe(false);
       expect(result.message).toBe("Validation failed");
-      expect(store.error).toBe("Validation failed");
-      expect(store.isLoading).toBe(false);
+      expect(state.error).toBe("Validation failed");
+      expect(state.isLoading).toBe(false);
     });
 
     it("should handle exception during save", async () => {
-      const mockSaveUserProfileUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("Network error")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockSaveUserProfileUseCase,
-      );
+      const { saveProfile } = useProfileStore.getState();
+      const result = await saveProfile(mockProfileInput);
 
-      const store = useProfileStore.getState();
-      const result = await store.saveProfile(mockProfileInput);
-
+      const state = useProfileStore.getState();
       expect(result.success).toBe(false);
       expect(result.message).toBe("Failed to save profile");
-      expect(store.error).toBe("Failed to save profile");
-      expect(store.isLoading).toBe(false);
+      expect(state.error).toBe("Failed to save profile");
+      expect(state.isLoading).toBe(false);
     });
 
     it("should set isLoading during save operation", async () => {
-      const mockSaveUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest
           .fn()
           .mockImplementation(
@@ -219,102 +191,85 @@ describe("useProfileStore", () => {
               ),
           ),
       };
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockSaveUserProfileUseCase,
-      );
+      const { saveProfile } = useProfileStore.getState();
+      await saveProfile(mockProfileInput);
 
-      const store = useProfileStore.getState();
-      const savePromise = store.saveProfile(mockProfileInput);
-      await savePromise;
-
-      expect(store.isLoading).toBe(false);
+      expect(useProfileStore.getState().isLoading).toBe(false);
     });
   });
 
   describe("reset action", () => {
     it("should reset all state to initial values", async () => {
-      const mockSaveUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue({
           success: true,
           profile: mockProfile,
           message: "Saved",
         }),
       };
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockSaveUserProfileUseCase,
-      );
-
-      const store = useProfileStore.getState();
+      const { saveProfile, reset } = useProfileStore.getState();
 
       // Set some state
-      await store.saveProfile(mockProfileInput);
+      await saveProfile(mockProfileInput);
 
       // Reset
-      store.reset();
+      reset();
 
-      expect(store.profile).toBeNull();
-      expect(store.isLoading).toBe(false);
-      expect(store.error).toBeNull();
+      const state = useProfileStore.getState();
+      expect(state.profile).toBeNull();
+      expect(state.isLoading).toBe(false);
+      expect(state.error).toBeNull();
     });
 
     it("should clear profile when reset", () => {
-      const store = useProfileStore.getState();
+      const { reset } = useProfileStore.getState();
 
-      // Manually set profile (simulating loaded state)
-      store.reset();
+      reset();
 
-      expect(store.profile).toBeNull();
+      expect(useProfileStore.getState().profile).toBeNull();
     });
   });
 
   describe("Error handling", () => {
     it("should preserve profile on save error", async () => {
-      const mockSaveUserProfileUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("Server error")),
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("Server error")),
       };
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockSaveUserProfileUseCase,
-      );
+      const { saveProfile } = useProfileStore.getState();
+      const result = await saveProfile(mockProfileInput);
 
-      const store = useProfileStore.getState();
-
-      const result = await store.saveProfile(mockProfileInput);
-
+      const state = useProfileStore.getState();
       expect(result.success).toBe(false);
-      expect(store.error).toBe("Failed to save profile");
+      expect(state.error).toBe("Failed to save profile");
     });
 
     it("should clear error when load succeeds after error", async () => {
-      const mockGetUserProfileUseCase = {
+      const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
 
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(
-        () => mockGetUserProfileUseCase,
-      );
+      const { loadProfile } = useProfileStore.getState();
+      await loadProfile();
 
-      const store = useProfileStore.getState();
-
-      // This will test clearing error on successful load
-      await store.loadProfile();
-
-      expect(store.error).toBeNull();
+      expect(useProfileStore.getState().error).toBeNull();
     });
   });
 
   describe("State isolation", () => {
     it("should not affect other stores", () => {
-      const store1 = useProfileStore.getState();
+      const { reset } = useProfileStore.getState();
 
       // Reset should only affect this store
-      store1.reset();
+      reset();
 
-      expect(store1.profile).toBeNull();
+      expect(useProfileStore.getState().profile).toBeNull();
     });
   });
 });
