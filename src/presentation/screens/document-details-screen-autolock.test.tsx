@@ -263,9 +263,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       // Should revert using previousState for correct rollback behavior
-      expect(componentCode).toContain(
-        "setIsAutoLockEnabled(previousState)",
-      );
+      expect(componentCode).toContain("setIsAutoLockEnabled(previousState)");
     });
 
     it("should log error to console", () => {

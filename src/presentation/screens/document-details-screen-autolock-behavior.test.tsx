@@ -184,10 +184,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Behavior", () => {
 
           // Simulate error
           await new Promise((resolve, reject) =>
-            setTimeout(
-              () => reject(new Error("Network error")),
-              10,
-            ),
+            setTimeout(() => reject(new Error("Network error")), 10),
           );
         } catch (error) {
           isAutoLockEnabled = previousState;
@@ -267,9 +264,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Behavior", () => {
     });
 
     it("should log error when toggle fails", async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
       let isAutoLockEnabled = false;
 
@@ -280,10 +275,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Behavior", () => {
           isAutoLockEnabled = !isAutoLockEnabled;
 
           await new Promise((resolve, reject) =>
-            setTimeout(
-              () => reject(new Error("Toggle failed")),
-              10,
-            ),
+            setTimeout(() => reject(new Error("Toggle failed")), 10),
           );
         } catch (error) {
           console.error("Error toggling auto-lock:", error);
