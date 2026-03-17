@@ -1,10 +1,10 @@
 /**
- * Unit tests for WalletHomeScreen - Auto-lock Button Feature (TASK-13)
- * Tests button rendering, visibility conditions, navigation, and focus effect
+ * Unit tests for WalletHomeScreen (post TASK-4)
+ * Auto-lock button has been removed. Tests reflect current component state.
  */
 
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { render, fireEvent } from "@testing-library/react-native";
 import { useRouter, useFocusEffect } from "expo-router";
 import { useDocuments } from "@presentation/hooks/use-documents";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
@@ -81,13 +81,12 @@ const mockProfile = {
   photoUri: "https://example.com/photo.jpg",
 };
 
-describe("WalletHomeScreen - Auto-lock Button Tests", () => {
+describe("WalletHomeScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-      // Call the callback immediately for testing
       cb();
     });
 
@@ -109,22 +108,32 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
     });
   });
 
-  describe("Auto-lock Button Visibility", () => {
-    it("should render auto-lock button when at least one document has isAutoLockEnabled: true", () => {
-      const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Iniciar Auto-lock")).toBeTruthy();
+  describe("Auto-lock Button Removal (TASK-4)", () => {
+    it("should NOT render auto-lock button regardless of isAutoLockEnabled", () => {
+      const { queryByText } = render(<WalletHomeScreen />);
+      expect(queryByText("Iniciar Auto-lock")).toBeNull();
     });
 
-    it("should not render auto-lock button when no documents have isAutoLockEnabled: true", () => {
+    it("should NOT render auto-lock subtitle text", () => {
+      const { queryByText } = render(<WalletHomeScreen />);
+      expect(queryByText("Compartilhar documentos selecionados")).toBeNull();
+    });
+
+    it("should NOT render guest mode button from auto-lock flow", () => {
+      const { queryByText } = render(<WalletHomeScreen />);
+      expect(queryByText("Iniciar Modo Convidado")).toBeNull();
+    });
+
+    it("should NOT render auto-lock lock icon emoji", () => {
+      const { queryByText } = render(<WalletHomeScreen />);
+      expect(queryByText("🔒")).toBeNull();
+    });
+
+    it("should NOT render auto-lock button even when all documents have isAutoLockEnabled: true", () => {
       (useDocuments as jest.Mock).mockReturnValue({
         documents: [
-          {
-            id: "1",
-            type: "CNH",
-            fullName: "John Doe",
-            documentNumber: "12345678901",
-            isAutoLockEnabled: false,
-          },
+          { id: "1", type: "CNH", fullName: "John Doe", documentNumber: "12345678901", isAutoLockEnabled: true },
+          { id: "2", type: "RG", fullName: "John Doe", documentNumber: "98765432100", isAutoLockEnabled: true },
         ],
         isLoading: false,
         reload: jest.fn(),
@@ -133,58 +142,105 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       const { queryByText } = render(<WalletHomeScreen />);
       expect(queryByText("Iniciar Auto-lock")).toBeNull();
     });
+  });
 
-    it("should not render auto-lock button when documents array is empty", () => {
+  describe("Secure Sharing Mode Section", () => {
+    it("should render Secure Sharing Mode title", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      expect(getByText("Secure Sharing Mode")).toBeTruthy();
+    });
+
+    it("should render Start Sharing button", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      expect(getByText("Start Sharing")).toBeTruthy();
+    });
+
+    it("should navigate to /select-documents when Start Sharing is pressed", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      fireEvent.press(getByText("Start Sharing"));
+      expect(mockRouter.push).toHaveBeenCalledWith("/select-documents");
+    });
+
+    it("should NOT navigate to /guest-mode from Secure Sharing button", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      fireEvent.press(getByText("Start Sharing"));
+      expect(mockRouter.replace).not.toHaveBeenCalledWith("/guest-mode");
+      expect(mockRouter.push).not.toHaveBeenCalledWith("/guest-mode");
+    });
+  });
+
+  describe("Quick Actions Section", () => {
+    it("should render QUICK ACTIONS section header", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      expect(getByText("QUICK ACTIONS")).toBeTruthy();
+    });
+  });
+
+  describe("Profile Display", () => {
+    it("should render welcome back text", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      expect(getByText("Welcome back,")).toBeTruthy();
+    });
+
+    it("should render user name from profile", () => {
+      const { getAllByText } = render(<WalletHomeScreen />);
+      // "John Doe" appears in profile header and also in document list fullName
+      expect(getAllByText("John Doe").length).toBeGreaterThan(0);
+    });
+
+    it("should handle null profile without crashing", () => {
+      (useUserProfile as jest.Mock).mockReturnValue({
+        profile: null,
+        isLoading: false,
+        reloadProfile: jest.fn(),
+      });
+
+      expect(() => render(<WalletHomeScreen />)).not.toThrow();
+    });
+  });
+
+  describe("Documents Section", () => {
+    it("should render MY DOCUMENTS section header", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      expect(getByText("MY DOCUMENTS")).toBeTruthy();
+    });
+
+    it("should render See All link", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      expect(getByText("See All")).toBeTruthy();
+    });
+
+    it("should render documents list", () => {
+      const { getByText } = render(<WalletHomeScreen />);
+      expect(getByText("Driver's License")).toBeTruthy();
+    });
+
+    it("should show empty state when no documents", () => {
       (useDocuments as jest.Mock).mockReturnValue({
         documents: [],
         isLoading: false,
         reload: jest.fn(),
       });
 
-      const { queryByText } = render(<WalletHomeScreen />);
-      expect(queryByText("Iniciar Auto-lock")).toBeNull();
+      const { getByText } = render(<WalletHomeScreen />);
+      expect(getByText("No documents yet. Add your first document!")).toBeTruthy();
     });
 
-    it("should render auto-lock button with correct subtitle text", () => {
-      const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Compartilhar documentos selecionados")).toBeTruthy();
+    it("should handle undefined documents gracefully", () => {
+      (useDocuments as jest.Mock).mockReturnValue({
+        documents: undefined,
+        isLoading: false,
+        reload: jest.fn(),
+      });
+
+      expect(() => render(<WalletHomeScreen />)).not.toThrow();
     });
   });
 
-  describe("Auto-lock Button Navigation", () => {
-    it("should navigate to /guest-mode when auto-lock button is pressed", () => {
-      const { getByText } = render(<WalletHomeScreen />);
-      const guestModeButton = getByText("Iniciar Modo Convidado");
-
-      fireEvent.press(guestModeButton);
-
-      expect(mockRouter.replace).toHaveBeenCalledWith("/guest-mode");
-    });
-
-    it("should use router.replace instead of router.push for guest-mode navigation", () => {
-      const { getByText } = render(<WalletHomeScreen />);
-      const guestModeButton = getByText("Iniciar Modo Convidado");
-
-      fireEvent.press(guestModeButton);
-
-      expect(mockRouter.replace).toHaveBeenCalledWith("/guest-mode");
-      expect(mockRouter.push).not.toHaveBeenCalled();
-    });
-
-    it("should trigger button press only once per interaction", () => {
-      const { getByText } = render(<WalletHomeScreen />);
-      const guestModeButton = getByText("Iniciar Modo Convidado");
-
-      fireEvent.press(guestModeButton);
-
-      expect(mockRouter.replace).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("Focus Effect and Document Reload", () => {
-    it("should call useFocusEffect with callback", () => {
+  describe("Focus Effect and Data Reload", () => {
+    it("should call useFocusEffect with a callback", () => {
       render(<WalletHomeScreen />);
-      expect(useFocusEffect).toHaveBeenCalled();
+      expect(useFocusEffect).toHaveBeenCalledWith(expect.any(Function));
     });
 
     it("should reload documents on screen focus", () => {
@@ -196,11 +252,10 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       });
 
       (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-        cb(); // Execute the callback immediately (simulating focus)
+        cb();
       });
 
       render(<WalletHomeScreen />);
-
       expect(mockLoadDocuments).toHaveBeenCalled();
     });
 
@@ -213,11 +268,10 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       });
 
       (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-        cb(); // Execute the callback immediately (simulating focus)
+        cb();
       });
 
       render(<WalletHomeScreen />);
-
       expect(mockReloadProfile).toHaveBeenCalled();
     });
 
@@ -238,151 +292,17 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       });
 
       (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-        cb(); // Execute the callback immediately (simulating focus)
+        cb();
       });
 
       render(<WalletHomeScreen />);
-
       expect(mockReloadProfile).toHaveBeenCalled();
       expect(mockLoadDocuments).toHaveBeenCalled();
     });
-
-    it("should include loadDocuments in focus effect dependencies", () => {
-      const mockLoadDocuments = jest.fn();
-      (useDocuments as jest.Mock).mockReturnValue({
-        documents: mockDocuments,
-        isLoading: false,
-        reload: mockLoadDocuments,
-      });
-
-      render(<WalletHomeScreen />);
-
-      // useFocusEffect should receive a callback function
-      expect(useFocusEffect).toHaveBeenCalledWith(expect.any(Function));
-    });
   });
 
-  describe("Button Styling and UI Elements", () => {
-    it("should have correct icon emoji for auto-lock button", () => {
-      const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("🔒")).toBeTruthy();
-    });
-
-    it("should display proper button labels in Portuguese", () => {
-      const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Iniciar Auto-lock")).toBeTruthy();
-      expect(getByText("Compartilhar documentos selecionados")).toBeTruthy();
-      expect(getByText("Iniciar Modo Convidado")).toBeTruthy();
-    });
-  });
-
-  describe("Multiple Documents Scenarios", () => {
-    it("should render button when first document has isAutoLockEnabled: true", () => {
-      const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Iniciar Auto-lock")).toBeTruthy();
-    });
-
-    it("should render button when any document in list has isAutoLockEnabled: true", () => {
-      (useDocuments as jest.Mock).mockReturnValue({
-        documents: [
-          {
-            id: "1",
-            type: "CNH",
-            fullName: "John Doe",
-            documentNumber: "12345678901",
-            isAutoLockEnabled: false,
-          },
-          {
-            id: "2",
-            type: "RG",
-            fullName: "John Doe",
-            documentNumber: "98765432100",
-            isAutoLockEnabled: true,
-          },
-          {
-            id: "3",
-            type: "CNH",
-            fullName: "John Doe",
-            documentNumber: "11111111111",
-            isAutoLockEnabled: false,
-          },
-        ],
-        isLoading: false,
-        reload: jest.fn(),
-      });
-
-      const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Iniciar Auto-lock")).toBeTruthy();
-    });
-
-    it("should not render button when all documents have isAutoLockEnabled: false", () => {
-      (useDocuments as jest.Mock).mockReturnValue({
-        documents: [
-          {
-            id: "1",
-            type: "CNH",
-            fullName: "John Doe",
-            documentNumber: "12345678901",
-            isAutoLockEnabled: false,
-          },
-          {
-            id: "2",
-            type: "RG",
-            fullName: "John Doe",
-            documentNumber: "98765432100",
-            isAutoLockEnabled: false,
-          },
-        ],
-        isLoading: false,
-        reload: jest.fn(),
-      });
-
-      const { queryByText } = render(<WalletHomeScreen />);
-      expect(queryByText("Iniciar Auto-lock")).toBeNull();
-    });
-  });
-
-  describe("Edge Cases", () => {
-    it("should handle undefined documents gracefully", () => {
-      (useDocuments as jest.Mock).mockReturnValue({
-        documents: undefined,
-        isLoading: false,
-        reload: jest.fn(),
-      });
-
-      // Should not crash
-      expect(() => {
-        render(<WalletHomeScreen />);
-      }).not.toThrow();
-    });
-
-    it("should handle null profile without crashing", () => {
-      (useUserProfile as jest.Mock).mockReturnValue({
-        profile: null,
-        isLoading: false,
-        reloadProfile: jest.fn(),
-      });
-
-      // Should not crash and should navigate to profile-setup
-      expect(() => {
-        render(<WalletHomeScreen />);
-      }).not.toThrow();
-    });
-
-    it("should handle loading state for documents", () => {
-      (useDocuments as jest.Mock).mockReturnValue({
-        documents: [],
-        isLoading: true,
-        reload: jest.fn(),
-      });
-
-      const { queryByText } = render(<WalletHomeScreen />);
-      expect(queryByText("Iniciar Auto-lock")).toBeNull();
-    });
-  });
-
-  describe("Integration: Auto-lock Feature Complete Flow", () => {
-    it("should show button, handle focus effect, and navigate correctly", () => {
+  describe("Integration: Complete Screen Flow", () => {
+    it("should render screen without auto-lock, show secure sharing, and handle focus effect", () => {
       const mockLoadDocuments = jest.fn();
       const mockReloadProfile = jest.fn();
 
@@ -399,22 +319,26 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       });
 
       (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-        cb(); // Execute the callback immediately (simulating focus)
+        cb();
       });
 
-      const { getByText } = render(<WalletHomeScreen />);
+      const { getByText, queryByText } = render(<WalletHomeScreen />);
 
-      // 1. Button should be visible
-      expect(getByText("Iniciar Auto-lock")).toBeTruthy();
+      // 1. Auto-lock button should NOT be present
+      expect(queryByText("Iniciar Auto-lock")).toBeNull();
+      expect(queryByText("Iniciar Modo Convidado")).toBeNull();
 
-      // 2. Focus effect should reload both profile and documents
+      // 2. Secure Sharing section should be present
+      expect(getByText("Secure Sharing Mode")).toBeTruthy();
+      expect(getByText("Start Sharing")).toBeTruthy();
+
+      // 3. Focus effect should reload both profile and documents
       expect(mockReloadProfile).toHaveBeenCalled();
       expect(mockLoadDocuments).toHaveBeenCalled();
 
-      // 3. Button press should navigate to guest-mode
-      const guestModeButton = getByText("Iniciar Modo Convidado");
-      fireEvent.press(guestModeButton);
-      expect(mockRouter.replace).toHaveBeenCalledWith("/guest-mode");
+      // 4. Start Sharing navigates to /select-documents
+      fireEvent.press(getByText("Start Sharing"));
+      expect(mockRouter.push).toHaveBeenCalledWith("/select-documents");
     });
   });
 });
