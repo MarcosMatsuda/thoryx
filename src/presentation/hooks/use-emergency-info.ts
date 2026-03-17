@@ -11,7 +11,7 @@ export function useEmergencyInfo() {
 
   useEffect(() => {
     loadEmergencyInfo();
-  }, []);
+  }, [loadEmergencyInfo]);
 
   const loadEmergencyInfo = useCallback(async () => {
     try {
