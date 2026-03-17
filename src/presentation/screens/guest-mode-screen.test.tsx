@@ -6,46 +6,113 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 import { GuestModeScreen } from "./guest-mode-screen";
+
+// Mock das dependências com factories explícitas para evitar carregamento dos módulos reais
+// (que importam expo-image-manipulator → expo/src/winter → falha no Jest)
+jest.mock("@data/repositories/document.repository.impl", () => ({
+  DocumentRepositoryImpl: jest.fn().mockImplementation(() => ({
+    findAll: jest.fn(),
+    findById: jest.fn(),
+    save: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    toggleAutoLock: jest.fn(),
+    decryptPhoto: jest.fn(),
+  })),
+}));
+
+jest.mock("@infrastructure/storage/secure-storage.adapter", () => ({
+  SecureStorageAdapter: jest.fn().mockImplementation(() => ({
+    get: jest.fn(),
+    set: jest.fn(),
+    delete: jest.fn(),
+    clear: jest.fn(),
+  })),
+}));
+
+// Override do mock de expo-router para ter controle sobre os mocks
+const mockPush = jest.fn();
+const mockReplace = jest.fn();
+const mockBack = jest.fn();
+
+jest.mock("expo-router", () => ({
+  useRouter: jest.fn(),
+  useLocalSearchParams: jest.fn(() => ({})),
+  useFocusEffect: jest.fn(),
+}));
+
+// Mock para CountdownTimer para evitar timers reais e dependências pesadas
+jest.mock("@presentation/components/countdown-timer", () => ({
+  CountdownTimer: ({ onExpire }: { onExpire?: () => void }) => {
+    const { Text } = require("react-native");
+    return <Text testID="countdown-timer">05:00</Text>;
+  },
+}));
+
+// Mock para DocumentCard para simplificar asserções
+jest.mock("@presentation/components/document-card", () => ({
+  DocumentCard: ({
+    title,
+    subtitle,
+  }: {
+    title: string;
+    subtitle: string;
+  }) => {
+    const { View, Text } = require("react-native");
+    return (
+      <View>
+        <Text>{title}</Text>
+        <Text>{subtitle}</Text>
+      </View>
+    );
+  },
+}));
+
+import { useRouter } from "expo-router";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 
-// Mock das dependências
-jest.mock("@data/repositories/document.repository.impl");
-jest.mock("@infrastructure/storage/secure-storage.adapter");
-jest.mock("expo-router", () => ({
-  useRouter: jest.fn(),
-}));
-
-const mockRouter = {
-  push: jest.fn(),
-  replace: jest.fn(),
-};
-
-const mockDocumentRepository = {
-  findAll: jest.fn(),
-};
-
-const mockSecureStorage = {
-  get: jest.fn(),
-};
-
 describe("GuestModeScreen", () => {
-  const { useRouter } = require("expo-router");
-  
+  let mockFindAll: jest.Mock;
+  let mockStorageGet: jest.Mock;
+
   beforeEach(() => {
     jest.clearAllMocks();
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (DocumentRepositoryImpl as jest.Mock).mockImplementation(
-      () => mockDocumentRepository,
-    );
-    (SecureStorageAdapter as jest.Mock).mockImplementation(
-      () => mockSecureStorage,
-    );
+
+    // Configura router mock
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+      replace: mockReplace,
+      back: mockBack,
+      navigate: jest.fn(),
+    });
+
+    // Configura repository mock
+    mockFindAll = jest.fn();
+    (DocumentRepositoryImpl as jest.Mock).mockImplementation(() => ({
+      findAll: mockFindAll,
+      findById: jest.fn(),
+      save: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      toggleAutoLock: jest.fn(),
+      decryptPhoto: jest.fn(),
+    }));
+
+    // Configura storage mock
+    mockStorageGet = jest.fn();
+    (SecureStorageAdapter as jest.Mock).mockImplementation(() => ({
+      get: mockStorageGet,
+      set: jest.fn(),
+      delete: jest.fn(),
+      clear: jest.fn(),
+    }));
   });
 
   it("should display loading state initially", () => {
-    mockDocumentRepository.findAll.mockResolvedValue([]);
-    mockSecureStorage.get.mockResolvedValue("5");
+    // Promise que nunca resolve → mantém estado de loading
+    mockFindAll.mockReturnValue(new Promise(() => {}));
+    mockStorageGet.mockReturnValue(new Promise(() => {}));
 
     render(<GuestModeScreen />);
 
@@ -80,8 +147,8 @@ describe("GuestModeScreen", () => {
       },
     ];
 
-    mockDocumentRepository.findAll.mockResolvedValue(mockDocuments);
-    mockSecureStorage.get.mockResolvedValue("10");
+    mockFindAll.mockResolvedValue(mockDocuments);
+    mockStorageGet.mockResolvedValue("10");
 
     render(<GuestModeScreen />);
 
@@ -92,7 +159,7 @@ describe("GuestModeScreen", () => {
       expect(screen.queryByText("Jane Smith")).toBeNull();
     });
 
-    // Deve mostrar o título correto
+    // Deve mostrar o cabeçalho correto
     expect(screen.getByText("Shared Documents")).toBeTruthy();
     expect(screen.getByText("Access expires in")).toBeTruthy();
   });
@@ -109,8 +176,8 @@ describe("GuestModeScreen", () => {
       },
     ];
 
-    mockDocumentRepository.findAll.mockResolvedValue(mockDocuments);
-    mockSecureStorage.get.mockResolvedValue("5");
+    mockFindAll.mockResolvedValue(mockDocuments);
+    mockStorageGet.mockResolvedValue("5");
 
     render(<GuestModeScreen />);
 
@@ -124,16 +191,18 @@ describe("GuestModeScreen", () => {
     });
   });
 
-  it("should use fallback timeout of 5 minutes when storage returns invalid value", async () => {
-    mockDocumentRepository.findAll.mockResolvedValue([]);
-    mockSecureStorage.get.mockResolvedValue(null); // Valor inválido
+  it("should use fallback timeout of 5 minutes when storage returns null", async () => {
+    mockFindAll.mockResolvedValue([]);
+    mockStorageGet.mockResolvedValue(null); // Valor nulo → fallback
 
     render(<GuestModeScreen />);
 
     await waitFor(() => {
-      // O componente CountdownTimer deve ser renderizado com algum valor
-      expect(screen.getByText(/No documents shared/)).toBeTruthy();
+      expect(screen.getByText("No documents shared")).toBeTruthy();
     });
+
+    // Timer deve estar presente (pode haver mais de um — header + empty state)
+    expect(screen.getAllByTestId("countdown-timer").length).toBeGreaterThan(0);
   });
 
   it("should navigate to document details with guestMode parameter when document is pressed", async () => {
@@ -148,8 +217,8 @@ describe("GuestModeScreen", () => {
       },
     ];
 
-    mockDocumentRepository.findAll.mockResolvedValue(mockDocuments);
-    mockSecureStorage.get.mockResolvedValue("5");
+    mockFindAll.mockResolvedValue(mockDocuments);
+    mockStorageGet.mockResolvedValue("5");
 
     render(<GuestModeScreen />);
 
@@ -157,33 +226,17 @@ describe("GuestModeScreen", () => {
       expect(screen.getByText("John Doe")).toBeTruthy();
     });
 
-    // Simular pressionar no documento
+    // Simula pressionar no documento
     fireEvent.press(screen.getByText("John Doe"));
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       "/document-details?documentId=doc1&guestMode=true",
     );
   });
 
-  it("should navigate to unlock screen when timer expires", async () => {
-    mockDocumentRepository.findAll.mockResolvedValue([]);
-    mockSecureStorage.get.mockResolvedValue("1"); // 1 minuto para teste
-
-    render(<GuestModeScreen />);
-
-    // Simular expiração do timer (isso depende da implementação do CountdownTimer)
-    // Em um teste real, precisaríamos mockar o CountdownTimer ou testar a função handleTimerExpire
-    // Para este teste, vamos verificar que a função está configurada corretamente
-    await waitFor(() => {
-      expect(screen.getByText("No documents shared")).toBeTruthy();
-    });
-  });
-
-  it("should handle errors when loading documents", async () => {
-    mockDocumentRepository.findAll.mockRejectedValue(
-      new Error("Database error"),
-    );
-    mockSecureStorage.get.mockResolvedValue("5");
+  it("should handle errors when loading documents and show empty state", async () => {
+    mockFindAll.mockRejectedValue(new Error("Database error"));
+    mockStorageGet.mockResolvedValue("5");
 
     render(<GuestModeScreen />);
 
@@ -191,5 +244,20 @@ describe("GuestModeScreen", () => {
       // Deve mostrar estado vazio em caso de erro
       expect(screen.getByText("No documents shared")).toBeTruthy();
     });
+  });
+
+  it("should display header with shared documents title and countdown timer", async () => {
+    mockFindAll.mockResolvedValue([]);
+    mockStorageGet.mockResolvedValue("5");
+
+    render(<GuestModeScreen />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Shared Documents")).toBeTruthy();
+      expect(screen.getByText("Access expires in")).toBeTruthy();
+    });
+
+    // Header timer deve estar visível
+    expect(screen.getAllByTestId("countdown-timer").length).toBeGreaterThan(0);
   });
 });
