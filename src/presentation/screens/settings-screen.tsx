@@ -12,6 +12,7 @@ import { AuthService } from "@infrastructure/services/auth.service";
 import { APP_CONFIG } from "@shared/constants/app";
 
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
+const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
 const storage = new SecureStorageAdapter(
   "settings-storage",
   "thoryx-mmkv-encryption-key-2026",
@@ -37,6 +38,7 @@ export function SettingsScreen() {
 
   useEffect(() => {
     loadBiometryPreference();
+    loadAutoLockTimeout();
   }, []);
 
   const loadBiometryPreference = async () => {
@@ -47,6 +49,22 @@ export function SettingsScreen() {
       }
     } catch (error) {
       console.error("Error loading biometry preference:", error);
+    }
+  };
+
+  const loadAutoLockTimeout = async () => {
+    try {
+      const saved = await storage.get(AUTO_LOCK_TIMEOUT_KEY);
+      if (saved === "0") {
+        setAutoLockTimeout("Never");
+      } else if (saved) {
+        setAutoLockTimeout(`${saved} minutes`);
+      } else {
+        setAutoLockTimeout("5 minutes");
+      }
+    } catch (error) {
+      console.error("Error loading auto-lock timeout:", error);
+      setAutoLockTimeout("5 minutes");
     }
   };
 
@@ -93,11 +111,41 @@ export function SettingsScreen() {
 
   const handleAutoLockTimeout = () => {
     Alert.alert("Auto-lock Timeout", "Choose when to lock the app", [
-      { text: "1 minute", onPress: () => setAutoLockTimeout("1 minute") },
-      { text: "5 minutes", onPress: () => setAutoLockTimeout("5 minutes") },
-      { text: "15 minutes", onPress: () => setAutoLockTimeout("15 minutes") },
-      { text: "30 minutes", onPress: () => setAutoLockTimeout("30 minutes") },
-      { text: "Never", onPress: () => setAutoLockTimeout("Never") },
+      { 
+        text: "1 minute", 
+        onPress: async () => {
+          await storage.set(AUTO_LOCK_TIMEOUT_KEY, "1");
+          setAutoLockTimeout("1 minute");
+        }
+      },
+      { 
+        text: "5 minutes", 
+        onPress: async () => {
+          await storage.set(AUTO_LOCK_TIMEOUT_KEY, "5");
+          setAutoLockTimeout("5 minutes");
+        }
+      },
+      { 
+        text: "15 minutes", 
+        onPress: async () => {
+          await storage.set(AUTO_LOCK_TIMEOUT_KEY, "15");
+          setAutoLockTimeout("15 minutes");
+        }
+      },
+      { 
+        text: "30 minutes", 
+        onPress: async () => {
+          await storage.set(AUTO_LOCK_TIMEOUT_KEY, "30");
+          setAutoLockTimeout("30 minutes");
+        }
+      },
+      { 
+        text: "Never", 
+        onPress: async () => {
+          await storage.set(AUTO_LOCK_TIMEOUT_KEY, "0");
+          setAutoLockTimeout("Never");
+        }
+      },
       { text: "Cancel", style: "cancel" },
     ]);
   };
