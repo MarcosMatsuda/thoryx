@@ -207,7 +207,7 @@ describe("DocumentDetailsScreen - BackHandler", () => {
       });
 
       // Simulate hardware back press
-      const result = (capturedListener as Function)();
+      const result = capturedListener!();
 
       // Should navigate back to guest-mode using replace
       expect(mockReplace).toHaveBeenCalledWith("/guest-mode");
@@ -239,7 +239,7 @@ describe("DocumentDetailsScreen - BackHandler", () => {
         expect(screen.getByText("John Doe")).toBeTruthy();
       });
 
-      (capturedListener as Function)();
+      capturedListener!();
 
       // Should use replace (not back) to prevent stack navigation
       expect(mockReplace).toHaveBeenCalled();
@@ -270,7 +270,7 @@ describe("DocumentDetailsScreen - BackHandler", () => {
         expect(screen.getByText("John Doe")).toBeTruthy();
       });
 
-      const result = (capturedListener as Function)();
+      const result = capturedListener!();
 
       // true = event is consumed, prevents default back navigation
       expect(result).toBe(true);
@@ -301,9 +301,9 @@ describe("DocumentDetailsScreen - BackHandler", () => {
       });
 
       // Simulate multiple back presses
-      (capturedListener as Function)();
-      (capturedListener as Function)();
-      (capturedListener as Function)();
+      capturedListener!();
+      capturedListener!();
+      capturedListener!();
 
       // Should always navigate to guest-mode
       expect(mockReplace).toHaveBeenCalledTimes(3);
@@ -376,7 +376,7 @@ describe("DocumentDetailsScreen - BackHandler", () => {
       });
 
       // Try to navigate back
-      const result = (capturedListener as Function)();
+      const result = capturedListener!();
 
       // Should prevent default back navigation
       expect(result).toBe(true);
@@ -408,7 +408,7 @@ describe("DocumentDetailsScreen - BackHandler", () => {
         expect(screen.getByText("John Doe")).toBeTruthy();
       });
 
-      (capturedListener as Function)();
+      capturedListener!();
 
       // Should use replace (which resets stack) instead of back
       expect(mockReplace).toHaveBeenCalledWith("/guest-mode");
@@ -440,9 +440,9 @@ describe("DocumentDetailsScreen - BackHandler", () => {
       });
 
       // Simulate trying to navigate away multiple times
-      (capturedListener as Function)();
-      (capturedListener as Function)();
-      (capturedListener as Function)();
+      capturedListener!();
+      capturedListener!();
+      capturedListener!();
 
       // User should always be redirected to guest-mode screen
       expect(mockReplace).toHaveBeenCalledWith("/guest-mode");
@@ -503,7 +503,7 @@ describe("DocumentDetailsScreen - BackHandler", () => {
       fireEvent.press(screen.getByText("←"));
 
       // Press hardware back button
-      (capturedHardwareListener as Function)();
+      capturedHardwareListener!();
 
       // Both should trigger replace
       expect(mockReplace).toHaveBeenCalledWith("/guest-mode");
@@ -638,7 +638,7 @@ describe("DocumentDetailsScreen - BackHandler", () => {
       });
 
       expect(() => {
-        (capturedListener as Function)();
+        capturedListener!();
       }).not.toThrow();
 
       consoleErrorSpy.mockRestore();
@@ -684,7 +684,7 @@ describe("DocumentDetailsScreen - BackHandler", () => {
       });
 
       expect(() => {
-        (capturedListener as Function)();
+        capturedListener!();
       }).not.toThrow();
     });
   });

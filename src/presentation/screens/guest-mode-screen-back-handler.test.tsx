@@ -180,7 +180,7 @@ describe("GuestModeScreen - BackHandler", () => {
       });
 
       // Call the listener (simulating hardware back press)
-      const result = (capturedListener as Function)();
+      const result = capturedListener!();
 
       // Should return true to block navigation
       expect(result).toBe(true);
@@ -205,7 +205,7 @@ describe("GuestModeScreen - BackHandler", () => {
         expect(capturedListener).toBeTruthy();
       });
 
-      const result = (capturedListener as Function)();
+      const result = capturedListener!();
 
       // true = prevents default behavior (back navigation)
       expect(result).toBe(true);
@@ -232,7 +232,7 @@ describe("GuestModeScreen - BackHandler", () => {
         expect(capturedListener).toBeTruthy();
       });
 
-      (capturedListener as Function)();
+      capturedListener!();
 
       // Should NOT trigger any router navigation
       expect(mockBack).not.toHaveBeenCalled();
@@ -260,9 +260,9 @@ describe("GuestModeScreen - BackHandler", () => {
       });
 
       // Simulate multiple back button presses
-      const result1 = (capturedListener as Function)();
-      const result2 = (capturedListener as Function)();
-      const result3 = (capturedListener as Function)();
+      const result1 = capturedListener!();
+      const result2 = capturedListener!();
+      const result3 = capturedListener!();
 
       expect(result1).toBe(true);
       expect(result2).toBe(true);
@@ -302,7 +302,7 @@ describe("GuestModeScreen - BackHandler", () => {
       });
 
       // Try to navigate back
-      const result = (capturedListener as Function)();
+      const result = capturedListener!();
 
       // Should prevent navigation
       expect(result).toBe(true);
@@ -425,7 +425,7 @@ describe("GuestModeScreen - BackHandler", () => {
 
       // Simulate rapid back presses
       for (let i = 0; i < 5; i++) {
-        const result = (capturedListener as Function)();
+        const result = capturedListener!();
         expect(result).toBe(true);
       }
 
@@ -453,7 +453,7 @@ describe("GuestModeScreen - BackHandler", () => {
       });
 
       // Back button should still be blocked
-      const result = (capturedListener as Function)();
+      const result = capturedListener!();
       expect(result).toBe(true);
     });
 
@@ -473,7 +473,7 @@ describe("GuestModeScreen - BackHandler", () => {
       render(<GuestModeScreen />);
 
       // Even during loading, back button is blocked
-      const result = (capturedListener as Function)();
+      const result = capturedListener!();
       expect(result).toBe(true);
     });
 
@@ -504,7 +504,7 @@ describe("GuestModeScreen - BackHandler", () => {
       });
 
       expect(() => {
-        (capturedListener as Function)();
+        capturedListener!();
       }).not.toThrow();
     });
   });
