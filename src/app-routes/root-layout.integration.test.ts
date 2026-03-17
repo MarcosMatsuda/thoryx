@@ -299,4 +299,50 @@ describe("Root Layout (app/_layout.tsx)", () => {
       expect(lastScreenPos).toBeLessThan(stackClosePos);
     });
   });
+
+  describe("Screenshot Protection (TASK-3)", () => {
+    it("should import usePreventScreenCapture from expo-screen-capture", () => {
+      const fileContent = fs.readFileSync(rootLayoutPath, "utf8");
+      expect(fileContent).toContain("usePreventScreenCapture");
+      expect(fileContent).toContain("expo-screen-capture");
+    });
+
+    it("should call usePreventScreenCapture hook in RootLayout", () => {
+      const fileContent = fs.readFileSync(rootLayoutPath, "utf8");
+      // Extract the RootLayout function body
+      const rootLayoutMatch = fileContent.match(
+        /export default function RootLayout\(\)\s*\{([\s\S]*?)\n\}/,
+      );
+      expect(rootLayoutMatch).toBeTruthy();
+
+      const functionBody = rootLayoutMatch ? rootLayoutMatch[1] : "";
+      expect(functionBody).toContain("usePreventScreenCapture");
+      expect(functionBody).toContain("useColorScheme");
+    });
+
+    it("should call usePreventScreenCapture before returning JSX", () => {
+      const fileContent = fs.readFileSync(rootLayoutPath, "utf8");
+      const usePreventScreenCapturePos = fileContent.indexOf(
+        "usePreventScreenCapture()",
+      );
+      const returnPos = fileContent.indexOf("return (");
+      expect(usePreventScreenCapturePos).toBeGreaterThan(-1);
+      expect(returnPos).toBeGreaterThan(-1);
+      expect(usePreventScreenCapturePos).toBeLessThan(returnPos);
+    });
+
+    it("should have usePreventScreenCapture called at the root level of RootLayout", () => {
+      const fileContent = fs.readFileSync(rootLayoutPath, "utf8");
+      // Verify that usePreventScreenCapture is called at function scope, not inside conditionals
+      const rootLayoutMatch = fileContent.match(
+        /export default function RootLayout\(\)\s*\{([\s\S]*?)return \(/,
+      );
+      expect(rootLayoutMatch).toBeTruthy();
+
+      const functionBody = rootLayoutMatch ? rootLayoutMatch[1] : "";
+      // Should be called after hooks like useColorScheme but before return
+      expect(functionBody).toContain("useColorScheme");
+      expect(functionBody).toContain("usePreventScreenCapture");
+    });
+  });
 });
