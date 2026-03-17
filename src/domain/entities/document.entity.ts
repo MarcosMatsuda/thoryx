@@ -9,6 +9,7 @@ export interface Document {
   expiryDate: string;
   frontPhotoEncrypted: string;
   backPhotoEncrypted: string;
+  isAutoLockEnabled: boolean; // default: false
   createdAt: Date;
   updatedAt: Date;
 }
