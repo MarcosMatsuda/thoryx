@@ -113,7 +113,7 @@ describe("useCountdown", () => {
     const onExpire2 = jest.fn();
 
     const { rerender } = renderHook(
-      ({ onExpire }) => useCountdown(5000, onExpire),
+      ({ onExpire }: { onExpire: () => void }) => useCountdown(5000, onExpire),
       { initialProps: { onExpire: onExpire1 } },
     );
 
