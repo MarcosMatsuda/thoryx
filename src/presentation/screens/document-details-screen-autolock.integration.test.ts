@@ -452,9 +452,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Integration", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain(
-        "onSwitchChange={handleToggleAutoLock}",
-      );
+      expect(componentCode).toContain("onSwitchChange={handleToggleAutoLock}");
     });
 
     it("should pass loading prop to SettingsItem", () => {
@@ -496,8 +494,9 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Integration", () => {
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       // Should have ternary operator with null fallback
-      expect(componentCode.includes("? (") && componentCode.includes(") : null}"))
-        .toBe(true);
+      expect(
+        componentCode.includes("? (") && componentCode.includes(") : null}"),
+      ).toBe(true);
     });
   });
 

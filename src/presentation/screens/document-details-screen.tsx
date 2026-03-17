@@ -62,18 +62,26 @@ export function DocumentDetailsScreen() {
   const handleToggleAutoLock = async () => {
     if (!documentId || !document) return;
 
+    // Store the previous state for rollback
+    const previousState = isAutoLockEnabled;
+
     try {
+      // Optimistic update: toggle immediately
+      const newState = !isAutoLockEnabled;
+      setIsAutoLockEnabled(newState);
       setIsTogglingAutoLock(true);
+
+      // Then make the async call
       const repository = new DocumentRepositoryImpl();
       const updatedDocument = await repository.toggleAutoLock(documentId);
-      
-      // Update local state
+
+      // Update document with server response
       setDocument(updatedDocument);
       setIsAutoLockEnabled(updatedDocument.isAutoLockEnabled);
     } catch (error) {
       console.error("Error toggling auto-lock:", error);
-      // Revert the toggle if there was an error
-      setIsAutoLockEnabled(!isAutoLockEnabled);
+      // Revert to previous state on error
+      setIsAutoLockEnabled(previousState);
     } finally {
       setIsTogglingAutoLock(false);
     }

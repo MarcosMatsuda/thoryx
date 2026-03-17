@@ -233,7 +233,19 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       const handlerStart = componentCode.indexOf("const handleToggleAutoLock");
-      const handlerEnd = componentCode.indexOf("}", handlerStart + 500);
+      // Search for the closing brace of the entire function (more than 500 chars)
+      let braceCount = 0;
+      let handlerEnd = handlerStart;
+      for (let i = handlerStart; i < componentCode.length; i++) {
+        if (componentCode[i] === "{") braceCount++;
+        if (componentCode[i] === "}") {
+          braceCount--;
+          if (braceCount === 0) {
+            handlerEnd = i;
+            break;
+          }
+        }
+      }
       const handlerCode = componentCode.substring(handlerStart, handlerEnd);
 
       expect(handlerCode).toContain("try");
@@ -250,8 +262,9 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
+      // Should revert using previousState for correct rollback behavior
       expect(componentCode).toContain(
-        "setIsAutoLockEnabled(!isAutoLockEnabled)",
+        "setIsAutoLockEnabled(previousState)",
       );
     });
 
@@ -265,7 +278,9 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('console.error("Error toggling auto-lock:", error)');
+      expect(componentCode).toContain(
+        'console.error("Error toggling auto-lock:", error)',
+      );
     });
 
     it("should have finally block to set isTogglingAutoLock to false", () => {
@@ -279,9 +294,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       expect(componentCode).toContain("finally");
-      expect(componentCode).toContain(
-        "setIsTogglingAutoLock(false)",
-      );
+      expect(componentCode).toContain("setIsTogglingAutoLock(false)");
     });
   });
 
@@ -352,9 +365,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain(
-        "onSwitchChange={handleToggleAutoLock}",
-      );
+      expect(componentCode).toContain("onSwitchChange={handleToggleAutoLock}");
     });
 
     it("should pass loading prop with isTogglingAutoLock state", () => {
@@ -565,7 +576,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       const toggleStart = componentCode.indexOf(
         'document.type === "RG" || document.type === "CNH"',
       );
-      const overflowIndex = componentCode.indexOf("overflow-hidden", toggleStart);
+      const overflowIndex = componentCode.indexOf(
+        "overflow-hidden",
+        toggleStart,
+      );
 
       expect(overflowIndex).toBeGreaterThan(toggleStart);
     });
