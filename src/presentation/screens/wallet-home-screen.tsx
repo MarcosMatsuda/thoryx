@@ -4,7 +4,7 @@ import { UserAvatar } from "@presentation/components/user-avatar";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { useDocuments } from "@presentation/hooks/use-documents";
 import { useUserProfile } from "@presentation/hooks/use-user-profile";
-import { useRouter, useFocusEffect } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -20,21 +20,12 @@ export function WalletHomeScreen() {
   const {
     documents,
     isLoading: documentsLoading,
-    reload: loadDocuments,
   } = useDocuments();
   const { cards, isLoading: cardsLoading } = useCreditCards();
   const {
     profile,
     isLoading: profileLoading,
-    reloadProfile,
   } = useUserProfile();
-
-  useFocusEffect(
-    React.useCallback(() => {
-      reloadProfile();
-      loadDocuments();
-    }, [reloadProfile, loadDocuments]),
-  );
 
   // Redirect to profile setup if no profile exists
   useEffect(() => {
