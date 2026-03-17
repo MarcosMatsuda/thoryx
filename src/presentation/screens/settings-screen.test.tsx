@@ -16,7 +16,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       expect(componentCode).toContain(
-        'const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes"'
+        'const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes"',
       );
     });
 
@@ -27,9 +27,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain(
-        'new SecureStorageAdapter('
-      );
+      expect(componentCode).toContain("new SecureStorageAdapter(");
       expect(componentCode).toContain("settings-storage");
     });
 
@@ -50,9 +48,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain(
-        'useState("5 minutes")'
-      );
+      expect(componentCode).toContain('useState("5 minutes")');
     });
   });
 
@@ -85,7 +81,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       expect(componentCode).toContain(
-        "await storage.get(AUTO_LOCK_TIMEOUT_KEY)"
+        "await storage.get(AUTO_LOCK_TIMEOUT_KEY)",
       );
     });
 
@@ -107,9 +103,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain(
-        'setAutoLockTimeout("5 minutes")'
-      );
+      expect(componentCode).toContain('setAutoLockTimeout("5 minutes")');
     });
 
     it("should handle errors gracefully with console.error", () => {
@@ -120,7 +114,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       expect(componentCode).toContain(
-        'console.error("Error loading auto-lock timeout:"'
+        'console.error("Error loading auto-lock timeout:"',
       );
     });
   });
@@ -155,7 +149,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
 
       expect(componentCode).toContain('text: "1 minute"');
       expect(componentCode).toContain(
-        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "1")'
+        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "1")',
       );
     });
 
@@ -168,7 +162,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
 
       expect(componentCode).toContain('text: "5 minutes"');
       expect(componentCode).toContain(
-        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "5")'
+        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "5")',
       );
     });
 
@@ -181,7 +175,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
 
       expect(componentCode).toContain('text: "15 minutes"');
       expect(componentCode).toContain(
-        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "15")'
+        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "15")',
       );
     });
 
@@ -194,7 +188,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
 
       expect(componentCode).toContain('text: "30 minutes"');
       expect(componentCode).toContain(
-        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "30")'
+        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "30")',
       );
     });
 
@@ -207,7 +201,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
 
       expect(componentCode).toContain('text: "Never"');
       expect(componentCode).toContain(
-        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "0")'
+        'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "0")',
       );
     });
 
@@ -220,7 +214,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
 
       // Verify that setAutoLockTimeout is called after storage.set
       expect(componentCode).toMatch(
-        /await storage\.set\(AUTO_LOCK_TIMEOUT_KEY.*?\s+setAutoLockTimeout/s
+        /await storage\.set\(AUTO_LOCK_TIMEOUT_KEY.*?\s+setAutoLockTimeout/s,
       );
     });
   });
@@ -267,12 +261,15 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const securityIndex = componentCode.indexOf("SECURITY");
       // Find Auto-lock Timeout after the last SECURITY occurrence
       const autoLockIndex = componentCode.lastIndexOf("Auto-lock Timeout");
-      
+
       expect(securityIndex).toBeGreaterThan(-1);
       expect(autoLockIndex).toBeGreaterThan(-1);
-      
+
       // Verify it's in the security section area
-      const contentBetween = componentCode.substring(securityIndex, autoLockIndex);
+      const contentBetween = componentCode.substring(
+        securityIndex,
+        autoLockIndex,
+      );
       expect(contentBetween).toContain("Change PIN");
     });
   });
@@ -298,9 +295,9 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
 
       // Count the number of async onPress handlers
       const asyncOnPressMatches = componentCode.match(
-        /onPress:\s*async\s*\(\)/g
+        /onPress:\s*async\s*\(\)/g,
       );
-      
+
       expect(asyncOnPressMatches).toBeTruthy();
       // Should have at least 5 timeout options (1, 5, 15, 30, Never)
       expect(asyncOnPressMatches!.length).toBeGreaterThanOrEqual(5);

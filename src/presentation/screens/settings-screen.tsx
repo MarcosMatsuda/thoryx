@@ -111,40 +111,40 @@ export function SettingsScreen() {
 
   const handleAutoLockTimeout = () => {
     Alert.alert("Auto-lock Timeout", "Choose when to lock the app", [
-      { 
-        text: "1 minute", 
+      {
+        text: "1 minute",
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "1");
           setAutoLockTimeout("1 minute");
-        }
+        },
       },
-      { 
-        text: "5 minutes", 
+      {
+        text: "5 minutes",
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "5");
           setAutoLockTimeout("5 minutes");
-        }
+        },
       },
-      { 
-        text: "15 minutes", 
+      {
+        text: "15 minutes",
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "15");
           setAutoLockTimeout("15 minutes");
-        }
+        },
       },
-      { 
-        text: "30 minutes", 
+      {
+        text: "30 minutes",
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "30");
           setAutoLockTimeout("30 minutes");
-        }
+        },
       },
-      { 
-        text: "Never", 
+      {
+        text: "Never",
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "0");
           setAutoLockTimeout("Never");
-        }
+        },
       },
       { text: "Cancel", style: "cancel" },
     ]);

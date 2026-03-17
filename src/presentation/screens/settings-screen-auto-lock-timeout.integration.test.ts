@@ -263,10 +263,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence Integration", () => {
 
       // Key should be sanitized: underscores replace special chars
       const expectedKey = `${STORAGE_ID}_${AUTO_LOCK_TIMEOUT_KEY}`;
-      expect(SecureStore.setItemAsync).toHaveBeenCalledWith(
-        expectedKey,
-        "15",
-      );
+      expect(SecureStore.setItemAsync).toHaveBeenCalledWith(expectedKey, "15");
     });
   });
 
@@ -288,9 +285,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence Integration", () => {
 
     it("should handle storage write errors gracefully", async () => {
       const SecureStore = require("expo-secure-store");
-      SecureStore.setItemAsync.mockRejectedValue(
-        new Error("Storage is full"),
-      );
+      SecureStore.setItemAsync.mockRejectedValue(new Error("Storage is full"));
 
       try {
         await storage.set(AUTO_LOCK_TIMEOUT_KEY, "5");

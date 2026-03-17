@@ -59,9 +59,9 @@ describe("DocumentRepositoryImpl", () => {
   describe("Document entity", () => {
     it("should contain isAutoLockEnabled field", async () => {
       mockStorage.get.mockResolvedValue(null);
-      (ImageProcessingService.compressAndEncrypt as jest.Mock).mockResolvedValue(
-        "encryptedPhoto",
-      );
+      (
+        ImageProcessingService.compressAndEncrypt as jest.Mock
+      ).mockResolvedValue("encryptedPhoto");
 
       const document = await repository.save(mockDocumentInput);
 
@@ -73,9 +73,9 @@ describe("DocumentRepositoryImpl", () => {
   describe("Save new document", () => {
     it("should save new document with isAutoLockEnabled = false", async () => {
       mockStorage.get.mockResolvedValue(null);
-      (ImageProcessingService.compressAndEncrypt as jest.Mock).mockResolvedValue(
-        "encryptedPhoto",
-      );
+      (
+        ImageProcessingService.compressAndEncrypt as jest.Mock
+      ).mockResolvedValue("encryptedPhoto");
 
       const document = await repository.save(mockDocumentInput);
 
@@ -90,9 +90,9 @@ describe("DocumentRepositoryImpl", () => {
 
     it("should initialize all fields correctly when creating new document", async () => {
       mockStorage.get.mockResolvedValue(null);
-      (ImageProcessingService.compressAndEncrypt as jest.Mock).mockResolvedValue(
-        "encryptedPhoto",
-      );
+      (
+        ImageProcessingService.compressAndEncrypt as jest.Mock
+      ).mockResolvedValue("encryptedPhoto");
 
       const document = await repository.save(mockDocumentInput);
 
@@ -110,9 +110,9 @@ describe("DocumentRepositoryImpl", () => {
 
     it("should persist document to storage", async () => {
       mockStorage.get.mockResolvedValue(null);
-      (ImageProcessingService.compressAndEncrypt as jest.Mock).mockResolvedValue(
-        "encryptedPhoto",
-      );
+      (
+        ImageProcessingService.compressAndEncrypt as jest.Mock
+      ).mockResolvedValue("encryptedPhoto");
 
       await repository.save(mockDocumentInput);
 
