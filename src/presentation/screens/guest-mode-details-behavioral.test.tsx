@@ -7,6 +7,9 @@ import {
 } from "@testing-library/react-native";
 import { DocumentDetailsScreen } from "./document-details-screen";
 
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
+
 jest.mock("@data/repositories/document.repository.impl", () => ({
   DocumentRepositoryImpl: jest.fn().mockImplementation(() => ({
     findAll: jest.fn(),
@@ -85,9 +88,6 @@ jest.mock("@presentation/components/settings-item", () => ({
   },
 }));
 
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
-
 const mockDocument = {
   id: "doc-123",
   type: "RG",
@@ -144,9 +144,12 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
 
       render(<DocumentDetailsScreen />);
 
-      await waitFor(() => {
-        expect(screen.getByText("John Doe")).toBeTruthy();
-      }, { timeout: 10000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText("John Doe")).toBeTruthy();
+        },
+        { timeout: 10000 },
+      );
 
       // Press back button
       fireEvent.press(screen.getByText("←"));
@@ -258,7 +261,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
 
       // Auto-lock toggle should NOT exist in guest mode
       expect(
-        screen.queryByTestId("settings-item-Incluir no Auto-lock")
+        screen.queryByTestId("settings-item-Incluir no Auto-lock"),
       ).toBeNull();
     });
 
@@ -278,7 +281,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
 
       // Auto-lock toggle should exist
       expect(
-        screen.getByTestId("settings-item-Incluir no Auto-lock")
+        screen.getByTestId("settings-item-Incluir no Auto-lock"),
       ).toBeTruthy();
     });
 
@@ -300,7 +303,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
 
       // Auto-lock toggle should exist for CNH
       expect(
-        screen.getByTestId("settings-item-Incluir no Auto-lock")
+        screen.getByTestId("settings-item-Incluir no Auto-lock"),
       ).toBeTruthy();
     });
 
@@ -323,7 +326,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
 
       // Auto-lock toggle should NOT exist for credit cards
       expect(
-        screen.queryByTestId("settings-item-Incluir no Auto-lock")
+        screen.queryByTestId("settings-item-Incluir no Auto-lock"),
       ).toBeNull();
     });
   });

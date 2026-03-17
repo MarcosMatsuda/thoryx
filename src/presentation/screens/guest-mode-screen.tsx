@@ -28,9 +28,12 @@ export function GuestModeScreen() {
 
   // Block hardware back button on Android
   useEffect(() => {
-    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-      return true; // true = evento consumido, não sai da tela
-    });
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        return true; // true = evento consumido, não sai da tela
+      },
+    );
     return () => subscription.remove();
   }, []);
 

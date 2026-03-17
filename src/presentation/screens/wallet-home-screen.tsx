@@ -17,7 +17,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export function WalletHomeScreen() {
   const router = useRouter();
-  const { documents, isLoading: documentsLoading } = useDocuments();
+  const {
+    documents,
+    isLoading: documentsLoading,
+    reload: loadDocuments,
+  } = useDocuments();
   const { cards, isLoading: cardsLoading } = useCreditCards();
   const {
     profile,
@@ -25,12 +29,11 @@ export function WalletHomeScreen() {
     reloadProfile,
   } = useUserProfile();
 
-  const isLoading = profileLoading || documentsLoading || cardsLoading;
-
   useFocusEffect(
     React.useCallback(() => {
       reloadProfile();
-    }, [reloadProfile]),
+      loadDocuments();
+    }, [reloadProfile, loadDocuments]),
   );
 
   // Redirect to profile setup if no profile exists
@@ -145,6 +148,33 @@ export function WalletHomeScreen() {
             </Pressable>
           </View>
 
+          {/* Auto-lock Button */}
+          {documents && documents.some((doc) => doc.isAutoLockEnabled) && (
+            <View className="border-2 border-warning-main rounded-2xl p-5 md:p-6 mb-6">
+              <View className="flex-row items-center mb-3">
+                <View className="w-10 h-10 bg-warning-main/20 rounded-full items-center justify-center mr-3">
+                  <Text className="text-xl">🔒</Text>
+                </View>
+                <View className="flex-1">
+                  <Text className="text-lg md:text-xl font-bold text-text-primary">
+                    Iniciar Auto-lock
+                  </Text>
+                  <Text className="text-sm md:text-base text-text-secondary mt-1">
+                    Compartilhar documentos selecionados
+                  </Text>
+                </View>
+              </View>
+              <Pressable
+                className="bg-warning-main rounded-xl py-3.5 items-center active:opacity-90"
+                onPress={() => router.replace("/guest-mode")}
+              >
+                <Text className="text-base md:text-lg font-bold text-white">
+                  Iniciar Modo Convidado
+                </Text>
+              </Pressable>
+            </View>
+          )}
+
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-4">
               <Text className="text-xs md:text-sm font-semibold text-text-secondary tracking-wider">
@@ -165,7 +195,7 @@ export function WalletHomeScreen() {
                     Loading documents...
                   </Text>
                 </View>
-              ) : documents.length === 0 ? (
+              ) : !documents || documents.length === 0 ? (
                 <View className="bg-background-secondary rounded-2xl p-6 items-center">
                   <Text className="text-4xl mb-3">📄</Text>
                   <Text className="text-text-secondary text-center">
