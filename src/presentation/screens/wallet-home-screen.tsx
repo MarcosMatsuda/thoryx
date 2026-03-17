@@ -17,9 +17,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export function WalletHomeScreen() {
   const router = useRouter();
-  const { documents, isLoading: documentsLoading, reload: loadDocuments } = useDocuments();
+  const {
+    documents,
+    isLoading: documentsLoading,
+    reload: loadDocuments,
+  } = useDocuments();
   const { cards, isLoading: cardsLoading } = useCreditCards();
-  const { profile, isLoading: profileLoading, reloadProfile } = useUserProfile();
+  const {
+    profile,
+    isLoading: profileLoading,
+    reloadProfile,
+  } = useUserProfile();
 
   // Redirect to profile setup if no profile exists
   useEffect(() => {
@@ -33,7 +41,7 @@ export function WalletHomeScreen() {
     React.useCallback(() => {
       loadDocuments();
       reloadProfile();
-    }, [reloadProfile, loadDocuments])
+    }, [reloadProfile, loadDocuments]),
   );
 
   const getDocumentIcon = (type: string) => {
