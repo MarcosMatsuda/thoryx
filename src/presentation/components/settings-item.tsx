@@ -50,31 +50,32 @@ export function SettingsItem({
       </View>
 
       <View className="flex-row items-center gap-2">
-        {loading ? (
-          <ActivityIndicator
-            size="small"
-            color={destructive ? "#EF4444" : "#3B82F6"}
-          />
-        ) : (
-          <>
-            {value && (
-              <Text className="text-sm md:text-base text-text-secondary">
-                {value}
-              </Text>
+        {value && (
+          <Text className="text-sm md:text-base text-text-secondary">
+            {value}
+          </Text>
+        )}
+        {switchValue !== undefined && onSwitchChange && (
+          <View className="relative">
+            <Switch
+              value={switchValue}
+              onValueChange={onSwitchChange}
+              disabled={disabled || loading}
+              trackColor={{ false: "#767577", true: "#3B82F6" }}
+              thumbColor={switchValue ? "#FFFFFF" : "#f4f3f4"}
+            />
+            {loading && (
+              <View className="absolute inset-0 items-center justify-center bg-black/10 rounded-full">
+                <ActivityIndicator
+                  size="small"
+                  color={destructive ? "#EF4444" : "#3B82F6"}
+                />
+              </View>
             )}
-            {switchValue !== undefined && onSwitchChange && (
-              <Switch
-                value={switchValue}
-                onValueChange={onSwitchChange}
-                disabled={disabled}
-                trackColor={{ false: "#767577", true: "#3B82F6" }}
-                thumbColor={switchValue ? "#FFFFFF" : "#f4f3f4"}
-              />
-            )}
-            {showChevron && !onSwitchChange && (
-              <Text className="text-text-secondary text-lg">›</Text>
-            )}
-          </>
+          </View>
+        )}
+        {showChevron && !onSwitchChange && (
+          <Text className="text-text-secondary text-lg">›</Text>
         )}
       </View>
     </View>

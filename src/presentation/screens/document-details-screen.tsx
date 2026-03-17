@@ -10,6 +10,7 @@ import { DocumentPhotoCarousel } from "@presentation/components/document-photo-c
 import { DetailRow } from "@presentation/components/detail-row";
 import { ActionButtonLarge } from "@presentation/components/action-button-large";
 import { InfoBanner } from "@presentation/components/info-banner";
+import { SettingsItem } from "@presentation/components/settings-item";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
@@ -24,6 +25,8 @@ export function DocumentDetailsScreen() {
   const [frontPhotoUri, setFrontPhotoUri] = useState<string | null>(null);
   const [backPhotoUri, setBackPhotoUri] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAutoLockEnabled, setIsAutoLockEnabled] = useState(false);
+  const [isTogglingAutoLock, setIsTogglingAutoLock] = useState(false);
 
   useEffect(() => {
     if (documentId) {
@@ -43,6 +46,7 @@ export function DocumentDetailsScreen() {
 
       if (doc) {
         setDocument(doc);
+        setIsAutoLockEnabled(doc.isAutoLockEnabled || false);
         const frontUri = await repository.decryptPhoto(doc.frontPhotoEncrypted);
         const backUri = await repository.decryptPhoto(doc.backPhotoEncrypted);
         setFrontPhotoUri(frontUri);
@@ -52,6 +56,34 @@ export function DocumentDetailsScreen() {
       console.error("Error loading document:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleToggleAutoLock = async () => {
+    if (!documentId || !document) return;
+
+    // Store the previous state for rollback
+    const previousState = isAutoLockEnabled;
+
+    try {
+      // Optimistic update: toggle immediately
+      const newState = !isAutoLockEnabled;
+      setIsAutoLockEnabled(newState);
+      setIsTogglingAutoLock(true);
+
+      // Then make the async call
+      const repository = new DocumentRepositoryImpl();
+      const updatedDocument = await repository.toggleAutoLock(documentId);
+
+      // Update document with server response
+      setDocument(updatedDocument);
+      setIsAutoLockEnabled(updatedDocument.isAutoLockEnabled);
+    } catch (error) {
+      console.error("Error toggling auto-lock:", error);
+      // Revert to previous state on error
+      setIsAutoLockEnabled(previousState);
+    } finally {
+      setIsTogglingAutoLock(false);
     }
   };
 
@@ -148,6 +180,23 @@ export function DocumentDetailsScreen() {
               </View>
             </View>
           </View>
+
+          {/* Auto-lock toggle section - only for Document type (RG, CNH) */}
+          {document.type === "RG" || document.type === "CNH" ? (
+            <View className="px-6 mb-6">
+              <View className="bg-background-secondary rounded-2xl overflow-hidden">
+                <SettingsItem
+                  label="Incluir no Auto-lock"
+                  value="Documento visível no Modo Convidado"
+                  switchValue={isAutoLockEnabled}
+                  onSwitchChange={handleToggleAutoLock}
+                  loading={isTogglingAutoLock}
+                  isFirst={true}
+                  isLast={true}
+                />
+              </View>
+            </View>
+          ) : null}
 
           <View className="px-6">
             <View className="gap-3 mb-6">

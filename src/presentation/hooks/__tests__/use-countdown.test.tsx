@@ -65,7 +65,7 @@ describe("useCountdown", () => {
     const onExpire = jest.fn();
     const { rerender } = renderHook(
       ({ duration }: { duration: number }) => useCountdown(duration, onExpire),
-      { initialProps: { duration: 3000 } }
+      { initialProps: { duration: 3000 } },
     );
 
     // Avança até expirar
