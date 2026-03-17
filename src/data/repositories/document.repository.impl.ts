@@ -112,7 +112,7 @@ export class DocumentRepositoryImpl implements DocumentRepository {
     try {
       const documents = await this.findAll();
       const documentIndex = documents.findIndex((doc) => doc.id === id);
-      
+
       if (documentIndex === -1) {
         throw new Error(`Document with id ${id} not found`);
       }

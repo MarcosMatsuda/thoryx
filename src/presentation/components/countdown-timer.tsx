@@ -63,10 +63,7 @@ export function CountdownTimer({
       <Text className="text-sm mr-1" style={{ color: iconColor }}>
         {icon}
       </Text>
-      <Text
-        className="text-base font-medium"
-        style={{ color: textColor }}
-      >
+      <Text className="text-base font-medium" style={{ color: textColor }}>
         {timeLeft}
       </Text>
     </View>

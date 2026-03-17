@@ -111,10 +111,10 @@ describe("useCountdown", () => {
   it("atualiza o callback onExpire quando ele muda", () => {
     const onExpire1 = jest.fn();
     const onExpire2 = jest.fn();
-    
+
     const { rerender } = renderHook(
       ({ onExpire }) => useCountdown(5000, onExpire),
-      { initialProps: { onExpire: onExpire1 } }
+      { initialProps: { onExpire: onExpire1 } },
     );
 
     // Muda o callback

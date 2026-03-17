@@ -9,7 +9,7 @@ describe("CountdownTimer", () => {
   it("renderiza corretamente com durationMinutes={5}", () => {
     const onExpire = jest.fn();
     const { getByText } = render(
-      <CountdownTimer durationMinutes={5} onExpire={onExpire} />
+      <CountdownTimer durationMinutes={5} onExpire={onExpire} />,
     );
 
     // Deve mostrar 05:00 inicialmente
@@ -19,7 +19,7 @@ describe("CountdownTimer", () => {
   it("decrementa em tempo real (1 segundo por segundo)", async () => {
     const onExpire = jest.fn();
     const { getByText } = render(
-      <CountdownTimer durationMinutes={0.05} onExpire={onExpire} /> // 3 segundos
+      <CountdownTimer durationMinutes={0.05} onExpire={onExpire} />, // 3 segundos
     );
 
     // Inicialmente 00:03
@@ -45,7 +45,7 @@ describe("CountdownTimer", () => {
   it("chama onExpire exatamente uma vez ao chegar a 00:00", async () => {
     const onExpire = jest.fn();
     render(
-      <CountdownTimer durationMinutes={0.05} onExpire={onExpire} /> // 3 segundos
+      <CountdownTimer durationMinutes={0.05} onExpire={onExpire} />, // 3 segundos
     );
 
     // Avança 4 segundos (garante que passou do tempo)
@@ -60,7 +60,7 @@ describe("CountdownTimer", () => {
   it("muda cor para amarelo nos últimos 60 segundos", async () => {
     const onExpire = jest.fn();
     const { getByText } = render(
-      <CountdownTimer durationMinutes={1} onExpire={onExpire} /> // 60 segundos
+      <CountdownTimer durationMinutes={1} onExpire={onExpire} />, // 60 segundos
     );
 
     // Inicialmente 01:00 - deve estar na cor padrão (não amarelo ainda)
@@ -80,7 +80,7 @@ describe("CountdownTimer", () => {
   it("muda cor para vermelho nos últimos 10 segundos", async () => {
     const onExpire = jest.fn();
     const { getByText } = render(
-      <CountdownTimer durationMinutes={0.2} onExpire={onExpire} /> // 12 segundos
+      <CountdownTimer durationMinutes={0.2} onExpire={onExpire} />, // 12 segundos
     );
 
     // Avança para 00:10 (dentro dos últimos 10s)
@@ -95,30 +95,30 @@ describe("CountdownTimer", () => {
 
   it("funciona com diferentes valores de durationMinutes", () => {
     const onExpire = jest.fn();
-    
+
     // Testa com 1 minuto
     const { getByText: getByText1, unmount: unmount1 } = render(
-      <CountdownTimer durationMinutes={1} onExpire={onExpire} />
+      <CountdownTimer durationMinutes={1} onExpire={onExpire} />,
     );
     expect(getByText1("01:00")).toBeTruthy();
     unmount1();
 
     // Testa com 5 minutos
     const { getByText: getByText5 } = render(
-      <CountdownTimer durationMinutes={5} onExpire={onExpire} />
+      <CountdownTimer durationMinutes={5} onExpire={onExpire} />,
     );
     expect(getByText5("05:00")).toBeTruthy();
 
     // Testa com 15 minutos
     const { getByText: getByText15, unmount: unmount15 } = render(
-      <CountdownTimer durationMinutes={15} onExpire={onExpire} />
+      <CountdownTimer durationMinutes={15} onExpire={onExpire} />,
     );
     expect(getByText15("15:00")).toBeTruthy();
     unmount15();
 
     // Testa com 30 minutos
     const { getByText: getByText30 } = render(
-      <CountdownTimer durationMinutes={30} onExpire={onExpire} />
+      <CountdownTimer durationMinutes={30} onExpire={onExpire} />,
     );
     expect(getByText30("30:00")).toBeTruthy();
   });
@@ -126,11 +126,11 @@ describe("CountdownTimer", () => {
   it("renderiza estilo prominent corretamente", () => {
     const onExpire = jest.fn();
     const { getByText } = render(
-      <CountdownTimer 
-        durationMinutes={5} 
-        onExpire={onExpire} 
+      <CountdownTimer
+        durationMinutes={5}
+        onExpire={onExpire}
         style="prominent"
-      />
+      />,
     );
 
     // Deve mostrar o ícone de timer ⏱️
@@ -141,11 +141,7 @@ describe("CountdownTimer", () => {
   it("renderiza estilo subtle corretamente", () => {
     const onExpire = jest.fn();
     const { getByText } = render(
-      <CountdownTimer 
-        durationMinutes={5} 
-        onExpire={onExpire} 
-        style="subtle"
-      />
+      <CountdownTimer durationMinutes={5} onExpire={onExpire} style="subtle" />,
     );
 
     // Deve mostrar o ícone de ampulheta ⏳
