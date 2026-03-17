@@ -10,7 +10,7 @@ interface DocumentsState {
   reset: () => void;
 }
 
-export const useDocumentsStore = create<DocumentsState>((set) => {
+export const useDocumentsStore = create<DocumentsState>((set: any) => {
   const repository = new DocumentRepositoryImpl();
   const getAllDocumentsUseCase = new GetAllDocumentsUseCase(repository);
 

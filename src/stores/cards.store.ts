@@ -10,7 +10,7 @@ interface CardsState {
   reset: () => void;
 }
 
-export const useCardsStore = create<CardsState>((set) => {
+export const useCardsStore = create<CardsState>((set: any) => {
   const repository = new CreditCardRepositoryImpl();
   const getAllCreditCardsUseCase = new GetAllCreditCardsUseCase(repository);
 

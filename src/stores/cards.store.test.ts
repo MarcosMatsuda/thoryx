@@ -27,43 +27,51 @@ describe("useCardsStore", () => {
     },
   ];
 
+  let mockGetAllCreditCardsUseCase: jest.Mocked<GetAllCreditCardsUseCase>;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetAllCreditCardsUseCase = {
+      execute: jest.fn(),
+    } as any;
+    
+    // Mock the GetAllCreditCardsUseCase constructor
+    (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockGetAllCreditCardsUseCase);
+    
+    // Mock the repository constructor
+    const mockRepository = {
+      getAll: jest.fn(),
+    };
+    (require("@data/repositories/credit-card.repository.impl").CreditCardRepositoryImpl as jest.Mock).mockImplementation(() => mockRepository);
   });
 
   describe("Initial state", () => {
     it("should initialize with empty cards array and false isLoading", () => {
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
-      expect(store.cards).toEqual([]);
-      expect(store.isLoading).toBe(false);
+      expect(state.cards).toEqual([]);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should have correct initial structure", () => {
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
-      expect(store).toHaveProperty("cards");
-      expect(store).toHaveProperty("isLoading");
-      expect(store).toHaveProperty("loadCards");
-      expect(store).toHaveProperty("reset");
+      expect(state).toHaveProperty("cards");
+      expect(state).toHaveProperty("isLoading");
+      expect(state).toHaveProperty("loadCards");
+      expect(state).toHaveProperty("reset");
     });
   });
 
   describe("loadCards action", () => {
     it("should load cards successfully", async () => {
-      const mockGetAllCreditCardsUseCase = {
-        execute: jest.fn().mockResolvedValue(mockCards),
-      };
+      mockGetAllCreditCardsUseCase.execute.mockResolvedValue(mockCards);
 
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
-        () => mockGetAllCreditCardsUseCase,
-      );
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
-
-      expect(store.cards).toEqual(mockCards);
-      expect(store.isLoading).toBe(false);
+      expect(state.cards).toEqual(mockCards);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should set isLoading to true during load", async () => {
@@ -82,13 +90,13 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      const loadPromise = store.loadCards();
+      const state = useCardsStore.getState();
+      const loadPromise = state.loadCards();
 
       await loadPromise;
 
       expect(mockGetAllCreditCardsUseCase.execute).toHaveBeenCalled();
-      expect(store.isLoading).toBe(false);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should handle error when loading cards fails", async () => {
@@ -102,11 +110,11 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      expect(store.cards).toEqual([]);
-      expect(store.isLoading).toBe(false);
+      expect(state.cards).toEqual([]);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should call use case execute method", async () => {
@@ -118,8 +126,8 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
       expect(mockGetAllCreditCardsUseCase.execute).toHaveBeenCalled();
     });
@@ -133,11 +141,11 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      expect(store.cards).toEqual([]);
-      expect(store.isLoading).toBe(false);
+      expect(state.cards).toEqual([]);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should handle server error gracefully", async () => {
@@ -151,11 +159,11 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
       // Should not throw
-      await expect(store.loadCards()).resolves.toBeUndefined();
-      expect(store.isLoading).toBe(false);
+      await expect(state.loadCards()).resolves.toBeUndefined();
+      expect(state.isLoading).toBe(false);
     });
 
     it("should replace previous cards on new load", async () => {
@@ -170,17 +178,17 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
       // Load first batch
       mockGetAllCreditCardsUseCase.execute.mockResolvedValueOnce(firstBatch);
-      await store.loadCards();
-      expect(store.cards).toEqual(firstBatch);
+      await state.loadCards();
+      expect(state.cards).toEqual(firstBatch);
 
       // Load second batch
       mockGetAllCreditCardsUseCase.execute.mockResolvedValueOnce(secondBatch);
-      await store.loadCards();
-      expect(store.cards).toEqual(secondBatch);
+      await state.loadCards();
+      expect(state.cards).toEqual(secondBatch);
     });
   });
 
@@ -194,33 +202,33 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
       // Load cards
-      await store.loadCards();
-      expect(store.cards).toEqual(mockCards);
+      await state.loadCards();
+      expect(state.cards).toEqual(mockCards);
 
       // Reset
-      store.reset();
+      state.reset();
 
-      expect(store.cards).toEqual([]);
-      expect(store.isLoading).toBe(false);
+      expect(state.cards).toEqual([]);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should reset isLoading flag", () => {
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
-      store.reset();
+      state.reset();
 
-      expect(store.isLoading).toBe(false);
+      expect(state.isLoading).toBe(false);
     });
 
     it("should be callable on initial state without error", () => {
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
       // Should not throw
-      expect(() => store.reset()).not.toThrow();
-      expect(store.cards).toEqual([]);
+      expect(() => state.reset()).not.toThrow();
+      expect(state.cards).toEqual([]);
     });
   });
 
@@ -234,14 +242,14 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      expect(store.cards[0]).toHaveProperty("id");
-      expect(store.cards[0]).toHaveProperty("lastFourDigits");
-      expect(store.cards[0]).toHaveProperty("cardholderName");
-      expect(store.cards[0]).toHaveProperty("cardNumber");
-      expect(store.cards[0]).toHaveProperty("expiryDate");
+      expect(state.cards[0]).toHaveProperty("id");
+      expect(state.cards[0]).toHaveProperty("lastFourDigits");
+      expect(state.cards[0]).toHaveProperty("cardholderName");
+      expect(state.cards[0]).toHaveProperty("cardNumber");
+      expect(state.cards[0]).toHaveProperty("expiryDate");
     });
 
     it("should preserve card metadata", async () => {
@@ -253,12 +261,12 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      expect(store.cards[0].lastFourDigits).toBe("1234");
-      expect(store.cards[0].cardholderName).toBe("John Doe");
-      expect(store.cards[0].expiryDate).toBe("12/25");
+      expect(state.cards[0].lastFourDigits).toBe("1234");
+      expect(state.cards[0].cardholderName).toBe("John Doe");
+      expect(state.cards[0].expiryDate).toBe("12/25");
     });
   });
 
@@ -272,12 +280,12 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      expect(store.cards).toHaveLength(2);
-      expect(store.cards.map((c) => c.lastFourDigits)).toContain("1234");
-      expect(store.cards.map((c) => c.lastFourDigits)).toContain("5678");
+      expect(state.cards).toHaveLength(2);
+      expect(state.cards.map((c: any) => c.lastFourDigits)).toContain("1234");
+      expect(state.cards.map((c: any) => c.lastFourDigits)).toContain("5678");
     });
 
     it("should load single card correctly", async () => {
@@ -290,11 +298,11 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      expect(store.cards).toHaveLength(1);
-      expect(store.cards[0].lastFourDigits).toBe("1234");
+      expect(state.cards).toHaveLength(1);
+      expect(state.cards[0].lastFourDigits).toBe("1234");
     });
   });
 
@@ -308,13 +316,13 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
-      await store.loadCards();
-      expect(store.cards).toEqual(mockCards);
+      await state.loadCards();
+      expect(state.cards).toEqual(mockCards);
 
-      await store.loadCards();
-      expect(store.cards).toEqual(mockCards);
+      await state.loadCards();
+      expect(state.cards).toEqual(mockCards);
     });
 
     it("should handle reset between loads", async () => {
@@ -326,16 +334,16 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
-      await store.loadCards();
-      expect(store.cards.length).toBeGreaterThan(0);
+      await state.loadCards();
+      expect(state.cards.length).toBeGreaterThan(0);
 
-      store.reset();
-      expect(store.cards).toEqual([]);
+      state.reset();
+      expect(state.cards).toEqual([]);
 
-      await store.loadCards();
-      expect(store.cards).toEqual(mockCards);
+      await state.loadCards();
+      expect(state.cards).toEqual(mockCards);
     });
   });
 
@@ -359,10 +367,10 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      expect(store.cards).toHaveLength(100);
+      expect(state.cards).toHaveLength(100);
     });
 
     it("should handle TypeError gracefully", async () => {
@@ -376,11 +384,11 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
+      const state = useCardsStore.getState();
 
       // Should not throw
-      await expect(store.loadCards()).resolves.toBeUndefined();
-      expect(store.cards).toEqual([]);
+      await expect(state.loadCards()).resolves.toBeUndefined();
+      expect(state.cards).toEqual([]);
     });
 
     it("should handle multiple cards with different last four digits correctly", async () => {
@@ -399,11 +407,11 @@ describe("useCardsStore", () => {
         () => mockGetAllCreditCardsUseCase,
       );
 
-      const store = useCardsStore.getState();
-      await store.loadCards();
+      const state = useCardsStore.getState();
+      await state.loadCards();
 
-      expect(store.cards).toHaveLength(4);
-      const lastFourDigits = store.cards.map((c) => c.lastFourDigits);
+      expect(state.cards).toHaveLength(4);
+      const lastFourDigits = state.cards.map((c: any) => c.lastFourDigits);
       expect(lastFourDigits).toContain("1111");
       expect(lastFourDigits).toContain("2222");
       expect(lastFourDigits).toContain("3333");

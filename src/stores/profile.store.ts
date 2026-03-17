@@ -18,7 +18,7 @@ interface ProfileState {
   reset: () => void;
 }
 
-export const useProfileStore = create<ProfileState>((set, get) => {
+export const useProfileStore = create<ProfileState>((set: any, get: any) => {
   const repository = new UserProfileRepositoryImpl();
   const getUserProfileUseCase = new GetUserProfileUseCase(repository);
   const saveUserProfileUseCase = new SaveUserProfileUseCase(repository);
