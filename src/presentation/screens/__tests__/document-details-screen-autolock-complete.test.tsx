@@ -1,6 +1,6 @@
 /**
  * Complete E2E Behavioral Tests for DocumentDetailsScreen Auto-lock Toggle
- * 
+ *
  * Tests the complete application flow and business logic
  * without direct component rendering
  */
@@ -435,8 +435,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Complete E2E Tests", () => {
   describe("Edge Cases and Boundary Conditions", () => {
     it("should handle null/undefined document gracefully", () => {
       let document: any = null;
-      const isAutoLockEnabled =
-        document?.isAutoLockEnabled || false;
+      const isAutoLockEnabled = document?.isAutoLockEnabled || false;
 
       expect(isAutoLockEnabled).toBe(false);
     });

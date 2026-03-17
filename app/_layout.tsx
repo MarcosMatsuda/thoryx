@@ -61,6 +61,10 @@ export default function RootLayout() {
           <Stack.Screen name="profile-setup" options={{ headerShown: false }} />
           <Stack.Screen name="change-pin" options={{ headerShown: false }} />
           <Stack.Screen
+            name="guest-mode"
+            options={{ headerShown: false, gestureEnabled: false }}
+          />
+          <Stack.Screen
             name="modal"
             options={{ presentation: "modal", title: "Modal" }}
           />

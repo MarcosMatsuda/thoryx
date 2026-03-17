@@ -19,7 +19,11 @@ import { Document } from "@domain/entities/document.entity";
 export function DocumentDetailsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { documentId } = params as { documentId?: string };
+  const { documentId, guestMode } = params as {
+    documentId?: string;
+    guestMode?: string;
+  };
+  const isGuestMode = guestMode === "true";
 
   const [document, setDocument] = useState<Document | null>(null);
   const [frontPhotoUri, setFrontPhotoUri] = useState<string | null>(null);
@@ -126,24 +130,32 @@ export function DocumentDetailsScreen() {
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
-            onPress={() => router.back()}
+            onPress={() => {
+              if (isGuestMode) {
+                router.replace("/guest-mode");
+              } else {
+                router.back();
+              }
+            }}
           >
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
           <Text className="text-lg font-bold text-text-primary">
             {getDocumentTitle(document.type)}
           </Text>
-          <Pressable
-            className="w-10 h-10 items-center justify-center"
-            onPress={() =>
-              router.push({
-                pathname: "/add-document",
-                params: { documentId: document.id },
-              })
-            }
-          >
-            <Text className="text-xl text-primary-main">✏️</Text>
-          </Pressable>
+          {!isGuestMode && (
+            <Pressable
+              className="w-10 h-10 items-center justify-center"
+              onPress={() =>
+                router.push({
+                  pathname: "/add-document",
+                  params: { documentId: document.id },
+                })
+              }
+            >
+              <Text className="text-xl text-primary-main">✏️</Text>
+            </Pressable>
+          )}
         </View>
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
@@ -181,8 +193,9 @@ export function DocumentDetailsScreen() {
             </View>
           </View>
 
-          {/* Auto-lock toggle section - only for Document type (RG, CNH) */}
-          {document.type === "RG" || document.type === "CNH" ? (
+          {/* Auto-lock toggle section - only for Document type (RG, CNH) and NOT in guest mode */}
+          {!isGuestMode &&
+          (document.type === "RG" || document.type === "CNH") ? (
             <View className="px-6 mb-6">
               <View className="bg-background-secondary rounded-2xl overflow-hidden">
                 <SettingsItem
