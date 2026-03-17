@@ -16,6 +16,7 @@ const config = {
         "^@presentation/(.*)$": "<rootDir>/src/presentation/$1",
         "^@shared/(.*)$": "<rootDir>/src/shared/$1",
       },
+      setupFiles: ["<rootDir>/jest.setup.unit.js"],
     },
     {
       // Component tests — React Native runtime via jest-expo

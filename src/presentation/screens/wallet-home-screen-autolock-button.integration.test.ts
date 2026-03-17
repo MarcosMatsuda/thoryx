@@ -135,9 +135,7 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
 
   describe("Hook Integration", () => {
     it("should destructure reload from useDocuments hook", () => {
-      expect(componentCode).toContain(
-        "reload: loadDocuments",
-      );
+      expect(componentCode).toContain("reload: loadDocuments");
     });
 
     it("should use documents from useDocuments hook in conditional rendering", () => {
