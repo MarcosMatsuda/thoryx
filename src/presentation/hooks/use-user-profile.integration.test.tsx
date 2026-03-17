@@ -7,7 +7,10 @@
 import { renderHook, waitFor, act } from "@testing-library/react-native";
 import { useUserProfile } from "./use-user-profile";
 import { useProfileStore } from "@stores/profile.store";
-import { UserProfile, UserProfileInput } from "@domain/entities/user-profile.entity";
+import {
+  UserProfile,
+  UserProfileInput,
+} from "@domain/entities/user-profile.entity";
 
 // Mock the use cases and repository to simulate real API behavior
 jest.mock("@domain/use-cases/get-user-profile.use-case");
@@ -55,7 +58,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
 
   describe("Hook with store integration", () => {
     it("should load profile from store after mount", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
@@ -71,7 +76,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
     });
 
     it("should show loading state during profile loading", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const mockUseCase = {
         execute: jest
           .fn()
@@ -94,11 +101,11 @@ describe("useUserProfile Hook - Integration Tests", () => {
     });
 
     it("should handle errors gracefully during load", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const mockUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("Network error")),
+        execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
       (GetUserProfileUseCase as jest.Mock).mockImplementation(
         () => mockUseCase,
@@ -131,7 +138,8 @@ describe("useUserProfile Hook - Integration Tests", () => {
       const { result } = renderHook(() => useUserProfile());
 
       expect(
-        result.current.profile === null || typeof result.current.profile === "object",
+        result.current.profile === null ||
+          typeof result.current.profile === "object",
       ).toBe(true);
     });
 
@@ -145,15 +153,20 @@ describe("useUserProfile Hook - Integration Tests", () => {
       const { result } = renderHook(() => useUserProfile());
 
       expect(
-        result.current.error === null || typeof result.current.error === "string",
+        result.current.error === null ||
+          typeof result.current.error === "string",
       ).toBe(true);
     });
   });
 
   describe("Save profile functionality", () => {
     it("should save profile successfully", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
-      const { SaveUserProfileUseCase } = require("@domain/use-cases/save-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        SaveUserProfileUseCase,
+      } = require("@domain/use-cases/save-user-profile.use-case");
 
       const getUseCase = {
         execute: jest.fn().mockResolvedValue(null),
@@ -166,16 +179,14 @@ describe("useUserProfile Hook - Integration Tests", () => {
         }),
       };
 
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(
-        () => getUseCase,
-      );
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => getUseCase);
       (SaveUserProfileUseCase as jest.Mock).mockImplementation(
         () => saveUseCase,
       );
 
       const { result } = renderHook(() => useUserProfile());
 
-      let saveResult;
+      let saveResult: { success: boolean; message: string } | undefined;
       await act(async () => {
         saveResult = await result.current.saveProfile(mockProfileInput);
       });
@@ -187,28 +198,28 @@ describe("useUserProfile Hook - Integration Tests", () => {
     });
 
     it("should handle save errors gracefully", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
-      const { SaveUserProfileUseCase } = require("@domain/use-cases/save-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        SaveUserProfileUseCase,
+      } = require("@domain/use-cases/save-user-profile.use-case");
 
       const getUseCase = {
         execute: jest.fn().mockResolvedValue(null),
       };
       const saveUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("Save failed")),
+        execute: jest.fn().mockRejectedValue(new Error("Save failed")),
       };
 
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(
-        () => getUseCase,
-      );
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => getUseCase);
       (SaveUserProfileUseCase as jest.Mock).mockImplementation(
         () => saveUseCase,
       );
 
       const { result } = renderHook(() => useUserProfile());
 
-      let saveResult;
+      let saveResult: { success: boolean; message: string } | undefined;
       await act(async () => {
         saveResult = await result.current.saveProfile(mockProfileInput);
       });
@@ -222,7 +233,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
 
   describe("Manual reload functionality", () => {
     it("should reload profile via reloadProfile function", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
@@ -247,7 +260,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
 
   describe("Integration: Hook → Store → UseCase", () => {
     it("should correctly pass through store data to hook", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const testProfile: UserProfile = {
         name: "Integration Test User",
         photoUri: "https://example.com/test.jpg",
@@ -272,7 +287,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
     });
 
     it("should maintain profile data structure through hook", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
@@ -296,7 +313,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
 
   describe("Multiple hook instances", () => {
     it("should share store state between multiple hook instances", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
@@ -315,7 +334,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
 
   describe("Edge cases", () => {
     it("should handle null profile from use case", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(null),
       };
@@ -332,7 +353,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
     });
 
     it("should handle profile with all fields populated", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const completeProfile: UserProfile = {
         name: "Complete Profile",
         photoUri: "https://example.com/complete.jpg",
@@ -360,7 +383,9 @@ describe("useUserProfile Hook - Integration Tests", () => {
 
   describe("Error clearing on successful operations", () => {
     it("should clear error when profile loads successfully after error", async () => {
-      const { GetUserProfileUseCase } = require("@domain/use-cases/get-user-profile.use-case");
+      const {
+        GetUserProfileUseCase,
+      } = require("@domain/use-cases/get-user-profile.use-case");
       const mockUseCase = {
         execute: jest
           .fn()
