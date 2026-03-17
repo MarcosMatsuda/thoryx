@@ -14,6 +14,7 @@ export function useCountdown(
   const [isExpired, setIsExpired] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const onExpireRef = useRef(onExpire);
+  const hasExpiredRef = useRef(false); // Flag para garantir que onExpire seja chamado apenas uma vez
 
   // Atualiza a referência do callback sempre que ele mudar
   useEffect(() => {
@@ -33,25 +34,36 @@ export function useCountdown(
 
   // Inicia/limpa o intervalo
   useEffect(() => {
-    if (timeLeft <= 0) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+    // Se o tempo já expirou, chama onExpire imediatamente (apenas uma vez)
+    if (timeLeft <= 0 && !hasExpiredRef.current) {
+      hasExpiredRef.current = true;
       setIsExpired(true);
+      onExpireRef.current();
       return;
     }
 
+    // Limpa intervalo existente
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    // Se já expirou, não cria novo intervalo
+    if (timeLeft <= 0) {
+      return;
+    }
+
+    // Cria novo intervalo
     intervalRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         const newTime = prev - 1000;
         if (newTime <= 0) {
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
+          // Marca como expirado e chama callback apenas uma vez
+          if (!hasExpiredRef.current) {
+            hasExpiredRef.current = true;
+            setIsExpired(true);
+            onExpireRef.current();
           }
-          setIsExpired(true);
-          onExpireRef.current();
           return 0;
         }
         return newTime;

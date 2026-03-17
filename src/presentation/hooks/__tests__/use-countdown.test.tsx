@@ -1,8 +1,16 @@
-import { renderHook } from "@testing-library/react-native";
+import { renderHook, act } from "@testing-library/react-native";
 import { useCountdown } from "../use-countdown";
 
 describe("useCountdown", () => {
-  jest.setTimeout(10000);
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
+
   it("formata o tempo corretamente", () => {
     const onExpire = jest.fn();
     const { result } = renderHook(() => useCountdown(300000, onExpire)); // 5 minutos
@@ -12,21 +20,85 @@ describe("useCountdown", () => {
     expect(result.current.isExpired).toBe(false);
   });
 
-  it("decrementa o tempo a cada segundo", () => {
+  it("decrementa o tempo real (1 segundo por segundo) usando jest.useFakeTimers", () => {
     const onExpire = jest.fn();
     const { result } = renderHook(() => useCountdown(5000, onExpire)); // 5 segundos
 
     // Inicialmente 00:05
     expect(result.current.timeLeft).toBe("00:05");
     expect(result.current.isExpired).toBe(false);
+
+    // Avança 1 segundo
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(result.current.timeLeft).toBe("00:04");
+
+    // Avança mais 2 segundos
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+    expect(result.current.timeLeft).toBe("00:02");
+
+    // Avança até o final
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+    expect(result.current.timeLeft).toBe("00:00");
+    expect(result.current.isExpired).toBe(true);
   });
 
-  it("chama onExpire quando o tempo acaba", () => {
+  it("chama onExpire EXATAMENTE UMA VEZ quando o tempo acaba", () => {
     const onExpire = jest.fn();
     renderHook(() => useCountdown(3000, onExpire)); // 3 segundos
-    
-    // Verifica apenas o estado inicial
-    expect(onExpire).not.toHaveBeenCalled();
+
+    // Avança até expirar
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    // Deve ser chamado exatamente uma vez
+    expect(onExpire).toHaveBeenCalledTimes(1);
+  });
+
+  it("NÃO chama onExpire mais de uma vez mesmo com múltiplas renderizações", () => {
+    const onExpire = jest.fn();
+    const { rerender } = renderHook(
+      ({ duration }: { duration: number }) => useCountdown(duration, onExpire),
+      { initialProps: { duration: 3000 } }
+    );
+
+    // Avança até expirar
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    // Re-render com mesma duração (já expirado)
+    rerender({ duration: 3000 });
+
+    // Re-render novamente
+    rerender({ duration: 3000 });
+
+    // Deve ser chamado exatamente uma vez
+    expect(onExpire).toHaveBeenCalledTimes(1);
+  });
+
+  it("chama onExpire imediatamente se duration for 0", () => {
+    const onExpire = jest.fn();
+    renderHook(() => useCountdown(0, onExpire));
+
+    // Deve chamar imediatamente
+    expect(onExpire).toHaveBeenCalledTimes(1);
+    expect(onExpire).toHaveBeenCalled();
+  });
+
+  it("chama onExpire imediatamente se duration for negativa", () => {
+    const onExpire = jest.fn();
+    renderHook(() => useCountdown(-1000, onExpire));
+
+    // Deve chamar imediatamente
+    expect(onExpire).toHaveBeenCalledTimes(1);
+    expect(onExpire).toHaveBeenCalled();
   });
 
   it("marca como expirado quando o tempo acaba", () => {
@@ -36,16 +108,35 @@ describe("useCountdown", () => {
     // Inicialmente não expirado
     expect(result.current.isExpired).toBe(false);
     expect(result.current.timeLeft).toBe("00:02");
+
+    // Avança até expirar
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    // Deve estar expirado
+    expect(result.current.isExpired).toBe(true);
+    expect(result.current.timeLeft).toBe("00:00");
   });
 
-  it("limpa o intervalo quando o componente desmonta", () => {
+  it("limpa o intervalo corretamente quando o componente desmonta", () => {
     const onExpire = jest.fn();
     const { unmount } = renderHook(() => useCountdown(10000, onExpire)); // 10 segundos
 
+    // Avança um pouco
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
     // Desmonta o hook
     unmount();
-    
-    // Apenas verifica que não houve erro
+
+    // Avança mais tempo - não deve chamar onExpire porque foi desmontado
+    act(() => {
+      jest.advanceTimersByTime(10000);
+    });
+
+    // onExpire não deve ser chamado porque o timer foi limpo
     expect(onExpire).not.toHaveBeenCalled();
   });
 
@@ -74,11 +165,16 @@ describe("useCountdown", () => {
       { initialProps: { onExpire: onExpire1 } },
     );
 
-    // Muda o callback
+    // Muda o callback antes de expirar
     rerender({ onExpire: onExpire2 });
 
-    // Verifica apenas que não houve erro
+    // Avança até expirar
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    // onExpire2 deve ser chamado, onExpire1 não
     expect(onExpire1).not.toHaveBeenCalled();
-    expect(onExpire2).not.toHaveBeenCalled();
+    expect(onExpire2).toHaveBeenCalledTimes(1);
   });
 });
