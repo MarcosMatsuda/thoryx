@@ -1,11 +1,12 @@
 import { View, Text, ScrollView, Pressable, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
 import { Document } from "@domain/entities/document.entity";
 import { DocumentCard } from "@presentation/components/document-card";
 import { CountdownTimer } from "@presentation/components/countdown-timer";
+import { PinAuthBottomSheet } from "@presentation/components/pin-auth-bottom-sheet";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 
 const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
@@ -16,9 +17,11 @@ const storage = new SecureStorageAdapter(
 
 export function GuestModeScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ docIds?: string }>();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [timeoutMinutes, setTimeoutMinutes] = useState(5); // fallback de 5 minutos
   const [isLoading, setIsLoading] = useState(true);
+  const [showPinAuth, setShowPinAuth] = useState(false);
   const documentRepository = new DocumentRepositoryImpl();
 
   useEffect(() => {
@@ -56,10 +59,21 @@ export function GuestModeScreen() {
     try {
       setIsLoading(true);
       const allDocuments = await documentRepository.findAll();
-      const autoLockDocuments = allDocuments.filter(
-        (doc) => doc.isAutoLockEnabled === true,
-      );
-      setDocuments(autoLockDocuments);
+
+      // Filter by docIds if provided (from SelectDocumentsScreen)
+      if (params.docIds) {
+        const selectedIds = params.docIds.split(",");
+        const filteredDocuments = allDocuments.filter((doc) =>
+          selectedIds.includes(doc.id),
+        );
+        setDocuments(filteredDocuments);
+      } else {
+        // Fallback: use isAutoLockEnabled (backward compatibility)
+        const autoLockDocuments = allDocuments.filter(
+          (doc) => doc.isAutoLockEnabled === true,
+        );
+        setDocuments(autoLockDocuments);
+      }
     } catch (error) {
       console.error("Error loading documents:", error);
       setDocuments([]);
@@ -75,6 +89,15 @@ export function GuestModeScreen() {
   const handleTimerExpire = () => {
     // Navega para a tela de unlock sem possibilidade de voltar
     router.replace("/unlock");
+  };
+
+  const handleExitSecureMode = () => {
+    setShowPinAuth(true);
+  };
+
+  const handlePinAuthSuccess = () => {
+    setShowPinAuth(false);
+    router.replace("/(tabs)");
   };
 
   const renderEmptyState = () => (
@@ -112,20 +135,36 @@ export function GuestModeScreen() {
 
   const renderDocumentList = () => (
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-      <View className="px-4 py-4">
+      <View className="px-6 py-4 gap-3">
         {documents.map((document) => (
           <Pressable
             key={document.id}
             onPress={() => handleDocumentPress(document.id)}
-            className="mb-4"
+            className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
           >
-            <DocumentCard
-              type={document.type}
-              title={document.fullName}
-              subtitle={formatDocumentSubtitle(document)}
-              icon={getDocumentIcon(document.type)}
-              badge={document.isAutoLockEnabled ? "Auto-lock" : undefined}
-            />
+            <View className="flex-row items-start justify-between">
+              <View className="flex-row flex-1">
+                <View className="w-12 h-12 bg-primary-main/10 rounded-xl items-center justify-center mr-3">
+                  <Text className="text-2xl">{getDocumentIcon(document.type)}</Text>
+                </View>
+                <View className="flex-1">
+                  <Text className="text-base font-bold text-text-primary mb-1">
+                    {document.fullName}
+                  </Text>
+                  <View className="flex-row items-center">
+                    <Text className="text-xs text-text-secondary">
+                      DOCUMENT NUMBER
+                    </Text>
+                  </View>
+                  <Text className="text-sm text-text-secondary">
+                    •••• •••• {document.documentNumber.slice(-4)}
+                  </Text>
+                </View>
+              </View>
+              <View className="w-8 h-8 bg-primary-main/10 rounded-lg items-center justify-center ml-2">
+                <Text className="text-primary-main text-lg">📋</Text>
+              </View>
+            </View>
           </Pressable>
         ))}
       </View>
@@ -136,9 +175,19 @@ export function GuestModeScreen() {
     <SafeAreaView className="flex-1 bg-background-primary">
       {/* Header */}
       <View className="px-6 pt-6 pb-4 border-b border-border-primary">
-        <Text className="text-3xl font-bold text-text-primary mb-2">
-          Shared Documents
-        </Text>
+        <View className="flex-row items-center justify-between mb-4">
+          <Text className="text-3xl font-bold text-text-primary">
+            Shared Documents
+          </Text>
+          <Pressable
+            onPress={handleExitSecureMode}
+            className="bg-status-error/10 rounded-lg px-3 py-2 active:opacity-75"
+          >
+            <Text className="text-sm font-semibold text-status-error">
+              Sair
+            </Text>
+          </Pressable>
+        </View>
         <Text className="text-base text-text-secondary mb-4">
           Access expires in
         </Text>
@@ -159,6 +208,13 @@ export function GuestModeScreen() {
       ) : (
         renderDocumentList()
       )}
+
+      {/* PIN Auth Bottom Sheet */}
+      <PinAuthBottomSheet
+        visible={showPinAuth}
+        onSuccess={handlePinAuthSuccess}
+        onClose={() => setShowPinAuth(false)}
+      />
     </SafeAreaView>
   );
 }
