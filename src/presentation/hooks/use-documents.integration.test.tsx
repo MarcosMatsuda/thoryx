@@ -13,6 +13,15 @@ import { Document } from "@domain/entities/document.entity";
 jest.mock("@domain/use-cases/get-all-documents.use-case");
 jest.mock("@data/repositories/document.repository.impl");
 
+// Mock expo-image-manipulator to avoid expo/src/winter import issues
+jest.mock("expo-image-manipulator", () => ({
+  manipulateAsync: jest.fn(() => Promise.resolve({ uri: "test-uri" })),
+  SaveFormat: {
+    JPEG: "jpeg",
+    PNG: "png",
+  },
+}));
+
 const mockDocuments: Document[] = [
   {
     id: "doc-1",
@@ -53,7 +62,7 @@ describe("useDocuments Hook - Integration Tests", () => {
       const { result } = renderHook(() => useDocuments());
 
       expect(result.current.documents).toEqual([]);
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.isLoading).toBe(true); // isLoading starts as true because loadDocuments is called in useEffect
     });
 
     it("should have reload function available", () => {

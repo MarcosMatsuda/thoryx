@@ -36,7 +36,7 @@ describe("useCreditCards Hook - Integration Tests", () => {
       const { result } = renderHook(() => useCreditCards());
 
       expect(result.current.cards).toEqual([]);
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.isLoading).toBe(true); // isLoading starts as true because loadCards is called in useEffect
     });
 
     it("should have reload function available", () => {

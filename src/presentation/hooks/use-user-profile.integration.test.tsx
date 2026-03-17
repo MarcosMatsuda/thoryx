@@ -41,7 +41,7 @@ describe("useUserProfile Hook - Integration Tests", () => {
       const { result } = renderHook(() => useUserProfile());
 
       expect(result.current.profile).toBeNull();
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.isLoading).toBe(true); // isLoading starts as true because loadProfile is called in useEffect
       expect(result.current.error).toBeNull();
     });
 
