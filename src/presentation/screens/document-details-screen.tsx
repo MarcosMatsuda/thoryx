@@ -4,6 +4,7 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
+  BackHandler,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DocumentPhotoCarousel } from "@presentation/components/document-photo-carousel";
@@ -39,6 +40,17 @@ export function DocumentDetailsScreen() {
       setIsLoading(false);
     }
   }, [documentId]);
+
+  // Block hardware back button on Android when in guest mode
+  useEffect(() => {
+    if (!isGuestMode) return;
+
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.replace("/guest-mode" as any);
+      return true; // true = evento consumido, não sai da tela
+    });
+    return () => subscription.remove();
+  }, [isGuestMode, router]);
 
   const loadDocument = async () => {
     if (!documentId) return;
@@ -132,7 +144,7 @@ export function DocumentDetailsScreen() {
             className="w-10 h-10 items-center justify-center"
             onPress={() => {
               if (isGuestMode) {
-                router.replace("/guest-mode");
+                router.replace("/guest-mode" as any);
               } else {
                 router.back();
               }
