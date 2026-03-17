@@ -1,5 +1,8 @@
 import { create } from "zustand";
-import { UserProfile, UserProfileInput } from "@domain/entities/user-profile.entity";
+import {
+  UserProfile,
+  UserProfileInput,
+} from "@domain/entities/user-profile.entity";
 import { UserProfileRepositoryImpl } from "@data/repositories/user-profile.repository.impl";
 import { GetUserProfileUseCase } from "@domain/use-cases/get-user-profile.use-case";
 import { SaveUserProfileUseCase } from "@domain/use-cases/save-user-profile.use-case";
@@ -9,7 +12,9 @@ interface ProfileState {
   isLoading: boolean;
   error: string | null;
   loadProfile: () => Promise<void>;
-  saveProfile: (input: UserProfileInput) => Promise<{ success: boolean; message: string }>;
+  saveProfile: (
+    input: UserProfileInput,
+  ) => Promise<{ success: boolean; message: string }>;
   reset: () => void;
 }
 
