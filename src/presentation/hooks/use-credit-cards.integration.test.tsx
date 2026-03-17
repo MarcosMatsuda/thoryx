@@ -48,7 +48,9 @@ describe("useCreditCards Hook - Integration Tests", () => {
 
   describe("Hook with store integration", () => {
     it("should load cards from store after mount", async () => {
-      const { GetAllCreditCardsUseCase } = require("@domain/use-cases/get-all-credit-cards.use-case");
+      const {
+        GetAllCreditCardsUseCase,
+      } = require("@domain/use-cases/get-all-credit-cards.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
@@ -64,7 +66,9 @@ describe("useCreditCards Hook - Integration Tests", () => {
     });
 
     it("should show loading state during card loading", async () => {
-      const { GetAllCreditCardsUseCase } = require("@domain/use-cases/get-all-credit-cards.use-case");
+      const {
+        GetAllCreditCardsUseCase,
+      } = require("@domain/use-cases/get-all-credit-cards.use-case");
       const mockUseCase = {
         execute: jest
           .fn()
@@ -87,7 +91,9 @@ describe("useCreditCards Hook - Integration Tests", () => {
     });
 
     it("should allow manual reload via reload function", async () => {
-      const { GetAllCreditCardsUseCase } = require("@domain/use-cases/get-all-credit-cards.use-case");
+      const {
+        GetAllCreditCardsUseCase,
+      } = require("@domain/use-cases/get-all-credit-cards.use-case");
       const mockUseCase = {
         execute: jest
           .fn()
@@ -114,11 +120,11 @@ describe("useCreditCards Hook - Integration Tests", () => {
     });
 
     it("should handle errors gracefully during load", async () => {
-      const { GetAllCreditCardsUseCase } = require("@domain/use-cases/get-all-credit-cards.use-case");
+      const {
+        GetAllCreditCardsUseCase,
+      } = require("@domain/use-cases/get-all-credit-cards.use-case");
       const mockUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new Error("Network error")),
+        execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
       (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
         () => mockUseCase,
@@ -159,7 +165,9 @@ describe("useCreditCards Hook - Integration Tests", () => {
 
   describe("Integration: Hook → Store → UseCase", () => {
     it("should correctly pass through store data to hook", async () => {
-      const { GetAllCreditCardsUseCase } = require("@domain/use-cases/get-all-credit-cards.use-case");
+      const {
+        GetAllCreditCardsUseCase,
+      } = require("@domain/use-cases/get-all-credit-cards.use-case");
       const testCard: CreditCard = {
         id: "card-test",
         lastFourDigits: "9999",
@@ -188,7 +196,9 @@ describe("useCreditCards Hook - Integration Tests", () => {
     });
 
     it("should maintain card data structure through hook", async () => {
-      const { GetAllCreditCardsUseCase } = require("@domain/use-cases/get-all-credit-cards.use-case");
+      const {
+        GetAllCreditCardsUseCase,
+      } = require("@domain/use-cases/get-all-credit-cards.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
@@ -212,7 +222,9 @@ describe("useCreditCards Hook - Integration Tests", () => {
 
   describe("Multiple hook instances", () => {
     it("should share store state between multiple hook instances", async () => {
-      const { GetAllCreditCardsUseCase } = require("@domain/use-cases/get-all-credit-cards.use-case");
+      const {
+        GetAllCreditCardsUseCase,
+      } = require("@domain/use-cases/get-all-credit-cards.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
@@ -231,7 +243,9 @@ describe("useCreditCards Hook - Integration Tests", () => {
 
   describe("Edge cases", () => {
     it("should handle empty card list from use case", async () => {
-      const { GetAllCreditCardsUseCase } = require("@domain/use-cases/get-all-credit-cards.use-case");
+      const {
+        GetAllCreditCardsUseCase,
+      } = require("@domain/use-cases/get-all-credit-cards.use-case");
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue([]),
       };
