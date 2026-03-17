@@ -63,7 +63,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
 
       // Find the line with isTogglingAutoLock and check it's initialized with false
       const lines = componentCode.split("\n");
-      const toggleLine = lines.find((line) =>
+      const toggleLine = lines.find((line: string) =>
         line.includes("const [isTogglingAutoLock"),
       );
 
