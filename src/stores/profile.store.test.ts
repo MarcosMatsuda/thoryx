@@ -1,7 +1,10 @@
 import { useProfileStore } from "./profile.store";
 import { GetUserProfileUseCase } from "@domain/use-cases/get-user-profile.use-case";
 import { SaveUserProfileUseCase } from "@domain/use-cases/save-user-profile.use-case";
-import { UserProfile, UserProfileInput } from "@domain/entities/user-profile.entity";
+import {
+  UserProfile,
+  UserProfileInput,
+} from "@domain/entities/user-profile.entity";
 
 jest.mock("@domain/use-cases/get-user-profile.use-case");
 jest.mock("@domain/use-cases/save-user-profile.use-case");
@@ -42,10 +45,14 @@ describe("useProfileStore", () => {
           .fn()
           .mockImplementation(
             () =>
-              new Promise((resolve) => setTimeout(() => resolve(mockProfile), 10)),
+              new Promise((resolve) =>
+                setTimeout(() => resolve(mockProfile), 10),
+              ),
           ),
       };
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadProfile } = useProfileStore.getState();
       await loadProfile();
@@ -57,7 +64,9 @@ describe("useProfileStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadProfile } = useProfileStore.getState();
       await loadProfile();
@@ -72,7 +81,9 @@ describe("useProfileStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadProfile } = useProfileStore.getState();
       await loadProfile();
@@ -87,7 +98,9 @@ describe("useProfileStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadProfile } = useProfileStore.getState();
 
@@ -108,7 +121,9 @@ describe("useProfileStore", () => {
           message: "Profile saved",
         }),
       };
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { saveProfile } = useProfileStore.getState();
       const result = await saveProfile(mockProfileInput);
@@ -129,7 +144,9 @@ describe("useProfileStore", () => {
           message: "Profile saved",
         }),
       };
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { saveProfile } = useProfileStore.getState();
       await saveProfile(mockProfileInput);
@@ -144,7 +161,9 @@ describe("useProfileStore", () => {
           message: "Validation failed",
         }),
       };
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { saveProfile } = useProfileStore.getState();
       const result = await saveProfile(mockProfileInput);
@@ -160,7 +179,9 @@ describe("useProfileStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { saveProfile } = useProfileStore.getState();
       const result = await saveProfile(mockProfileInput);
@@ -174,24 +195,24 @@ describe("useProfileStore", () => {
 
     it("should set isLoading during save operation", async () => {
       const mockUseCase = {
-        execute: jest
-          .fn()
-          .mockImplementation(
-            () =>
-              new Promise((resolve) =>
-                setTimeout(
-                  () =>
-                    resolve({
-                      success: true,
-                      profile: mockProfile,
-                      message: "Saved",
-                    }),
-                  10,
-                ),
+        execute: jest.fn().mockImplementation(
+          () =>
+            new Promise((resolve) =>
+              setTimeout(
+                () =>
+                  resolve({
+                    success: true,
+                    profile: mockProfile,
+                    message: "Saved",
+                  }),
+                10,
               ),
-          ),
+            ),
+        ),
       };
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { saveProfile } = useProfileStore.getState();
       await saveProfile(mockProfileInput);
@@ -209,7 +230,9 @@ describe("useProfileStore", () => {
           message: "Saved",
         }),
       };
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { saveProfile, reset } = useProfileStore.getState();
 
@@ -239,7 +262,9 @@ describe("useProfileStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockRejectedValue(new Error("Server error")),
       };
-      (SaveUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (SaveUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { saveProfile } = useProfileStore.getState();
       const result = await saveProfile(mockProfileInput);
@@ -253,7 +278,9 @@ describe("useProfileStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockProfile),
       };
-      (GetUserProfileUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetUserProfileUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadProfile } = useProfileStore.getState();
       await loadProfile();

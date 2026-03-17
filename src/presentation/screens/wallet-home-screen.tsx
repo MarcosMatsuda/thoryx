@@ -17,15 +17,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export function WalletHomeScreen() {
   const router = useRouter();
-  const {
-    documents,
-    isLoading: documentsLoading,
-  } = useDocuments();
+  const { documents, isLoading: documentsLoading } = useDocuments();
   const { cards, isLoading: cardsLoading } = useCreditCards();
-  const {
-    profile,
-    isLoading: profileLoading,
-  } = useUserProfile();
+  const { profile, isLoading: profileLoading } = useUserProfile();
 
   // Redirect to profile setup if no profile exists
   useEffect(() => {
