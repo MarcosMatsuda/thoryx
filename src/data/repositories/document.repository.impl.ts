@@ -36,6 +36,7 @@ export class DocumentRepositoryImpl implements DocumentRepository {
         expiryDate: documentInput.expiryDate,
         frontPhotoEncrypted: encryptedFrontPhoto,
         backPhotoEncrypted: encryptedBackPhoto,
+        isAutoLockEnabled: false,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -74,6 +75,7 @@ export class DocumentRepositoryImpl implements DocumentRepository {
         ...doc,
         dateOfBirth: doc.dateOfBirth,
         expiryDate: doc.expiryDate,
+        isAutoLockEnabled: doc.isAutoLockEnabled ?? false,
         createdAt: new Date(doc.createdAt),
         updatedAt: new Date(doc.updatedAt),
       }));
@@ -103,6 +105,32 @@ export class DocumentRepositoryImpl implements DocumentRepository {
     } catch (error) {
       console.error("Error decrypting photo:", error);
       throw new Error("Failed to decrypt photo");
+    }
+  }
+
+  async toggleAutoLock(id: string): Promise<Document> {
+    try {
+      const documents = await this.findAll();
+      const documentIndex = documents.findIndex((doc) => doc.id === id);
+      
+      if (documentIndex === -1) {
+        throw new Error(`Document with id ${id} not found`);
+      }
+
+      const document = documents[documentIndex];
+      const updatedDocument = {
+        ...document,
+        isAutoLockEnabled: !document.isAutoLockEnabled,
+        updatedAt: new Date(),
+      };
+
+      documents[documentIndex] = updatedDocument;
+      await this.storage.set(this.DOCUMENTS_KEY, JSON.stringify(documents));
+
+      return updatedDocument;
+    } catch (error) {
+      console.error("Error toggling auto-lock:", error);
+      throw new Error("Failed to toggle auto-lock");
     }
   }
 }

@@ -1,0 +1,26 @@
+{
+  "project": {
+    "name": "thoryx",
+    "description": "Thoryx mobile app — secure PIN/biometric authentication"
+  },
+  "github": {
+    "owner": "MarcosMatsuda",
+    "repo": "thoryx",
+    "full_repo": "MarcosMatsuda/thoryx",
+    "base_branch": "develop"
+  },
+  "local": {
+    "workspace_path": "/Users/marcosmatsuda/openclaw/workspaces/thoryx"
+  },
+  "slack": {
+    "maestro": "#maestro-agent",
+    "developer": "#developer-agent",
+    "tester": "#tester-agent",
+    "qa": "#qa-agent",
+    "product-manager": "#product-manager-agent"
+  },
+  "ci": {
+    "jobs": ["audit", "lint", "typecheck", "tests"],
+    "base_branch": "develop"
+  }
+}
