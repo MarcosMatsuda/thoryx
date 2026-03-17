@@ -1,22 +1,60 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SelectableDocumentItem } from "@presentation/components/selectable-document-item";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDocuments } from "@presentation/hooks/use-documents";
 
 export function SelectDocumentsScreen() {
   const router = useRouter();
-  const [selectedDocs, setSelectedDocs] = useState<string[]>([
-    "passport",
-    "national-id",
-  ]);
+  const { documents, isLoading } = useDocuments();
+  const [selectedDocIds, setSelectedDocIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Documents are loaded automatically by the useDocuments hook
+  }, []);
 
   const toggleDocument = (docId: string) => {
-    setSelectedDocs((prev) =>
+    setSelectedDocIds((prev) =>
       prev.includes(docId)
         ? prev.filter((id) => id !== docId)
         : [...prev, docId],
     );
+  };
+
+  const getDocumentIcon = (type: string) => {
+    switch (type) {
+      case "CNH":
+        return "🚗";
+      case "RG":
+        return "🆔";
+      default:
+        return "📄";
+    }
+  };
+
+  const getDocumentLabel = (type: string) => {
+    switch (type) {
+      case "CNH":
+        return "Driver's License";
+      case "RG":
+        return "National ID";
+      default:
+        return "Document";
+    }
+  };
+
+  const handleConfirm = () => {
+    if (selectedDocIds.length === 0) {
+      Alert.alert(
+        "Select at least one document",
+        "You need to select at least one document to enter Guest Mode.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
+    router.push(`/guest-mode?docIds=${selectedDocIds.join(',')}`);
   };
 
   return (
@@ -47,34 +85,29 @@ export function SelectDocumentsScreen() {
             </Text>
 
             <View className="mb-6">
-              <SelectableDocumentItem
-                icon="📖"
-                title="Passport"
-                subtitle="United States • **** 4589"
-                selected={selectedDocs.includes("passport")}
-                onToggle={() => toggleDocument("passport")}
-              />
-              <SelectableDocumentItem
-                icon="🆔"
-                title="National Identity Card"
-                subtitle="Expires: 12/2028"
-                selected={selectedDocs.includes("national-id")}
-                onToggle={() => toggleDocument("national-id")}
-              />
-              <SelectableDocumentItem
-                icon="🏥"
-                title="Health Insurance Card"
-                subtitle="Provider: BlueShield Premium"
-                selected={selectedDocs.includes("health-insurance")}
-                onToggle={() => toggleDocument("health-insurance")}
-              />
-              <SelectableDocumentItem
-                icon="🛡️"
-                title="Travel Insurance"
-                subtitle="Policy No: TRV-99201-B"
-                selected={selectedDocs.includes("travel-insurance")}
-                onToggle={() => toggleDocument("travel-insurance")}
-              />
+              {isLoading ? (
+                <Text className="text-text-secondary text-center py-8">
+                  Loading documents...
+                </Text>
+              ) : documents.length === 0 ? (
+                <View className="items-center justify-center py-12">
+                  <Text className="text-6xl mb-4">📄</Text>
+                  <Text className="text-base md:text-lg text-text-secondary mb-6 text-center">
+                    No documents registered. Add documents in the main app first.
+                  </Text>
+                </View>
+              ) : (
+                documents.map((doc) => (
+                  <SelectableDocumentItem
+                    key={doc.id}
+                    icon={getDocumentIcon(doc.type)}
+                    title={doc.fullName}
+                    subtitle={`${getDocumentLabel(doc.type)} • **** ${doc.documentNumber.slice(-4)}`}
+                    selected={selectedDocIds.includes(doc.id)}
+                    onToggle={() => toggleDocument(doc.id)}
+                  />
+                ))
+              )}
             </View>
 
             <View className="bg-primary-main/10 rounded-2xl p-4 md:p-5 mb-6 border border-primary-main/20">
@@ -99,7 +132,7 @@ export function SelectDocumentsScreen() {
                 <Text className="text-base md:text-lg font-semibold text-text-primary">
                   You are sharing{" "}
                   <Text className="text-primary-main">
-                    {selectedDocs.length}
+                    {selectedDocIds.length}
                   </Text>{" "}
                   documents
                 </Text>
@@ -111,9 +144,7 @@ export function SelectDocumentsScreen() {
         <View className="px-6 pb-6 pt-4 bg-background-primary border-t border-ui-border">
           <Pressable
             className="bg-primary-main rounded-xl py-4 items-center active:opacity-90"
-            onPress={() => {
-              router.back();
-            }}
+            onPress={handleConfirm}
           >
             <Text className="text-base md:text-lg font-bold text-text-primary">
               Confirm & Lock App
