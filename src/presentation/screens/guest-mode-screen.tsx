@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
@@ -24,6 +24,14 @@ export function GuestModeScreen() {
   useEffect(() => {
     loadTimeout();
     loadDocuments();
+  }, []);
+
+  // Block hardware back button on Android
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      return true; // true = evento consumido, não sai da tela
+    });
+    return () => subscription.remove();
   }, []);
 
   const loadTimeout = async () => {
