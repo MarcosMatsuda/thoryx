@@ -17,20 +17,30 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
 
   describe("Auto-lock Button Implementation", () => {
     it("should import necessary dependencies", () => {
-      expect(componentCode).toContain('import { useRouter, useFocusEffect } from "expo-router"');
-      expect(componentCode).toContain('import { useDocuments } from "@presentation/hooks/use-documents"');
+      expect(componentCode).toContain(
+        'import { useRouter, useFocusEffect } from "expo-router"',
+      );
+      expect(componentCode).toContain(
+        'import { useDocuments } from "@presentation/hooks/use-documents"',
+      );
     });
 
     it("should check for documents with isAutoLockEnabled: true using .some()", () => {
-      expect(componentCode).toContain("documents.some(doc => doc.isAutoLockEnabled)");
+      expect(componentCode).toContain(
+        "documents.some((doc) => doc.isAutoLockEnabled)",
+      );
     });
 
     it("should conditionally render auto-lock button container", () => {
-      expect(componentCode).toContain("{documents && documents.some(doc => doc.isAutoLockEnabled) && (");
+      expect(componentCode).toContain(
+        "{documents && documents.some((doc) => doc.isAutoLockEnabled) && (",
+      );
     });
 
     it("should have proper View structure for button container", () => {
-      expect(componentCode).toContain('className="border-2 border-warning-main rounded-2xl p-5 md:p-6 mb-6"');
+      expect(componentCode).toContain(
+        'className="border-2 border-warning-main rounded-2xl p-5 md:p-6 mb-6"',
+      );
     });
 
     it("should display auto-lock icon emoji", () => {
@@ -56,7 +66,9 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
     });
 
     it("should have proper button styling with active state", () => {
-      expect(componentCode).toContain('className="bg-warning-main rounded-xl py-3.5 items-center active:opacity-90"');
+      expect(componentCode).toContain(
+        'className="bg-warning-main rounded-xl py-3.5 items-center active:opacity-90"',
+      );
     });
   });
 
@@ -67,17 +79,21 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
 
     it("should not use router.push() for guest-mode navigation", () => {
       // router.replace is preferred over router.push for guest-mode
-      const hasReplace = componentCode.includes('router.replace("/guest-mode")');
+      const hasReplace = componentCode.includes(
+        'router.replace("/guest-mode")',
+      );
       const lineWithGuestMode = componentCode
         .split("\n")
-        .find(line => line.includes("guest-mode"));
-      
+        .find((line) => line.includes("guest-mode"));
+
       expect(hasReplace).toBe(true);
       expect(lineWithGuestMode).toContain("router.replace");
     });
 
     it("should attach navigation handler to Pressable component", () => {
-      expect(componentCode).toContain('onPress={() => router.replace("/guest-mode")}');
+      expect(componentCode).toContain(
+        'onPress={() => router.replace("/guest-mode")}',
+      );
     });
   });
 
@@ -110,7 +126,7 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
     it("should have both reloadProfile and loadDocuments as dependencies", () => {
       const focusEffectSection = componentCode.substring(
         componentCode.indexOf("useFocusEffect"),
-        componentCode.indexOf("useFocusEffect") + 800
+        componentCode.indexOf("useFocusEffect") + 800,
       );
       expect(focusEffectSection).toContain("reloadProfile");
       expect(focusEffectSection).toContain("loadDocuments");
@@ -120,12 +136,14 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
   describe("Hook Integration", () => {
     it("should destructure reload from useDocuments hook", () => {
       expect(componentCode).toContain(
-        'const { documents, isLoading: documentsLoading, reload: loadDocuments } = useDocuments()'
+        "reload: loadDocuments",
       );
     });
 
     it("should use documents from useDocuments hook in conditional rendering", () => {
-      expect(componentCode).toContain("documents.some(doc => doc.isAutoLockEnabled)");
+      expect(componentCode).toContain(
+        "documents.some((doc) => doc.isAutoLockEnabled)",
+      );
     });
 
     it("should have useRouter hook imported and used", () => {
@@ -164,16 +182,18 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
   describe("Conditional Rendering Logic", () => {
     it("should only render button when documents exist with isAutoLockEnabled", () => {
       const lines = componentCode.split("\n");
-      const autoLockSection = lines.filter(line => 
-        line.includes("documents.some(doc => doc.isAutoLockEnabled)")
+      const autoLockSection = lines.filter((line) =>
+        line.includes("documents.some((doc) => doc.isAutoLockEnabled)"),
       );
       expect(autoLockSection.length).toBeGreaterThan(0);
     });
 
     it("should place auto-lock button in correct position in component", () => {
-      const indexOfAutoLock = componentCode.indexOf("documents.some(doc => doc.isAutoLockEnabled)");
+      const indexOfAutoLock = componentCode.indexOf(
+        "documents.some(doc => doc.isAutoLockEnabled)",
+      );
       const indexOfDocuments = componentCode.indexOf("MY DOCUMENTS");
-      
+
       // Auto-lock button should come before documents section
       expect(indexOfAutoLock).toBeLessThan(indexOfDocuments);
     });
@@ -181,7 +201,7 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
     it("should render button before documents list", () => {
       const autoLockIndex = componentCode.indexOf("Iniciar Auto-lock");
       const documentsHeaderIndex = componentCode.indexOf("MY DOCUMENTS");
-      
+
       expect(autoLockIndex).toBeGreaterThan(-1);
       expect(documentsHeaderIndex).toBeGreaterThan(-1);
       expect(autoLockIndex).toBeLessThan(documentsHeaderIndex);
@@ -201,7 +221,9 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
     });
 
     it("✓ Lógica condicional funcionando (aparece/desaparece com documentos)", () => {
-      expect(componentCode).toContain("documents.some(doc => doc.isAutoLockEnabled) && (");
+      expect(componentCode).toContain(
+        "documents && documents.some((doc) => doc.isAutoLockEnabled) && (",
+      );
     });
 
     it("✓ Navegação com router.replace() funcionando", () => {
@@ -236,7 +258,7 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
       // Check predominant quote style
       const doubleQuotes = (componentCode.match(/"/g) || []).length;
       const singleQuotes = (componentCode.match(/'/g) || []).length;
-      
+
       // Both are acceptable in TypeScript/React, just checking for consistency
       expect(doubleQuotes + singleQuotes).toBeGreaterThan(0);
     });

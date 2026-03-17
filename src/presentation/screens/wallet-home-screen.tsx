@@ -17,15 +17,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export function WalletHomeScreen() {
   const router = useRouter();
-  const { documents, isLoading: documentsLoading, reload: loadDocuments } = useDocuments();
+  const {
+    documents,
+    isLoading: documentsLoading,
+    reload: loadDocuments,
+  } = useDocuments();
   const { cards, isLoading: cardsLoading } = useCreditCards();
   const {
     profile,
     isLoading: profileLoading,
     reloadProfile,
   } = useUserProfile();
-
-
 
   useFocusEffect(
     React.useCallback(() => {
@@ -147,7 +149,7 @@ export function WalletHomeScreen() {
           </View>
 
           {/* Auto-lock Button */}
-          {documents && documents.some(doc => doc.isAutoLockEnabled) && (
+          {documents && documents.some((doc) => doc.isAutoLockEnabled) && (
             <View className="border-2 border-warning-main rounded-2xl p-5 md:p-6 mb-6">
               <View className="flex-row items-center mb-3">
                 <View className="w-10 h-10 bg-warning-main/20 rounded-full items-center justify-center mr-3">

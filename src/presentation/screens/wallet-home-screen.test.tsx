@@ -155,18 +155,18 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
     it("should navigate to /guest-mode when auto-lock button is pressed", () => {
       const { getByText } = render(<WalletHomeScreen />);
       const guestModeButton = getByText("Iniciar Modo Convidado");
-      
+
       fireEvent.press(guestModeButton);
-      
+
       expect(mockRouter.replace).toHaveBeenCalledWith("/guest-mode");
     });
 
     it("should use router.replace instead of router.push for guest-mode navigation", () => {
       const { getByText } = render(<WalletHomeScreen />);
       const guestModeButton = getByText("Iniciar Modo Convidado");
-      
+
       fireEvent.press(guestModeButton);
-      
+
       expect(mockRouter.replace).toHaveBeenCalledWith("/guest-mode");
       expect(mockRouter.push).not.toHaveBeenCalled();
     });
@@ -174,9 +174,9 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
     it("should trigger button press only once per interaction", () => {
       const { getByText } = render(<WalletHomeScreen />);
       const guestModeButton = getByText("Iniciar Modo Convidado");
-      
+
       fireEvent.press(guestModeButton);
-      
+
       expect(mockRouter.replace).toHaveBeenCalledTimes(1);
     });
   });

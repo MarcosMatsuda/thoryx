@@ -45,10 +45,13 @@ export function DocumentDetailsScreen() {
   useEffect(() => {
     if (!isGuestMode) return;
 
-    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.replace("/guest-mode" as any);
-      return true; // true = evento consumido, não sai da tela
-    });
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        router.replace("/guest-mode" as any);
+        return true; // true = evento consumido, não sai da tela
+      },
+    );
     return () => subscription.remove();
   }, [isGuestMode, router]);
 

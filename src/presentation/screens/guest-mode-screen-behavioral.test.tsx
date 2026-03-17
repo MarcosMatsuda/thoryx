@@ -7,6 +7,10 @@ import {
 } from "@testing-library/react-native";
 import { GuestModeScreen } from "./guest-mode-screen";
 
+import { useRouter } from "expo-router";
+import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
+import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
+
 // Mock das dependências
 jest.mock("@data/repositories/document.repository.impl", () => ({
   DocumentRepositoryImpl: jest.fn().mockImplementation(() => ({
@@ -44,13 +48,19 @@ jest.mock("expo-router", () => ({
 let capturedOnExpireCallback: (() => void) | undefined;
 
 jest.mock("@presentation/components/countdown-timer", () => ({
-  CountdownTimer: ({ onExpire, style }: { onExpire?: () => void; style?: string }) => {
+  CountdownTimer: ({
+    onExpire,
+    style,
+  }: {
+    onExpire?: () => void;
+    style?: string;
+  }) => {
     const { Text, View } = require("react-native");
     // Captura o callback para teste comportamental
     capturedOnExpireCallback = onExpire;
-    
+
     return (
-      <View testID={`countdown-timer-${style || 'default'}`}>
+      <View testID={`countdown-timer-${style || "default"}`}>
         <Text testID="countdown-timer-text">05:00</Text>
       </View>
     );
@@ -80,10 +90,6 @@ jest.mock("@presentation/components/document-card", () => ({
     );
   },
 }));
-
-import { useRouter } from "expo-router";
-import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
-import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 
 describe("GuestModeScreen - Behavioral Tests", () => {
   let mockFindAll: jest.Mock;
@@ -185,7 +191,9 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       });
 
       // Check that the timer is rendered (should be called with the timeout)
-      expect(screen.getAllByTestId("countdown-timer-text").length).toBeGreaterThan(0);
+      expect(
+        screen.getAllByTestId("countdown-timer-text").length,
+      ).toBeGreaterThan(0);
     });
 
     it("should fallback to 5 minutes when storage returns invalid value", async () => {
@@ -199,7 +207,9 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       });
 
       // Timer should still be rendered with fallback
-      expect(screen.getAllByTestId("countdown-timer-text").length).toBeGreaterThan(0);
+      expect(
+        screen.getAllByTestId("countdown-timer-text").length,
+      ).toBeGreaterThan(0);
     });
   });
 
@@ -249,7 +259,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
         // Should display only doc1 and doc3
         expect(screen.getByText("Alice Silva")).toBeTruthy();
         expect(screen.getByText("Charlie Costa")).toBeTruthy();
-        
+
         // Should NOT display doc2 and doc4
         expect(screen.queryByText("Bob Santos")).toBeNull();
         expect(screen.queryByText("Diana Moon")).toBeNull();
@@ -329,8 +339,12 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       });
 
       // Both documents should have "Auto-lock" badge
-      expect(screen.getByTestId("badge-John Doe")).toHaveTextContent("Auto-lock");
-      expect(screen.getByTestId("badge-Jane Smith")).toHaveTextContent("Auto-lock");
+      expect(screen.getByTestId("badge-John Doe")).toHaveTextContent(
+        "Auto-lock",
+      );
+      expect(screen.getByTestId("badge-Jane Smith")).toHaveTextContent(
+        "Auto-lock",
+      );
     });
 
     it("should format document subtitle correctly with number and expiry date", async () => {
@@ -458,7 +472,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       fireEvent.press(screen.getByTestId("document-card-John Doe"));
 
       expect(mockPush).toHaveBeenCalledWith(
-        "/document-details?documentId=doc-abc-123&guestMode=true"
+        "/document-details?documentId=doc-abc-123&guestMode=true",
       );
     });
 
@@ -495,7 +509,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       // Press first document
       fireEvent.press(screen.getByTestId("document-card-Alice"));
       expect(mockPush).toHaveBeenCalledWith(
-        "/document-details?documentId=doc1&guestMode=true"
+        "/document-details?documentId=doc1&guestMode=true",
       );
 
       jest.clearAllMocks();
@@ -503,7 +517,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       // Press second document
       fireEvent.press(screen.getByTestId("document-card-Bob"));
       expect(mockPush).toHaveBeenCalledWith(
-        "/document-details?documentId=doc2&guestMode=true"
+        "/document-details?documentId=doc2&guestMode=true",
       );
     });
   });
