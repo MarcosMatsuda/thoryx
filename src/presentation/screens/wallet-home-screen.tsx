@@ -29,19 +29,20 @@ export function WalletHomeScreen() {
     reloadProfile,
   } = useUserProfile();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      reloadProfile();
-      loadDocuments();
-    }, [reloadProfile, loadDocuments]),
-  );
-
   // Redirect to profile setup if no profile exists
   useEffect(() => {
     if (!profileLoading && !profile) {
       router.push("/profile-setup");
     }
   }, [profile, profileLoading, router]);
+
+  // Refresh data when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadDocuments();
+      reloadProfile();
+    }, [reloadProfile, loadDocuments]),
+  );
 
   const getDocumentIcon = (type: string) => {
     switch (type) {

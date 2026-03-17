@@ -55,7 +55,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -76,7 +78,9 @@ describe("useCardsStore", () => {
               ),
           ),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -89,7 +93,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -103,7 +109,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -115,7 +123,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue([]),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -127,9 +137,13 @@ describe("useCardsStore", () => {
 
     it("should handle server error gracefully", async () => {
       const mockUseCase = {
-        execute: jest.fn().mockRejectedValue(new Error("500 Internal Server Error")),
+        execute: jest
+          .fn()
+          .mockRejectedValue(new Error("500 Internal Server Error")),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
 
@@ -145,7 +159,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn(),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
 
@@ -166,7 +182,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards, reset } = useCardsStore.getState();
 
@@ -204,7 +222,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -221,7 +241,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -238,7 +260,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -254,7 +278,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(singleCard),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -270,7 +296,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
 
@@ -285,7 +313,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards, reset } = useCardsStore.getState();
 
@@ -315,7 +345,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(largeCardArray),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();
@@ -327,7 +359,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockRejectedValue(new TypeError("Unexpected token")),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
 
@@ -347,7 +381,9 @@ describe("useCardsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(multipleCards),
       };
-      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllCreditCardsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadCards } = useCardsStore.getState();
       await loadCards();

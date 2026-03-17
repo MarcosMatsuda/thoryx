@@ -8,7 +8,8 @@
       "@data/*": ["./src/data/*"],
       "@infrastructure/*": ["./src/infrastructure/*"],
       "@presentation/*": ["./src/presentation/*"],
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@stores/*": ["./src/stores/*"]
     }
   },
   "include": [

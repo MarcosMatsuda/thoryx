@@ -63,7 +63,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -84,7 +86,9 @@ describe("useDocumentsStore", () => {
               ),
           ),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -97,7 +101,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockRejectedValue(new Error("Network error")),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -111,7 +117,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -123,7 +131,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue([]),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -135,9 +145,13 @@ describe("useDocumentsStore", () => {
 
     it("should handle server error gracefully", async () => {
       const mockUseCase = {
-        execute: jest.fn().mockRejectedValue(new Error("500 Internal Server Error")),
+        execute: jest
+          .fn()
+          .mockRejectedValue(new Error("500 Internal Server Error")),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
 
@@ -153,7 +167,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn(),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
 
@@ -174,7 +190,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments, reset } = useDocumentsStore.getState();
 
@@ -212,7 +230,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -235,7 +255,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(docsWithoutAutoLock),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -250,7 +272,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
 
@@ -265,7 +289,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(mockDocuments),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments, reset } = useDocumentsStore.getState();
 
@@ -299,7 +325,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockResolvedValue(largeDocumentArray),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -311,7 +339,9 @@ describe("useDocumentsStore", () => {
       const mockUseCase = {
         execute: jest.fn().mockRejectedValue(new TypeError("Unexpected token")),
       };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
 
