@@ -76,7 +76,7 @@ describe("CountdownTimer", () => {
     // Inicialmente 01:00 - deve estar nos últimos 60s, cor amarela
     const timerText = getByText("01:00");
     expect(timerText).toBeTruthy();
-    
+
     // Verifica estilo (não podemos facilmente verificar a cor no teste, mas podemos verificar o texto)
     // O teste funcional verifica que o componente renderiza corretamente
   });
