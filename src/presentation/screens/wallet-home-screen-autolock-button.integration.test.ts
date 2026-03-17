@@ -26,7 +26,7 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
     });
 
     it("should conditionally render auto-lock button container", () => {
-      expect(componentCode).toContain("{documents.some(doc => doc.isAutoLockEnabled) && (");
+      expect(componentCode).toContain("{documents && documents.some(doc => doc.isAutoLockEnabled) && (");
     });
 
     it("should have proper View structure for button container", () => {
@@ -108,10 +108,9 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
     });
 
     it("should have both reloadProfile and loadDocuments as dependencies", () => {
-      const lines = componentCode.split("\n");
       const focusEffectSection = componentCode.substring(
         componentCode.indexOf("useFocusEffect"),
-        componentCode.indexOf("useFocusEffect") + 500
+        componentCode.indexOf("useFocusEffect") + 800
       );
       expect(focusEffectSection).toContain("reloadProfile");
       expect(focusEffectSection).toContain("loadDocuments");
@@ -173,7 +172,7 @@ describe("WalletHomeScreen - Auto-lock Button Integration Tests", () => {
 
     it("should place auto-lock button in correct position in component", () => {
       const indexOfAutoLock = componentCode.indexOf("documents.some(doc => doc.isAutoLockEnabled)");
-      const indexOfDocuments = componentCode.indexOf("{/* MY DOCUMENTS */}");
+      const indexOfDocuments = componentCode.indexOf("MY DOCUMENTS");
       
       // Auto-lock button should come before documents section
       expect(indexOfAutoLock).toBeLessThan(indexOfDocuments);

@@ -147,7 +147,7 @@ export function WalletHomeScreen() {
           </View>
 
           {/* Auto-lock Button */}
-          {documents.some(doc => doc.isAutoLockEnabled) && (
+          {documents && documents.some(doc => doc.isAutoLockEnabled) && (
             <View className="border-2 border-warning-main rounded-2xl p-5 md:p-6 mb-6">
               <View className="flex-row items-center mb-3">
                 <View className="w-10 h-10 bg-warning-main/20 rounded-full items-center justify-center mr-3">
@@ -193,7 +193,7 @@ export function WalletHomeScreen() {
                     Loading documents...
                   </Text>
                 </View>
-              ) : documents.length === 0 ? (
+              ) : !documents || documents.length === 0 ? (
                 <View className="bg-background-secondary rounded-2xl p-6 items-center">
                   <Text className="text-4xl mb-3">📄</Text>
                   <Text className="text-text-secondary text-center">

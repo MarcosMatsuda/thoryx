@@ -196,8 +196,7 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       });
 
       (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-        const callback = cb();
-        callback();
+        cb(); // Execute the callback immediately (simulating focus)
       });
 
       render(<WalletHomeScreen />);
@@ -214,8 +213,7 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       });
 
       (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-        const callback = cb();
-        callback();
+        cb(); // Execute the callback immediately (simulating focus)
       });
 
       render(<WalletHomeScreen />);
@@ -240,8 +238,7 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       });
 
       (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-        const callback = cb();
-        callback();
+        cb(); // Execute the callback immediately (simulating focus)
       });
 
       render(<WalletHomeScreen />);
@@ -402,8 +399,7 @@ describe("WalletHomeScreen - Auto-lock Button Tests", () => {
       });
 
       (useFocusEffect as jest.Mock).mockImplementation((cb) => {
-        const callback = cb();
-        callback();
+        cb(); // Execute the callback immediately (simulating focus)
       });
 
       const { getByText } = render(<WalletHomeScreen />);
