@@ -39,7 +39,6 @@ export function useCountdown(
         intervalRef.current = null;
       }
       setIsExpired(true);
-      onExpireRef.current();
       return;
     }
 
