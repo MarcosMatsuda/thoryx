@@ -292,11 +292,11 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Integration", () => {
   describe("Error Handling and Recovery", () => {
     it("should revert toggle state if operation fails after optimistic update", () => {
       let state = { isAutoLockEnabled: false };
-      
+
       // Simulate optimistic update
       const newState = !state.isAutoLockEnabled;
       state.isAutoLockEnabled = newState; // Optimistic update to true
-      
+
       try {
         // Simulate error during toggle
         throw new Error("Network error");

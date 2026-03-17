@@ -19,7 +19,10 @@ import { Document } from "@domain/entities/document.entity";
 export function DocumentDetailsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { documentId, guestMode } = params as { documentId?: string; guestMode?: string };
+  const { documentId, guestMode } = params as {
+    documentId?: string;
+    guestMode?: string;
+  };
   const isGuestMode = guestMode === "true";
 
   const [document, setDocument] = useState<Document | null>(null);
@@ -191,7 +194,8 @@ export function DocumentDetailsScreen() {
           </View>
 
           {/* Auto-lock toggle section - only for Document type (RG, CNH) and NOT in guest mode */}
-          {!isGuestMode && (document.type === "RG" || document.type === "CNH") ? (
+          {!isGuestMode &&
+          (document.type === "RG" || document.type === "CNH") ? (
             <View className="px-6 mb-6">
               <View className="bg-background-secondary rounded-2xl overflow-hidden">
                 <SettingsItem

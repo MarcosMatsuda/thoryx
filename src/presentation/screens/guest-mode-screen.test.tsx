@@ -1,5 +1,10 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/react-native";
 import { GuestModeScreen } from "./guest-mode-screen";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
@@ -27,8 +32,12 @@ describe("GuestModeScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (DocumentRepositoryImpl as jest.Mock).mockImplementation(() => mockDocumentRepository);
-    (SecureStorageAdapter as jest.Mock).mockImplementation(() => mockSecureStorage);
+    (DocumentRepositoryImpl as jest.Mock).mockImplementation(
+      () => mockDocumentRepository,
+    );
+    (SecureStorageAdapter as jest.Mock).mockImplementation(
+      () => mockSecureStorage,
+    );
   });
 
   it("should display loading state initially", () => {
@@ -36,7 +45,7 @@ describe("GuestModeScreen", () => {
     mockSecureStorage.get.mockResolvedValue("5");
 
     render(<GuestModeScreen />);
-    
+
     expect(screen.getByText("Loading...")).toBeTruthy();
   });
 
@@ -104,7 +113,11 @@ describe("GuestModeScreen", () => {
 
     await waitFor(() => {
       expect(screen.getByText("No documents shared")).toBeTruthy();
-      expect(screen.getByText("The timer will still expire and redirect to the lock screen.")).toBeTruthy();
+      expect(
+        screen.getByText(
+          "The timer will still expire and redirect to the lock screen.",
+        ),
+      ).toBeTruthy();
     });
   });
 
@@ -145,7 +158,7 @@ describe("GuestModeScreen", () => {
     fireEvent.press(screen.getByText("John Doe"));
 
     expect(mockRouter.push).toHaveBeenCalledWith(
-      "/document-details?documentId=doc1&guestMode=true"
+      "/document-details?documentId=doc1&guestMode=true",
     );
   });
 
@@ -164,7 +177,9 @@ describe("GuestModeScreen", () => {
   });
 
   it("should handle errors when loading documents", async () => {
-    mockDocumentRepository.findAll.mockRejectedValue(new Error("Database error"));
+    mockDocumentRepository.findAll.mockRejectedValue(
+      new Error("Database error"),
+    );
     mockSecureStorage.get.mockResolvedValue("5");
 
     render(<GuestModeScreen />);

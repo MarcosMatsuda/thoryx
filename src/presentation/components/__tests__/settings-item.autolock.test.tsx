@@ -1,6 +1,6 @@
 /**
  * SettingsItem Component Tests - Auto-lock Toggle Behavior
- * 
+ *
  * Tests the switch loading overlay and visual feedback
  */
 
@@ -305,9 +305,7 @@ describe("SettingsItem - Auto-lock Toggle with Loading State", () => {
         />,
       );
 
-      expect(
-        getByText("Documento visível no Modo Convidado"),
-      ).toBeTruthy();
+      expect(getByText("Documento visível no Modo Convidado")).toBeTruthy();
     });
 
     it("should render with isFirst={true}", () => {

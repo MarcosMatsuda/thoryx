@@ -1,5 +1,10 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/react-native";
 import { DocumentDetailsScreen } from "./document-details-screen";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -24,7 +29,9 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (DocumentRepositoryImpl as jest.Mock).mockImplementation(() => mockDocumentRepository);
+    (DocumentRepositoryImpl as jest.Mock).mockImplementation(
+      () => mockDocumentRepository,
+    );
   });
 
   const mockDocument = {
@@ -49,7 +56,9 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     mockDocumentRepository.findById.mockResolvedValue(mockDocument);
-    mockDocumentRepository.decryptPhoto.mockResolvedValue("data:image/png;base64,test");
+    mockDocumentRepository.decryptPhoto.mockResolvedValue(
+      "data:image/png;base64,test",
+    );
 
     render(<DocumentDetailsScreen />);
 
@@ -68,7 +77,9 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     mockDocumentRepository.findById.mockResolvedValue(mockDocument);
-    mockDocumentRepository.decryptPhoto.mockResolvedValue("data:image/png;base64,test");
+    mockDocumentRepository.decryptPhoto.mockResolvedValue(
+      "data:image/png;base64,test",
+    );
 
     render(<DocumentDetailsScreen />);
 
@@ -88,7 +99,9 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     mockDocumentRepository.findById.mockResolvedValue(mockDocument);
-    mockDocumentRepository.decryptPhoto.mockResolvedValue("data:image/png;base64,test");
+    mockDocumentRepository.decryptPhoto.mockResolvedValue(
+      "data:image/png;base64,test",
+    );
 
     render(<DocumentDetailsScreen />);
 
@@ -107,7 +120,9 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     mockDocumentRepository.findById.mockResolvedValue(mockDocument);
-    mockDocumentRepository.decryptPhoto.mockResolvedValue("data:image/png;base64,test");
+    mockDocumentRepository.decryptPhoto.mockResolvedValue(
+      "data:image/png;base64,test",
+    );
 
     render(<DocumentDetailsScreen />);
 
@@ -127,7 +142,9 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     mockDocumentRepository.findById.mockResolvedValue(mockDocument);
-    mockDocumentRepository.decryptPhoto.mockResolvedValue("data:image/png;base64,test");
+    mockDocumentRepository.decryptPhoto.mockResolvedValue(
+      "data:image/png;base64,test",
+    );
 
     render(<DocumentDetailsScreen />);
 
@@ -150,7 +167,9 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     mockDocumentRepository.findById.mockResolvedValue(mockDocument);
-    mockDocumentRepository.decryptPhoto.mockResolvedValue("data:image/png;base64,test");
+    mockDocumentRepository.decryptPhoto.mockResolvedValue(
+      "data:image/png;base64,test",
+    );
 
     render(<DocumentDetailsScreen />);
 
@@ -180,7 +199,9 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     mockDocumentRepository.findById.mockResolvedValue(creditCardDocument);
-    mockDocumentRepository.decryptPhoto.mockResolvedValue("data:image/png;base64,test");
+    mockDocumentRepository.decryptPhoto.mockResolvedValue(
+      "data:image/png;base64,test",
+    );
 
     render(<DocumentDetailsScreen />);
 

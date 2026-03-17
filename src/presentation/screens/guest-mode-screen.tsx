@@ -46,7 +46,7 @@ export function GuestModeScreen() {
       setIsLoading(true);
       const allDocuments = await documentRepository.findAll();
       const autoLockDocuments = allDocuments.filter(
-        (doc) => doc.isAutoLockEnabled === true
+        (doc) => doc.isAutoLockEnabled === true,
       );
       setDocuments(autoLockDocuments);
     } catch (error) {
