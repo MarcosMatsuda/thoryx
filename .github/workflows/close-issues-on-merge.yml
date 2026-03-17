@@ -9,6 +9,8 @@ jobs:
     name: Close linked issues
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
+    permissions:
+      issues: write
 
     steps:
       - name: Close issues referenced in PR body
