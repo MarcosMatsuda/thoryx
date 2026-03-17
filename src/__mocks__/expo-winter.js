@@ -5,7 +5,7 @@
 
 module.exports = {
   installGlobal: jest.fn(() => {
-    if (typeof global !== 'undefined') {
+    if (typeof global !== "undefined") {
       if (!global.TextEncoderStream) {
         global.TextEncoderStream = class TextEncoderStream {};
       }
@@ -16,7 +16,7 @@ module.exports = {
   }),
   runtime: {
     native: {
-      require: jest.fn(() => ({}))
-    }
-  }
+      require: jest.fn(() => ({})),
+    },
+  },
 };

@@ -7,6 +7,9 @@ import {
 } from "@testing-library/react-native";
 import { DocumentDetailsScreen } from "./document-details-screen";
 
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
+
 // Mock com factory explícita para evitar carregar o módulo real
 // (que importa ImageProcessingService → expo-image-manipulator → expo/src/winter → falha no Jest)
 jest.mock("@data/repositories/document.repository.impl", () => ({
@@ -31,9 +34,6 @@ jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(),
   useFocusEffect: jest.fn(),
 }));
-
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
 
 const mockDocument = {
   id: "doc1",

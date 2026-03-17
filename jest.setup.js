@@ -18,7 +18,7 @@ Module.prototype.require = function (id) {
   if (id.includes("splash-icon.png") || id.match(/\.(png|jpg|jpeg|gif|svg)$/)) {
     return "test-image-path";
   }
-  
+
   // Intercept expo winter modules
   if (id.includes("expo/src/winter")) {
     if (id.includes("installGlobal")) {
@@ -28,7 +28,7 @@ Module.prototype.require = function (id) {
       return { require: jest.fn(() => ({})) };
     }
   }
-  
+
   return originalRequire.apply(this, arguments);
 };
 

@@ -7,6 +7,10 @@ import {
 } from "@testing-library/react-native";
 import { GuestModeScreen } from "./guest-mode-screen";
 
+import { useRouter } from "expo-router";
+import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
+import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
+
 // Mock das dependências com factories explícitas para evitar carregamento dos módulos reais
 // (que importam expo-image-manipulator → expo/src/winter → falha no Jest)
 jest.mock("@data/repositories/document.repository.impl", () => ({
@@ -51,13 +55,7 @@ jest.mock("@presentation/components/countdown-timer", () => ({
 
 // Mock para DocumentCard para simplificar asserções
 jest.mock("@presentation/components/document-card", () => ({
-  DocumentCard: ({
-    title,
-    subtitle,
-  }: {
-    title: string;
-    subtitle: string;
-  }) => {
+  DocumentCard: ({ title, subtitle }: { title: string; subtitle: string }) => {
     const { View, Text } = require("react-native");
     return (
       <View>
@@ -67,10 +65,6 @@ jest.mock("@presentation/components/document-card", () => ({
     );
   },
 }));
-
-import { useRouter } from "expo-router";
-import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
-import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 
 describe("GuestModeScreen", () => {
   let mockFindAll: jest.Mock;

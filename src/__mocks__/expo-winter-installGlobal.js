@@ -3,7 +3,7 @@
 module.exports = {
   installGlobal: jest.fn(() => {
     // Setup global objects that might be accessed
-    if (typeof global !== 'undefined') {
+    if (typeof global !== "undefined") {
       if (!global.TextEncoderStream) {
         global.TextEncoderStream = class TextEncoderStream {
           constructor() {
@@ -12,7 +12,7 @@ module.exports = {
           }
         };
       }
-      
+
       if (!global.TextDecoderStream) {
         global.TextDecoderStream = class TextDecoderStream {
           constructor() {
@@ -21,15 +21,15 @@ module.exports = {
           }
         };
       }
-      
+
       if (!global.ReadableStream) {
         global.ReadableStream = class ReadableStream {};
       }
-      
+
       if (!global.WritableStream) {
         global.WritableStream = class WritableStream {};
       }
-      
+
       if (!global.TransformStream) {
         global.TransformStream = class TransformStream {};
       }

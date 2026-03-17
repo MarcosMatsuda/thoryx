@@ -12,7 +12,7 @@ const mockUseRouter = jest.fn(() => mockRouter);
 const mockUseLocalSearchParams = jest.fn(() => ({}));
 const mockUseGlobalSearchParams = jest.fn(() => ({}));
 const mockUseSegments = jest.fn(() => []);
-const mockUsePathname = jest.fn(() => '/');
+const mockUsePathname = jest.fn(() => "/");
 const mockUseNavigation = jest.fn(() => ({
   navigate: jest.fn(),
   goBack: jest.fn(),

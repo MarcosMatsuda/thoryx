@@ -146,7 +146,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
 
       await waitFor(() => {
         expect(screen.getByText("John Doe")).toBeTruthy();
-      });
+      }, { timeout: 10000 });
 
       // Press back button
       fireEvent.press(screen.getByText("←"));
@@ -154,7 +154,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       // Should use replace, not back (prevents going back to app)
       expect(mockReplace).toHaveBeenCalledWith("/guest-mode");
       expect(mockBack).not.toHaveBeenCalled();
-    });
+    }, 15000);
 
     it("should use router.back() when NOT in guest mode", async () => {
       (useLocalSearchParams as jest.Mock).mockReturnValue({

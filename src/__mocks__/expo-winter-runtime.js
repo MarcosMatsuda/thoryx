@@ -3,11 +3,13 @@
 module.exports = {
   require: jest.fn((moduleId) => {
     // Return empty objects for native modules
-    if (moduleId.includes('TextEncoderStream') || 
-        moduleId.includes('TextDecoderStream') ||
-        moduleId.includes('ReadableStream') ||
-        moduleId.includes('WritableStream') ||
-        moduleId.includes('TransformStream')) {
+    if (
+      moduleId.includes("TextEncoderStream") ||
+      moduleId.includes("TextDecoderStream") ||
+      moduleId.includes("ReadableStream") ||
+      moduleId.includes("WritableStream") ||
+      moduleId.includes("TransformStream")
+    ) {
       return {};
     }
     // For other modules, throw an error that can be caught

@@ -7,7 +7,7 @@ Object.defineProperty(global, "__ExpoImportMetaRegistry", {
 });
 
 // Define global Stream APIs before expo/winter tries to access them
-if (typeof global !== 'undefined') {
+if (typeof global !== "undefined") {
   if (!global.TextEncoderStream) {
     global.TextEncoderStream = class TextEncoderStream {
       constructor() {
@@ -16,7 +16,7 @@ if (typeof global !== 'undefined') {
       }
     };
   }
-  
+
   if (!global.TextDecoderStream) {
     global.TextDecoderStream = class TextDecoderStream {
       constructor() {
@@ -25,7 +25,7 @@ if (typeof global !== 'undefined') {
       }
     };
   }
-  
+
   if (!global.ReadableStream) {
     global.ReadableStream = class ReadableStream {
       constructor() {
@@ -33,7 +33,7 @@ if (typeof global !== 'undefined') {
       }
     };
   }
-  
+
   if (!global.WritableStream) {
     global.WritableStream = class WritableStream {
       constructor() {
@@ -41,7 +41,7 @@ if (typeof global !== 'undefined') {
       }
     };
   }
-  
+
   if (!global.TransformStream) {
     global.TransformStream = class TransformStream {
       constructor() {
