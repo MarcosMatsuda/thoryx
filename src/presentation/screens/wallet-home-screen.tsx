@@ -149,8 +149,6 @@ export function WalletHomeScreen() {
             </Pressable>
           </View>
 
-
-
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-4">
               <Text className="text-xs md:text-sm font-semibold text-text-secondary tracking-wider">
