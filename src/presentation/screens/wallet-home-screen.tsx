@@ -4,7 +4,7 @@ import { UserAvatar } from "@presentation/components/user-avatar";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { useDocuments } from "@presentation/hooks/use-documents";
 import { useUserProfile } from "@presentation/hooks/use-user-profile";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -17,9 +17,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export function WalletHomeScreen() {
   const router = useRouter();
-  const { documents, isLoading: documentsLoading } = useDocuments();
+  const { documents, isLoading: documentsLoading, reload: loadDocuments } = useDocuments();
   const { cards, isLoading: cardsLoading } = useCreditCards();
-  const { profile, isLoading: profileLoading } = useUserProfile();
+  const { profile, isLoading: profileLoading, reloadProfile } = useUserProfile();
 
   // Redirect to profile setup if no profile exists
   useEffect(() => {
@@ -27,6 +27,14 @@ export function WalletHomeScreen() {
       router.push("/profile-setup");
     }
   }, [profile, profileLoading, router]);
+
+  // Refresh data when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadDocuments();
+      reloadProfile();
+    }, [reloadProfile, loadDocuments])
+  );
 
   const getDocumentIcon = (type: string) => {
     switch (type) {
