@@ -8,12 +8,13 @@ import {
 import { GuestModeScreen } from "./guest-mode-screen";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
-import { useRouter } from "expo-router";
 
 // Mock das dependências
 jest.mock("@data/repositories/document.repository.impl");
 jest.mock("@infrastructure/storage/secure-storage.adapter");
-jest.mock("expo-router");
+jest.mock("expo-router", () => ({
+  useRouter: jest.fn(),
+}));
 
 const mockRouter = {
   push: jest.fn(),
@@ -29,6 +30,8 @@ const mockSecureStorage = {
 };
 
 describe("GuestModeScreen", () => {
+  const { useRouter } = require("expo-router");
+  
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);

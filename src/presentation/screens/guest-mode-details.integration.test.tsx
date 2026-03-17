@@ -7,11 +7,13 @@ import {
 } from "@testing-library/react-native";
 import { DocumentDetailsScreen } from "./document-details-screen";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
-import { useRouter, useLocalSearchParams } from "expo-router";
 
 // Mock das dependências
 jest.mock("@data/repositories/document.repository.impl");
-jest.mock("expo-router");
+jest.mock("expo-router", () => ({
+  useRouter: jest.fn(),
+  useLocalSearchParams: jest.fn(),
+}));
 
 const mockRouter = {
   back: jest.fn(),
@@ -26,9 +28,12 @@ const mockDocumentRepository = {
 };
 
 describe("DocumentDetailsScreen - Guest Mode Integration", () => {
+  const { useRouter, useLocalSearchParams } = require("expo-router");
+  
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useLocalSearchParams as jest.Mock).mockReturnValue({});
     (DocumentRepositoryImpl as jest.Mock).mockImplementation(
       () => mockDocumentRepository,
     );

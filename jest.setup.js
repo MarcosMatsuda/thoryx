@@ -1,6 +1,15 @@
 // Jest setup file for React Testing Library + React Native
 
-// Intercept the Expo asset loader VERY EARLY
+// Mock Expo's winter modules
+jest.mock("expo/src/winter/installGlobal", () => ({
+  installGlobal: jest.fn(),
+}));
+
+jest.mock("expo/src/winter/runtime.native", () => ({
+  require: jest.fn(() => ({})),
+}));
+
+// Intercept the Expo asset loader
 const Module = require("module");
 const originalRequire = Module.prototype.require;
 
@@ -9,18 +18,19 @@ Module.prototype.require = function (id) {
   if (id.includes("splash-icon.png") || id.match(/\.(png|jpg|jpeg|gif|svg)$/)) {
     return "test-image-path";
   }
+  
+  // Intercept expo winter modules
+  if (id.includes("expo/src/winter")) {
+    if (id.includes("installGlobal")) {
+      return { installGlobal: jest.fn() };
+    }
+    if (id.includes("runtime.native")) {
+      return { require: jest.fn(() => ({})) };
+    }
+  }
+  
   return originalRequire.apply(this, arguments);
 };
-
-// Setup must happen before importing testing library
-// Mock Expo's global installer to prevent errors with native modules
-jest.mock("expo/src/winter/installGlobal", () => ({
-  installGlobal: jest.fn(),
-}));
-
-jest.mock("expo/src/winter/runtime.native", () => ({
-  require: jest.fn(),
-}));
 
 // Polyfills for Stream APIs that may be needed
 if (typeof global.TextDecoderStream === "undefined") {
