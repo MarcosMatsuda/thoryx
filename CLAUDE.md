@@ -135,12 +135,14 @@ npm run format        # Prettier
 ## CI/CD (GitHub Actions)
 
 ### `ci.yml` — Roda em PRs para `develop` e `main`
+
 1. **Security Audit** → `npm audit --audit-level=high`
 2. **Lint** → `npm run lint` (depende de audit)
 3. **TypeScript** → `npx tsc --noEmit` (depende de audit)
 4. **Tests** → `npm test` (depende de lint + typecheck)
 
 ### `close-issues-on-merge.yml`
+
 Fecha issues referenciadas no body do PR quando mergeado (Closes #N, Fixes #N).
 
 ## Branches
@@ -166,6 +168,50 @@ npm run android       # Android emulator
 npm run web           # Web browser
 npx tsc --noEmit      # Type check
 ```
+
+## Pipeline de Qualidade
+
+### Testes obrigatórios
+
+- **Use cases e repositories** → unit tests (`.test.ts`)
+- **Screens e componentes** → component tests (`.test.tsx`)
+- **Zustand stores** → unit tests (já existem para cards, documents, profile)
+- Novos use cases ou stores **devem ter testes** antes de abrir PR
+
+### Checklist de PR
+
+1. `npm run lint` passa sem erros
+2. `npx tsc --noEmit` passa
+3. `npm test` passa (unit + component)
+4. Segue regras de Clean Architecture (ver seção Regras de dependência)
+5. Sem lógica de negócio na camada Presentation
+6. PR referencia issue quando aplicável (`Closes #N`)
+
+### CI automático (PRs para develop/main)
+
+Pipeline sequencial: Security Audit → Lint + TypeScript (paralelo) → Tests
+
+Se CI falhar, corrigir antes de pedir review.
+
+### Labels de status
+
+| Label | Significado |
+|-------|-------------|
+| `task` | Nova tarefa criada |
+| `wip` | Trabalho em andamento |
+| `needs-tests` | Precisa de testes antes de review |
+| `needs-fix` | Bug ou correção necessária |
+| `tests-ready` | Testes escritos e passando |
+| `qa-approved` | QA aprovou — pronto para merge |
+| `qa-changes-requested` | QA encontrou problemas — ver comentários |
+
+### QA verifica
+
+- Funcionalidade conforme a issue/task
+- Edge cases (inputs inválidos, estados vazios, erros de rede)
+- Conformidade com Clean Architecture (sem violações de camada)
+- Performance (sem re-renders desnecessários, animações fluidas)
+- Acessibilidade básica (labels, contraste)
 
 ## Observações
 
