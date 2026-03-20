@@ -67,28 +67,8 @@ jest.mock("@presentation/components/countdown-timer", () => ({
   },
 }));
 
-jest.mock("@presentation/components/document-card", () => ({
-  DocumentCard: ({
-    title,
-    subtitle,
-    icon,
-    badge,
-  }: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    badge?: string;
-  }) => {
-    const { View, Text } = require("react-native");
-    return (
-      <View testID={`document-card-${title}`}>
-        <Text testID={`icon-${title}`}>{icon}</Text>
-        <Text>{title}</Text>
-        <Text>{subtitle}</Text>
-        {badge && <Text testID={`badge-${title}`}>{badge}</Text>}
-      </View>
-    );
-  },
+jest.mock("@presentation/components/pin-auth-bottom-sheet", () => ({
+  PinAuthBottomSheet: () => null,
 }));
 
 describe("GuestModeScreen - Behavioral Tests", () => {
@@ -303,51 +283,13 @@ describe("GuestModeScreen - Behavioral Tests", () => {
         expect(screen.getByText("John RG")).toBeTruthy();
       });
 
-      // Check icons
-      expect(screen.getByTestId("icon-John RG")).toHaveTextContent("🆔"); // RG icon
-      expect(screen.getByTestId("icon-Jane CNH")).toHaveTextContent("🚗"); // CNH icon
-      expect(screen.getByTestId("icon-Charlie Card")).toHaveTextContent("💳"); // CreditCard icon
+      // Check icons are rendered inline
+      expect(screen.getByText("🆔")).toBeTruthy(); // RG icon
+      expect(screen.getByText("🚗")).toBeTruthy(); // CNH icon
+      expect(screen.getByText("💳")).toBeTruthy(); // CreditCard icon
     });
 
-    it("should display 'Auto-lock' badge on all guest mode documents", async () => {
-      const mockDocuments = [
-        {
-          id: "doc1",
-          type: "RG",
-          documentNumber: "111111111",
-          fullName: "John Doe",
-          expiryDate: "2030-01-01",
-          isAutoLockEnabled: true,
-        },
-        {
-          id: "doc2",
-          type: "CNH",
-          documentNumber: "222222222",
-          fullName: "Jane Smith",
-          expiryDate: "2031-06-01",
-          isAutoLockEnabled: true,
-        },
-      ];
-
-      mockFindAll.mockResolvedValue(mockDocuments);
-      mockStorageGet.mockResolvedValue("5");
-
-      render(<GuestModeScreen />);
-
-      await waitFor(() => {
-        expect(screen.getByText("John Doe")).toBeTruthy();
-      });
-
-      // Both documents should have "Auto-lock" badge
-      expect(screen.getByTestId("badge-John Doe")).toHaveTextContent(
-        "Auto-lock",
-      );
-      expect(screen.getByTestId("badge-Jane Smith")).toHaveTextContent(
-        "Auto-lock",
-      );
-    });
-
-    it("should format document subtitle correctly with number and expiry date", async () => {
+    it("should display masked document number with last 4 digits", async () => {
       const mockDocuments = [
         {
           id: "doc1",
@@ -368,8 +310,8 @@ describe("GuestModeScreen - Behavioral Tests", () => {
         expect(screen.getByText("John Doe")).toBeTruthy();
       });
 
-      // Check subtitle format: "documentNumber • Expires: expiryDate"
-      expect(screen.getByText("123456789 • Expires: 2030-12-31")).toBeTruthy();
+      // Screen shows masked format: •••• •••• {last 4 digits}
+      expect(screen.getByText("•••• •••• 6789")).toBeTruthy();
     });
   });
 
@@ -468,8 +410,8 @@ describe("GuestModeScreen - Behavioral Tests", () => {
         expect(screen.getByText("John Doe")).toBeTruthy();
       });
 
-      // Press the document
-      fireEvent.press(screen.getByTestId("document-card-John Doe"));
+      // Press the document by finding the name text and its parent Pressable
+      fireEvent.press(screen.getByText("John Doe"));
 
       expect(mockPush).toHaveBeenCalledWith(
         "/document-details?documentId=doc-abc-123&guestMode=true",
@@ -507,7 +449,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       });
 
       // Press first document
-      fireEvent.press(screen.getByTestId("document-card-Alice"));
+      fireEvent.press(screen.getByText("Alice"));
       expect(mockPush).toHaveBeenCalledWith(
         "/document-details?documentId=doc1&guestMode=true",
       );
@@ -515,7 +457,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       jest.clearAllMocks();
 
       // Press second document
-      fireEvent.press(screen.getByTestId("document-card-Bob"));
+      fireEvent.press(screen.getByText("Bob"));
       expect(mockPush).toHaveBeenCalledWith(
         "/document-details?documentId=doc2&guestMode=true",
       );
