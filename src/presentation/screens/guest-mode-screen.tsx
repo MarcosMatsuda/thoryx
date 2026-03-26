@@ -145,7 +145,9 @@ export function GuestModeScreen() {
             <View className="flex-row items-start justify-between">
               <View className="flex-row flex-1">
                 <View className="w-12 h-12 bg-primary-main/10 rounded-xl items-center justify-center mr-3">
-                  <Text className="text-2xl">{getDocumentIcon(document.type)}</Text>
+                  <Text className="text-2xl">
+                    {getDocumentIcon(document.type)}
+                  </Text>
                 </View>
                 <View className="flex-1">
                   <Text className="text-base font-bold text-text-primary mb-1">

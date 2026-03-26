@@ -102,9 +102,7 @@ export function PinAuthBottomSheet({
           <View className="flex-1 w-full max-w-[500px] self-center">
             <View className="items-center pt-4 pb-2">
               <View className="w-12 h-1 bg-ui-border rounded-full mb-4" />
-              <Text className="text-base text-text-secondary">
-                Secure Mode
-              </Text>
+              <Text className="text-base text-text-secondary">Secure Mode</Text>
             </View>
 
             <View className="px-4 md:px-8 pt-4">

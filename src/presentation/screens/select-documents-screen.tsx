@@ -49,12 +49,12 @@ export function SelectDocumentsScreen() {
       Alert.alert(
         "Select at least one document",
         "You need to select at least one document to enter Guest Mode.",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
       return;
     }
 
-    router.push(`/guest-mode?docIds=${selectedDocIds.join(',')}`);
+    router.push(`/guest-mode?docIds=${selectedDocIds.join(",")}`);
   };
 
   return (
@@ -93,7 +93,8 @@ export function SelectDocumentsScreen() {
                 <View className="items-center justify-center py-12">
                   <Text className="text-6xl mb-4">📄</Text>
                   <Text className="text-base md:text-lg text-text-secondary mb-6 text-center">
-                    No documents registered. Add documents in the main app first.
+                    No documents registered. Add documents in the main app
+                    first.
                   </Text>
                 </View>
               ) : (

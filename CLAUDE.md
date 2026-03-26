@@ -195,14 +195,14 @@ Se CI falhar, corrigir antes de pedir review.
 
 ### Labels de status
 
-| Label | Significado |
-|-------|-------------|
-| `task` | Nova tarefa criada |
-| `wip` | Trabalho em andamento |
-| `needs-tests` | Precisa de testes antes de review |
-| `needs-fix` | Bug ou correção necessária |
-| `tests-ready` | Testes escritos e passando |
-| `qa-approved` | QA aprovou — pronto para merge |
+| Label                  | Significado                              |
+| ---------------------- | ---------------------------------------- |
+| `task`                 | Nova tarefa criada                       |
+| `wip`                  | Trabalho em andamento                    |
+| `needs-tests`          | Precisa de testes antes de review        |
+| `needs-fix`            | Bug ou correção necessária               |
+| `tests-ready`          | Testes escritos e passando               |
+| `qa-approved`          | QA aprovou — pronto para merge           |
 | `qa-changes-requested` | QA encontrou problemas — ver comentários |
 
 ### QA verifica
