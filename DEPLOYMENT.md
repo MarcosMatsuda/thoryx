@@ -53,6 +53,7 @@ thoryx/
 ### CI Workflow (`ci.yml`)
 
 Runs on every PR to `main` or `develop`:
+
 - Security audit
 - ESLint check
 - TypeScript type checking
@@ -61,6 +62,7 @@ Runs on every PR to `main` or `develop`:
 ### Deploy Workflow (`deploy.yml`)
 
 Runs when merging to `main`:
+
 1. Runs full test suite
 2. Validates EAS configuration
 3. Sets deployment ready status
@@ -232,14 +234,17 @@ Update version in `app.json` before release:
   "expo": {
     "version": "1.0.0",
     "plugins": [
-      ["expo-build-properties", {
-        "android": {
-          "compileSdkVersion": 34
-        },
-        "ios": {
-          "deploymentTarget": "13.4"
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 34
+          },
+          "ios": {
+            "deploymentTarget": "13.4"
+          }
         }
-      }]
+      ]
     ]
   }
 }
@@ -250,6 +255,7 @@ Update version in `app.json` before release:
 ### If Build Fails
 
 1. Check EAS build logs:
+
    ```bash
    eas build:view
    ```
@@ -261,6 +267,7 @@ Update version in `app.json` before release:
 ### If App Crashes on Startup
 
 1. Check device logs:
+
    ```bash
    eas logs
    ```
@@ -288,6 +295,7 @@ Sentry.init({
 ### Analytics
 
 Use Expo Analytics or third-party:
+
 - Segment
 - Firebase Analytics
 - Amplitude
@@ -326,4 +334,3 @@ Use Expo Analytics or third-party:
 - EAS Build: https://docs.expo.dev/build/introduction/
 - EAS Submit: https://docs.expo.dev/submit/introduction/
 - React Native: https://reactnative.dev/docs/getting-started
-

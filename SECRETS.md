@@ -40,17 +40,17 @@ These are used in CI/CD workflows and configured in repository settings.
 
 ### Required Secrets
 
-| Secret Name | Purpose | Example |
-|-----------|---------|---------|
+| Secret Name | Purpose                  | Example             |
+| ----------- | ------------------------ | ------------------- |
 | `EAS_TOKEN` | Expo build authorization | `<token-from-expo>` |
 
 ### Optional Secrets
 
-| Secret Name | Purpose | When Needed |
-|-----------|---------|-----------|
-| `SENTRY_DSN_PRODUCTION` | Production error tracking | If using Sentry |
-| `APPLE_TEAM_ID` | Apple Developer Team ID | For iOS builds |
-| `APPLE_KEY_ID` | App Store Connect API key ID | For automated iOS submit |
+| Secret Name               | Purpose                           | When Needed                  |
+| ------------------------- | --------------------------------- | ---------------------------- |
+| `SENTRY_DSN_PRODUCTION`   | Production error tracking         | If using Sentry              |
+| `APPLE_TEAM_ID`           | Apple Developer Team ID           | For iOS builds               |
+| `APPLE_KEY_ID`            | App Store Connect API key ID      | For automated iOS submit     |
 | `ANDROID_KEYSTORE_BASE64` | Android signing keystore (base64) | For automated Android builds |
 
 ## Expo-Specific Secrets
@@ -68,12 +68,14 @@ Generate at https://expo.dev/accounts/[username]/settings/tokens:
 ### iOS Provisioning (for production)
 
 Required for submitting to App Store:
+
 - Apple Developer account
 - App ID in Apple Developer Portal
 - Signing certificate
 - Provisioning profile
 
 Configure in EAS dashboard:
+
 1. Go to project settings in Expo
 2. iOS section
 3. Upload certificate and provisioning profile
@@ -81,6 +83,7 @@ Configure in EAS dashboard:
 ### Android Signing
 
 Required for submitting to Google Play:
+
 - Android keystore file (`.jks`)
 - Keystore password
 - Key alias
@@ -202,9 +205,12 @@ Main Expo configuration:
     "version": "1.0.0",
     "platforms": ["ios", "android"],
     "plugins": [
-      ["expo-notifications", {
-        "icon": "./assets/notification-icon.png"
-      }]
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png"
+        }
+      ]
     ]
   }
 }
@@ -305,4 +311,3 @@ EAS build configuration:
 7. Configure iOS signing in EAS dashboard
 8. Set up Android keystore
 9. Create first beta build: `eas build --platform all --profile preview`
-
