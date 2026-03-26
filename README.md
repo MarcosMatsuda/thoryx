@@ -72,32 +72,147 @@ thoryx/
 @shared/*          → src/shared/*
 ```
 
-## 🚀 Getting Started
+## 🚀 Local Development Setup
 
-### Prerequisites
+### System Prerequisites
 
-- Node.js 20+
-- npm or yarn
-- Expo Go (for testing on mobile)
+Before starting development, ensure you have the following installed:
 
-### Installation
+#### Required Tools
+- **Node.js**: 20.x LTS or later ([download](https://nodejs.org/))
+  - Verify with: `node --version`
+- **npm**: 10.x or later (comes with Node.js)
+  - Verify with: `npm --version`
+
+#### Platform-Specific Requirements
+
+**macOS:**
+- Xcode 15+ (from App Store)
+  - Install command-line tools: `xcode-select --install`
+- Xcode simulator (included with Xcode)
+
+**Linux/Windows:**
+- Android Studio ([download](https://developer.android.com/studio))
+- Android emulator setup (via Android Studio SDK Manager)
+
+**All Platforms:**
+- Expo CLI: `npm install -g expo-cli@latest`
+- EAS CLI: `npm install -g eas-cli@latest`
+
+### Project Installation
+
+1. **Clone or navigate to the project directory**
+   ```bash
+   cd thoryx
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+   This will install all packages listed in `package.json` and create `node_modules/`.
+
+3. **Configure environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Edit `.env.local` with your local configuration:
+   - `EXPO_PUBLIC_API_URL`: Point to your local backend (default: `http://localhost:3000`)
+   - `EXPO_PUBLIC_ENVIRONMENT`: Set to `development`
+   - Other optional variables as needed
+
+4. **Verify TypeScript configuration**
+   - TypeScript strict mode is enabled in `tsconfig.json`
+   - Path aliases are configured (e.g., `@domain`, `@presentation`, etc.)
+
+### Development Workflow
+
+#### Starting the Metro Bundler
+```bash
+npm start
+```
+This launches the Expo Metro bundler. You'll see a QR code and terminal options.
+
+#### Running on iOS Simulator
+```bash
+# Option 1: From running metro bundler
+npm start
+# Then press 'i' in the terminal
+
+# Option 2: Direct command
+npm run ios
+```
+Requirements: Xcode and iOS simulator
+
+#### Running on Android Emulator
+```bash
+# Option 1: From running metro bundler
+npm start
+# Then press 'a' in the terminal
+
+# Option 2: Direct command
+npm run android
+```
+Requirements: Android Studio with emulator configured
+
+#### Running on Physical Device
+1. Install Expo Go from App Store or Google Play
+2. Start metro: `npm start`
+3. Scan QR code with your device camera (iOS) or Expo Go app (Android)
+
+#### TypeScript Type Checking
+```bash
+npm run typecheck
+```
+Validates all TypeScript files without bundling.
+
+### Quality Gates
+
+#### ESLint (Code Linting)
+```bash
+# Check for lint errors
+npm run lint
+
+# Fix auto-fixable errors
+npm run lint:fix
+```
+Rules are configured in `eslint.config.js` following Expo standards.
+
+#### Prettier (Code Formatting)
+```bash
+# Format all files
+npm run format
+
+# Check if files are formatted
+npm run format:check
+```
+Configuration in `.prettierrc`:
+- Print width: 80 characters
+- Single quotes: false (use double quotes)
+- Tabs: 2 spaces
+- Trailing commas: all
+
+#### Pre-Commit Hooks
+Husky is configured to run linting and formatting automatically before commits:
+- Runs `npm run lint:fix` (auto-fix lint errors)
+- Runs `npm run format` (auto-format code)
+
+No manual steps needed—hooks run automatically.
+
+### Testing
 
 ```bash
-# Install dependencies
-npm install
+# Run all tests
+npm test
 
-# Start the project
-npm start
+# Run tests in watch mode
+npm test -- --watch
 
-# Run on iOS
-npm run ios
-
-# Run on Android
-npm run android
-
-# Run on web
-npm run web
+# Generate coverage report
+npm test -- --coverage
 ```
+
+Tests use Jest with RTL (React Testing Library) for component testing.
 
 ## 📝 Usage Examples
 
