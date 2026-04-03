@@ -1,0 +1,31 @@
+#!/bin/bash
+# ═══════════════════════════════════════════
+# Thoryx - Start script
+# Expo React Native app
+# ═══════════════════════════════════════════
+
+echo ""
+echo "📱 Thoryx — Starting..."
+echo ""
+
+# ─── Kill Metro bundler ──────────────────
+pid=$(lsof -ti:8081 2>/dev/null)
+if [ -n "$pid" ]; then
+  kill -9 $pid 2>/dev/null
+  echo "   🔪 Killed Metro on port 8081"
+fi
+
+sleep 1
+
+# ─── Check Expo CLI ──────────────────────
+if which expo > /dev/null 2>&1 || npx expo --version > /dev/null 2>&1; then
+  echo "   ✅ Expo CLI available"
+else
+  echo "   ❌ Expo CLI not found — run: npm install -g expo-cli"
+fi
+
+echo ""
+echo "   Starting Expo..."
+echo ""
+
+npx expo start
