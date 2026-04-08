@@ -3,6 +3,32 @@ import { DocumentRepository } from "@domain/repositories/document.repository";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 import { ImageProcessingService } from "@infrastructure/services/image-processing.service";
 
+/**
+ * Migrates v1 documents (fixed fields) to v2 (dynamic fields/photos).
+ * Detection: v1 docs have `documentNumber` at top level, no `fields` property.
+ */
+function migrateV1(raw: any): any {
+  if (raw.fields !== undefined || raw.documentNumber === undefined) return raw;
+  return {
+    id: raw.id,
+    typeId: raw.type ?? "CNH",
+    typeName: raw.type === "RG" ? "RG" : "CNH",
+    fields: {
+      fullName: raw.fullName ?? "",
+      documentNumber: raw.documentNumber ?? "",
+      dateOfBirth: raw.dateOfBirth ?? "",
+      expiryDate: raw.expiryDate ?? "",
+    },
+    photos: {
+      front: raw.frontPhotoEncrypted ?? "",
+      back: raw.backPhotoEncrypted ?? "",
+    },
+    isAutoLockEnabled: raw.isAutoLockEnabled ?? false,
+    createdAt: raw.createdAt,
+    updatedAt: raw.updatedAt,
+  };
+}
+
 export class DocumentRepositoryImpl implements DocumentRepository {
   private storage: SecureStorageAdapter;
   private readonly DOCUMENTS_KEY = "documents";
@@ -14,28 +40,24 @@ export class DocumentRepositoryImpl implements DocumentRepository {
     );
   }
 
-  async save(documentInput: DocumentInput): Promise<Document> {
+  async save(input: DocumentInput): Promise<Document> {
     try {
-      const encryptedFrontPhoto =
-        await ImageProcessingService.compressAndEncrypt(
-          documentInput.frontPhoto,
-        );
-      const encryptedBackPhoto =
-        await ImageProcessingService.compressAndEncrypt(
-          documentInput.backPhoto,
-        );
+      const encryptedPhotos: Record<string, string> = {};
+      for (const [slot, uri] of Object.entries(input.photos)) {
+        if (uri) {
+          encryptedPhotos[slot] =
+            await ImageProcessingService.compressAndEncrypt(uri);
+        }
+      }
 
       const id = `doc_${Date.now()}`;
 
       const document: Document = {
         id,
-        type: documentInput.type,
-        documentNumber: documentInput.documentNumber,
-        fullName: documentInput.fullName,
-        dateOfBirth: documentInput.dateOfBirth,
-        expiryDate: documentInput.expiryDate,
-        frontPhotoEncrypted: encryptedFrontPhoto,
-        backPhotoEncrypted: encryptedBackPhoto,
+        typeId: input.typeId,
+        typeName: input.typeName,
+        fields: { ...input.fields },
+        photos: encryptedPhotos,
         isAutoLockEnabled: false,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -43,7 +65,6 @@ export class DocumentRepositoryImpl implements DocumentRepository {
 
       const documents = await this.findAll();
       documents.push(document);
-
       await this.storage.set(this.DOCUMENTS_KEY, JSON.stringify(documents));
 
       return document;
@@ -66,19 +87,18 @@ export class DocumentRepositoryImpl implements DocumentRepository {
   async findAll(): Promise<Document[]> {
     try {
       const documentsJson = await this.storage.get(this.DOCUMENTS_KEY);
-      if (!documentsJson) {
-        return [];
-      }
+      if (!documentsJson) return [];
 
-      const documents = JSON.parse(documentsJson);
-      return documents.map((doc: any) => ({
-        ...doc,
-        dateOfBirth: doc.dateOfBirth,
-        expiryDate: doc.expiryDate,
-        isAutoLockEnabled: doc.isAutoLockEnabled ?? false,
-        createdAt: new Date(doc.createdAt),
-        updatedAt: new Date(doc.updatedAt),
-      }));
+      const raw = JSON.parse(documentsJson);
+      return raw.map((doc: any) => {
+        const migrated = migrateV1(doc);
+        return {
+          ...migrated,
+          isAutoLockEnabled: migrated.isAutoLockEnabled ?? false,
+          createdAt: new Date(migrated.createdAt),
+          updatedAt: new Date(migrated.updatedAt),
+        };
+      });
     } catch (error) {
       console.error("Error loading documents:", error);
       return [];
@@ -88,11 +108,8 @@ export class DocumentRepositoryImpl implements DocumentRepository {
   async delete(id: string): Promise<void> {
     try {
       const documents = await this.findAll();
-      const filteredDocuments = documents.filter((doc) => doc.id !== id);
-      await this.storage.set(
-        this.DOCUMENTS_KEY,
-        JSON.stringify(filteredDocuments),
-      );
+      const filtered = documents.filter((doc) => doc.id !== id);
+      await this.storage.set(this.DOCUMENTS_KEY, JSON.stringify(filtered));
     } catch (error) {
       console.error("Error deleting document:", error);
       throw new Error("Failed to delete document");
@@ -108,26 +125,33 @@ export class DocumentRepositoryImpl implements DocumentRepository {
     }
   }
 
+  async decryptPhotos(
+    photos: Record<string, string>,
+  ): Promise<Record<string, string>> {
+    const decrypted: Record<string, string> = {};
+    for (const [slot, encrypted] of Object.entries(photos)) {
+      if (encrypted) {
+        decrypted[slot] = await this.decryptPhoto(encrypted);
+      }
+    }
+    return decrypted;
+  }
+
   async toggleAutoLock(id: string): Promise<Document> {
     try {
       const documents = await this.findAll();
-      const documentIndex = documents.findIndex((doc) => doc.id === id);
+      const idx = documents.findIndex((doc) => doc.id === id);
+      if (idx === -1) throw new Error(`Document with id ${id} not found`);
 
-      if (documentIndex === -1) {
-        throw new Error(`Document with id ${id} not found`);
-      }
-
-      const document = documents[documentIndex];
-      const updatedDocument = {
-        ...document,
-        isAutoLockEnabled: !document.isAutoLockEnabled,
+      const updated = {
+        ...documents[idx],
+        isAutoLockEnabled: !documents[idx].isAutoLockEnabled,
         updatedAt: new Date(),
       };
 
-      documents[documentIndex] = updatedDocument;
+      documents[idx] = updated;
       await this.storage.set(this.DOCUMENTS_KEY, JSON.stringify(documents));
-
-      return updatedDocument;
+      return updated;
     } catch (error) {
       console.error("Error toggling auto-lock:", error);
       throw new Error("Failed to toggle auto-lock");

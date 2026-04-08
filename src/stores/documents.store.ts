@@ -1,17 +1,22 @@
 import { create } from "zustand";
 import { Document } from "@domain/entities/document.entity";
+import { DocumentTypeDefinition } from "@domain/entities/document-type-definition.entity";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
+import { DocumentTypeRepositoryImpl } from "@data/repositories/document-type.repository.impl";
 import { GetAllDocumentsUseCase } from "@domain/use-cases/get-all-documents.use-case";
 
 interface DocumentsState {
   documents: Document[];
+  customDocumentTypes: DocumentTypeDefinition[];
   isLoading: boolean;
   loadDocuments: () => Promise<void>;
+  loadCustomTypes: () => Promise<void>;
   reset: () => void;
 }
 
 export const useDocumentsStore = create<DocumentsState>((set) => ({
   documents: [],
+  customDocumentTypes: [],
   isLoading: false,
 
   loadDocuments: async () => {
@@ -27,7 +32,17 @@ export const useDocumentsStore = create<DocumentsState>((set) => ({
     }
   },
 
+  loadCustomTypes: async () => {
+    try {
+      const typeRepo = new DocumentTypeRepositoryImpl();
+      const customTypes = await typeRepo.getAllCustomTypes();
+      set({ customDocumentTypes: customTypes });
+    } catch (error) {
+      console.error("Error loading custom types:", error);
+    }
+  },
+
   reset: () => {
-    set({ documents: [], isLoading: false });
+    set({ documents: [], customDocumentTypes: [], isLoading: false });
   },
 }));

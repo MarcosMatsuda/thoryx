@@ -1,25 +1,20 @@
+/** @deprecated Use typeId string instead. Kept for migration compatibility. */
 export type DocumentType = "CNH" | "RG";
 
 export interface Document {
   id: string;
-  type: DocumentType;
-  documentNumber: string;
-  fullName: string;
-  dateOfBirth: string;
-  expiryDate: string;
-  frontPhotoEncrypted: string;
-  backPhotoEncrypted: string;
-  isAutoLockEnabled: boolean; // default: false
+  typeId: string;
+  typeName: string;
+  fields: Record<string, string>;
+  photos: Record<string, string>;
+  isAutoLockEnabled: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface DocumentInput {
-  type: DocumentType;
-  documentNumber: string;
-  fullName: string;
-  dateOfBirth: string;
-  expiryDate: string;
-  frontPhoto: string;
-  backPhoto: string;
+  typeId: string;
+  typeName: string;
+  fields: Record<string, string>;
+  photos: Record<string, string>;
 }

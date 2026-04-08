@@ -1,40 +1,35 @@
 import { DocumentInput } from "@domain/entities/document.entity";
 import { DocumentRepository } from "@domain/repositories/document.repository";
+import { DocumentTypeDefinition } from "@domain/entities/document-type-definition.entity";
 
 export class SaveDocumentUseCase {
   constructor(private documentRepository: DocumentRepository) {}
 
   async execute(
     documentInput: DocumentInput,
+    typeDefinition?: DocumentTypeDefinition,
   ): Promise<{ success: boolean; message: string; documentId?: string }> {
-    if (
-      !documentInput.documentNumber ||
-      documentInput.documentNumber.trim() === ""
-    ) {
-      return {
-        success: false,
-        message: "Document number is required",
-      };
+    // Validate required fields from schema
+    if (typeDefinition) {
+      for (const field of typeDefinition.fields) {
+        if (field.required) {
+          const value = documentInput.fields[field.key];
+          if (!value || value.trim() === "") {
+            return {
+              success: false,
+              message: `${field.label} is required`,
+            };
+          }
+        }
+      }
     }
 
-    if (!documentInput.fullName || documentInput.fullName.trim() === "") {
+    // Validate at least one photo
+    const photoValues = Object.values(documentInput.photos);
+    if (photoValues.length === 0 || !photoValues.some((p) => p)) {
       return {
         success: false,
-        message: "Full name is required",
-      };
-    }
-
-    if (!documentInput.frontPhoto) {
-      return {
-        success: false,
-        message: "Front photo is required",
-      };
-    }
-
-    if (!documentInput.backPhoto) {
-      return {
-        success: false,
-        message: "Back photo is required",
+        message: "At least one photo is required",
       };
     }
 

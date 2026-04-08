@@ -4,6 +4,8 @@ import { UserAvatar } from "@presentation/components/user-avatar";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { useDocuments } from "@presentation/hooks/use-documents";
 import { useUserProfile } from "@presentation/hooks/use-user-profile";
+import { getDocumentIcon, getDocumentLabel } from "@presentation/utils/document-display";
+import { useDocumentsStore } from "@stores/documents.store";
 import { useRouter, useFocusEffect } from "expo-router";
 import React, { useEffect } from "react";
 import {
@@ -28,15 +30,14 @@ export function WalletHomeScreen() {
     isLoading: profileLoading,
     reloadProfile,
   } = useUserProfile();
+  const { customDocumentTypes } = useDocumentsStore();
 
-  // Redirect to profile setup if no profile exists
   useEffect(() => {
     if (!profileLoading && !profile) {
       router.push("/profile-setup");
     }
   }, [profile, profileLoading, router]);
 
-  // Refresh data when screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
       loadDocuments();
@@ -44,36 +45,18 @@ export function WalletHomeScreen() {
     }, [reloadProfile, loadDocuments]),
   );
 
-  const getDocumentIcon = (type: string) => {
-    switch (type) {
-      case "CNH":
-        return "🚗";
-      case "RG":
-        return "🆔";
-      default:
-        return "📄";
-    }
-  };
-
-  const getDocumentLabel = (type: string) => {
-    switch (type) {
-      case "CNH":
-        return "Driver's License";
-      case "RG":
-        return "National ID";
-      default:
-        return "Document";
-    }
-  };
-
   const getCardLabel = () => {
-    if (cards.length === 0) {
-      return "New Card";
-    } else if (cards.length === 1) {
-      return "Card";
-    } else {
-      return "Cards";
+    if (cards.length === 0) return "New Card";
+    if (cards.length === 1) return "Card";
+    return "Cards";
+  };
+
+  const getMainFieldValue = (doc: any): string => {
+    const keys = ["registrationNumber", "rgNumber", "cpfNumber", "passportNumber", "ctpsNumber", "voterNumber", "certificateNumber", "documentNumber"];
+    for (const key of keys) {
+      if (doc.fields[key]) return doc.fields[key];
     }
+    return "";
   };
 
   return (
@@ -177,47 +160,54 @@ export function WalletHomeScreen() {
                   </Text>
                 </View>
               ) : (
-                documents.map((doc) => (
-                  <Pressable
-                    key={doc.id}
-                    className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
-                    onPress={() =>
-                      router.push({
-                        pathname: "/document-details",
-                        params: { documentId: doc.id },
-                      })
-                    }
-                  >
-                    <View className="flex-row items-start justify-between">
-                      <View className="flex-row flex-1">
-                        <View className="w-12 h-12 md:w-14 md:h-14 bg-primary-main/10 rounded-xl items-center justify-center mr-3">
-                          <Text className="text-2xl md:text-3xl">
-                            {getDocumentIcon(doc.type)}
-                          </Text>
-                        </View>
-                        <View className="flex-1">
-                          <Text className="text-base md:text-lg font-bold text-text-primary mb-1">
-                            {getDocumentLabel(doc.type)}
-                          </Text>
-                          <Text className="text-sm md:text-base font-semibold text-text-primary mb-1">
-                            {doc.fullName}
-                          </Text>
-                          <View className="flex-row items-center">
-                            <Text className="text-xs md:text-sm text-text-secondary">
-                              DOCUMENT NUMBER
+                documents.map((doc) => {
+                  const mainField = getMainFieldValue(doc);
+                  return (
+                    <Pressable
+                      key={doc.id}
+                      className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
+                      onPress={() =>
+                        router.push({
+                          pathname: "/document-details",
+                          params: { documentId: doc.id },
+                        })
+                      }
+                    >
+                      <View className="flex-row items-start justify-between">
+                        <View className="flex-row flex-1">
+                          <View className="w-12 h-12 md:w-14 md:h-14 bg-primary-main/10 rounded-xl items-center justify-center mr-3">
+                            <Text className="text-2xl md:text-3xl">
+                              {getDocumentIcon(doc.typeId, customDocumentTypes)}
                             </Text>
                           </View>
-                          <Text className="text-sm md:text-base text-text-secondary">
-                            •••• •••• {doc.documentNumber.slice(-4)}
-                          </Text>
+                          <View className="flex-1">
+                            <Text className="text-base md:text-lg font-bold text-text-primary mb-1">
+                              {doc.typeName ?? getDocumentLabel(doc.typeId, customDocumentTypes)}
+                            </Text>
+                            <Text className="text-sm md:text-base font-semibold text-text-primary mb-1">
+                              {doc.fields.fullName ?? ""}
+                            </Text>
+                            {mainField ? (
+                              <>
+                                <View className="flex-row items-center">
+                                  <Text className="text-xs md:text-sm text-text-secondary">
+                                    DOCUMENT NUMBER
+                                  </Text>
+                                </View>
+                                <Text className="text-sm md:text-base text-text-secondary">
+                                  •••• •••• {mainField.slice(-4)}
+                                </Text>
+                              </>
+                            ) : null}
+                          </View>
+                        </View>
+                        <View className="w-8 h-8 bg-primary-main/10 rounded-lg items-center justify-center ml-2">
+                          <Text className="text-primary-main text-lg">📋</Text>
                         </View>
                       </View>
-                      <View className="w-8 h-8 bg-primary-main/10 rounded-lg items-center justify-center ml-2">
-                        <Text className="text-primary-main text-lg">📋</Text>
-                      </View>
-                    </View>
-                  </Pressable>
-                ))
+                    </Pressable>
+                  );
+                })
               )}
             </View>
           </View>
