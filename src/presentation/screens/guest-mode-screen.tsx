@@ -19,7 +19,7 @@ const storage = new SecureStorageAdapter(
 export function GuestModeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ docIds?: string }>();
-  const { customDocumentTypes } = useDocumentsStore();
+  const { customDocumentTypes, loadCustomTypes } = useDocumentsStore();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [timeoutMinutes, setTimeoutMinutes] = useState(5);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +29,7 @@ export function GuestModeScreen() {
   useEffect(() => {
     loadTimeout();
     loadDocuments();
+    loadCustomTypes();
   }, []);
 
   useEffect(() => {

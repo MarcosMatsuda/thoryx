@@ -26,7 +26,7 @@ export function DocumentDetailsScreen() {
     guestMode?: string;
   };
   const isGuestMode = guestMode === "true";
-  const { customDocumentTypes } = useDocumentsStore();
+  const { customDocumentTypes, loadCustomTypes } = useDocumentsStore();
 
   const [document, setDocument] = useState<Document | null>(null);
   const [photoUris, setPhotoUris] = useState<Record<string, string>>({});
@@ -35,6 +35,7 @@ export function DocumentDetailsScreen() {
   const [isTogglingAutoLock, setIsTogglingAutoLock] = useState(false);
 
   useEffect(() => {
+    loadCustomTypes();
     if (documentId) {
       loadDocument();
     } else {
