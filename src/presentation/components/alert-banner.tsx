@@ -44,7 +44,9 @@ export function AlertBanner({
             <View className="ml-4">
               <View
                 className={`w-12 h-7 rounded-full justify-center ${
-                  toggleEnabled ? "bg-primary-main" : "bg-light-border dark:bg-ui-border"
+                  toggleEnabled
+                    ? "bg-primary-main"
+                    : "bg-light-border dark:bg-ui-border"
                 }`}
               >
                 <View

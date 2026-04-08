@@ -8,8 +8,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
 import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
+import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 import { useTranslation } from "react-i18next";
 import { Lock } from "lucide-react-native";
+
+const BIOMETRY_ENABLED_KEY = "biometry_enabled";
+const settingsStorage = new SecureStorageAdapter(
+  "settings-storage",
+  "thoryx-mmkv-encryption-key-2026",
+);
 
 const PIN_LENGTH = 6;
 
@@ -49,6 +56,11 @@ export function PinSetupScreen() {
         const result = await savePinUseCase.execute({ pin });
 
         if (result.success) {
+          // Save biometric preference
+          await settingsStorage.set(
+            BIOMETRY_ENABLED_KEY,
+            biometricEnabled ? "true" : "false",
+          );
           setShowConfirmation(false);
           router.push("/(tabs)");
         }

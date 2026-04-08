@@ -20,7 +20,7 @@ interface ProfileState {
 
 export const useProfileStore = create<ProfileState>((set) => ({
   profile: null,
-  isLoading: false,
+  isLoading: true,
   error: null,
 
   loadProfile: async () => {

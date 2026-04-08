@@ -79,7 +79,9 @@ export function PinConfirmationBottomSheet({
           <View className="flex-1 w-full max-w-[500px] self-center">
             <View className="items-center pt-4 pb-2">
               <View className="w-12 h-1 bg-light-border dark:bg-ui-border rounded-full mb-4" />
-              <Text className="text-base text-light-textSecondary dark:text-text-secondary">{context}</Text>
+              <Text className="text-base text-light-textSecondary dark:text-text-secondary">
+                {context}
+              </Text>
             </View>
 
             <View className="px-4 md:px-8 pt-4">

@@ -3,13 +3,18 @@ import { useEffect, useState } from "react";
 import { FakeCreditCard } from "./fake-credit-card";
 
 let VisionCamera: any = null;
-let OCRPlugin: any = null;
+let TextRecognition: any = null;
 
 try {
   VisionCamera = require("react-native-vision-camera");
-  OCRPlugin = require("vision-camera-ocr");
 } catch (error) {
   console.log("Vision Camera not available. Using fallback mode.");
+}
+
+try {
+  TextRecognition = require("@react-native-ml-kit/text-recognition");
+} catch (error) {
+  console.log("ML Kit Text Recognition not available.");
 }
 
 interface CameraScannerV2Props {

@@ -17,7 +17,9 @@ export function TextInputField({
 }: TextInputFieldProps) {
   return (
     <View className="mb-4">
-      <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">{label}</Text>
+      <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
+        {label}
+      </Text>
       <TextInput
         className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 text-light-text dark:text-text-primary"
         placeholder={placeholder}

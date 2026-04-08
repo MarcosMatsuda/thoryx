@@ -22,7 +22,10 @@ export default function EmergencyRoute() {
   // Unauthenticated: no data → show empty state (NOT setup)
   if (!emergencyInfo) {
     return (
-      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+      <SafeAreaView
+        className="flex-1 bg-light-bg dark:bg-background-primary"
+        edges={["top"]}
+      >
         <View className="flex-1">
           <View className="flex-row items-center px-6 py-4 border-b border-light-border dark:border-ui-border">
             <Pressable

@@ -12,7 +12,20 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useEmergencyInfo } from "@presentation/hooks/use-emergency-info";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, Pencil, Siren, Info, Asterisk, Droplet, ShieldCheck, AlertTriangle, Hospital, Pill, User, Phone } from "lucide-react-native";
+import {
+  ChevronLeft,
+  Pencil,
+  Siren,
+  Info,
+  Asterisk,
+  Droplet,
+  ShieldCheck,
+  AlertTriangle,
+  Hospital,
+  Pill,
+  User,
+  Phone,
+} from "lucide-react-native";
 
 interface Props {
   isAuthenticated?: boolean;
@@ -62,7 +75,10 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
 
   if (!emergencyInfo) {
     return (
-      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+      <SafeAreaView
+        className="flex-1 bg-light-bg dark:bg-background-primary"
+        edges={["top"]}
+      >
         <View className="flex-1">
           <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
             <Pressable
@@ -111,7 +127,10 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary"
+      edges={["top"]}
+    >
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable

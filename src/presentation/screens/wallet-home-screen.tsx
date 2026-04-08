@@ -10,7 +10,7 @@ import {
 } from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useRouter, useFocusEffect } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -38,11 +38,17 @@ export function WalletHomeScreen() {
   } = useUserProfile();
   const { customDocumentTypes } = useDocumentsStore();
 
+  const [profileChecked, setProfileChecked] = useState(false);
+
+  // Only redirect to profile-setup after profile has been loaded at least once
   useEffect(() => {
-    if (!profileLoading && !profile) {
+    if (profileLoading) return;
+    if (profileChecked) return;
+    setProfileChecked(true);
+    if (!profile) {
       router.push("/profile-setup");
     }
-  }, [profile, profileLoading, router]);
+  }, [profile, profileLoading, profileChecked]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -75,7 +81,10 @@ export function WalletHomeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary"
+      edges={["top"]}
+    >
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pt-4">
           <View className="flex-row items-center justify-between mb-6">

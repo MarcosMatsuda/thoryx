@@ -21,7 +21,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, Check, X, Users, AlertTriangle, Hospital, Siren } from "lucide-react-native";
+import {
+  ChevronLeft,
+  Check,
+  X,
+  Users,
+  AlertTriangle,
+  Hospital,
+  Siren,
+} from "lucide-react-native";
 
 export function EmergencySetupScreen() {
   const { t } = useTranslation();
@@ -147,7 +155,10 @@ export function EmergencySetupScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary"
+      edges={["top"]}
+    >
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
@@ -250,7 +261,9 @@ export function EmergencySetupScreen() {
                   className="w-8 h-8 bg-primary-main rounded-full items-center justify-center active:opacity-80"
                   onPress={handleAddMedicationField}
                 >
-                  <Text className="text-xl text-light-text dark:text-text-primary font-bold">+</Text>
+                  <Text className="text-xl text-light-text dark:text-text-primary font-bold">
+                    +
+                  </Text>
                 </Pressable>
               </View>
 

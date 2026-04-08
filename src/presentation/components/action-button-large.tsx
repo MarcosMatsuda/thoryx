@@ -31,7 +31,9 @@ export function ActionButtonLarge({
       </Text>
       <Text
         className={`text-base font-semibold ${
-          isPrimary ? "text-light-text dark:text-text-primary" : "text-light-text dark:text-text-primary"
+          isPrimary
+            ? "text-light-text dark:text-text-primary"
+            : "text-light-text dark:text-text-primary"
         }`}
       >
         {label}

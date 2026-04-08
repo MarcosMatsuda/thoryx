@@ -71,7 +71,8 @@ jest.mock("lucide-react-native", () => {
   const React = require("react");
   const { View } = require("react-native");
   const mockIcon = (name) => {
-    const MockComponent = (props) => React.createElement(View, { testID: `lucide-${name}`, ...props });
+    const MockComponent = (props) =>
+      React.createElement(View, { testID: `lucide-${name}`, ...props });
     MockComponent.displayName = name;
     return MockComponent;
   };

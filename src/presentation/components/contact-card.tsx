@@ -54,7 +54,9 @@ export function ContactCard({
             RELATIONSHIP
           </Text>
           <View className="flex-row items-center">
-            <Text className="text-sm text-light-text dark:text-text-primary">{relationship}</Text>
+            <Text className="text-sm text-light-text dark:text-text-primary">
+              {relationship}
+            </Text>
             <ChevronRight size={16} color="#94A3B8" className="ml-1" />
           </View>
         </View>
@@ -64,7 +66,9 @@ export function ContactCard({
             PHONE NUMBER
           </Text>
           <View className="flex-row items-center justify-between">
-            <Text className="text-sm text-light-text dark:text-text-primary">{phoneNumber}</Text>
+            <Text className="text-sm text-light-text dark:text-text-primary">
+              {phoneNumber}
+            </Text>
             <Pressable
               className="w-8 h-8 bg-status-success/20 rounded-full items-center justify-center"
               onPress={onCall}

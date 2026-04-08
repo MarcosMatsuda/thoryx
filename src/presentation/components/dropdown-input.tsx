@@ -31,12 +31,20 @@ export function DropdownInput({
 
   return (
     <View className="mb-4">
-      <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">{label}</Text>
+      <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
+        {label}
+      </Text>
       <Pressable
         className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 flex-row items-center justify-between active:bg-light-bgTertiary dark:active:bg-background-tertiary"
         onPress={() => setShowOptions(true)}
       >
-        <Text className={value ? "text-light-text dark:text-text-primary" : "text-light-textSecondary dark:text-text-secondary"}>
+        <Text
+          className={
+            value
+              ? "text-light-text dark:text-text-primary"
+              : "text-light-textSecondary dark:text-text-secondary"
+          }
+        >
           {selectedLabel || placeholder}
         </Text>
         <ChevronRight size={20} color="#94A3B8" />

@@ -75,7 +75,9 @@ export function SettingsItem({
           </View>
         )}
         {showChevron && !onSwitchChange && (
-          <Text className="text-light-textSecondary dark:text-text-secondary text-lg">›</Text>
+          <Text className="text-light-textSecondary dark:text-text-secondary text-lg">
+            ›
+          </Text>
         )}
       </View>
     </View>

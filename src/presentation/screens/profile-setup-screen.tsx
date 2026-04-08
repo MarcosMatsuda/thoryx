@@ -78,7 +78,10 @@ export function ProfileSetupScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary px-6" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary px-6"
+      edges={["top"]}
+    >
       <View className="flex-1 justify-center">
         <View className="items-center mb-6">
           <UserAvatar

@@ -85,7 +85,9 @@ export function CreditCardCarousel({
             <View
               key={index}
               className={`w-2 h-2 rounded-full ${
-                selectedIndex === index ? "bg-primary-main" : "bg-light-border dark:bg-ui-border"
+                selectedIndex === index
+                  ? "bg-primary-main"
+                  : "bg-light-border dark:bg-ui-border"
               }`}
             />
           ))}
