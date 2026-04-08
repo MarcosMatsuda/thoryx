@@ -16,7 +16,9 @@ export function getDocumentLabel(
   typeId: string,
   customTypes: DocumentTypeDefinition[] = [],
 ): string {
-  return getDocumentTypeById(typeId, customTypes)?.label ?? i18n.t("documents.title");
+  return (
+    getDocumentTypeById(typeId, customTypes)?.label ?? i18n.t("documents.title")
+  );
 }
 
 export function getPhotoSlotLabel(slot: string): string {

@@ -35,7 +35,8 @@ export function SettingsScreen() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const { mode: themeMode, setMode: setThemeMode } = useThemeStore();
-  const currentLanguageName = i18n.language === "pt-BR" ? "Português (BR)" : "English (US)";
+  const currentLanguageName =
+    i18n.language === "pt-BR" ? "Português (BR)" : "English (US)";
   const themeLabels: Record<ThemeMode, string> = {
     system: t("settings.themeSystem"),
     dark: t("settings.themeDark"),
@@ -99,7 +100,9 @@ export function SettingsScreen() {
       if (saved === "0") {
         setAutoLockTimeout(t("settings.never"));
       } else if (saved) {
-        setAutoLockTimeout(t("settings.minutes", { count: parseInt(saved, 10) }));
+        setAutoLockTimeout(
+          t("settings.minutes", { count: parseInt(saved, 10) }),
+        );
       } else {
         setAutoLockTimeout(t("settings.minutes", { count: 5 }));
       }
@@ -207,10 +210,7 @@ export function SettingsScreen() {
               // Navigate to unlock screen (index will show unlock since PIN still exists)
               router.replace("/unlock");
             } else {
-              Alert.alert(
-                t("common.error"),
-                result.error || t("common.error"),
-              );
+              Alert.alert(t("common.error"), result.error || t("common.error"));
             }
           } catch (error) {
             console.error("Error during logout:", error);
@@ -242,16 +242,10 @@ export function SettingsScreen() {
               await storage.clear();
 
               router.replace("/pin-setup");
-              Alert.alert(
-                t("common.success"),
-                t("common.success"),
-              );
+              Alert.alert(t("common.success"), t("common.success"));
             } catch (error) {
               console.error("Error clearing data:", error);
-              Alert.alert(
-                t("common.error"),
-                t("common.error"),
-              );
+              Alert.alert(t("common.error"), t("common.error"));
             }
           },
         },
@@ -268,29 +262,29 @@ export function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="pt-4 pb-8">
-          <Text className="text-2xl md:text-3xl font-bold text-text-primary mb-6 px-6">
+          <Text className="text-2xl md:text-3xl font-bold text-light-text dark:text-text-primary mb-6 px-6">
             {t("settings.title")}
           </Text>
 
           {/* Profile Section */}
           <SettingsSection title={t("settings.profile")}>
             <Pressable
-              className="flex-row items-center px-4 py-4 border-b border-border-subtle"
+              className="flex-row items-center px-4 py-4 border-b border-light-border dark:border-border-subtle"
               onPress={() => router.push("/profile-setup")}
             >
               <UserAvatar photoUri={profile?.photoUri} size={48} />
               <View className="flex-1 ml-4">
-                <Text className="text-base md:text-lg font-semibold text-text-primary">
+                <Text className="text-base md:text-lg font-semibold text-light-text dark:text-text-primary">
                   {profile?.name || t("wallet.guest")}
                 </Text>
-                <Text className="text-sm text-text-secondary mt-1">
+                <Text className="text-sm text-light-textSecondary dark:text-text-secondary mt-1">
                   {t("profile.editProfile")}
                 </Text>
               </View>
-              <Text className="text-xl text-text-tertiary">›</Text>
+              <Text className="text-xl text-light-textTertiary dark:text-text-tertiary">›</Text>
             </Pressable>
           </SettingsSection>
 
@@ -384,7 +378,7 @@ export function SettingsScreen() {
           </SettingsSection>
 
           {/* Footer */}
-          <Text className="text-xs md:text-sm text-text-secondary text-center mt-8 px-6">
+          <Text className="text-xs md:text-sm text-light-textSecondary dark:text-text-secondary text-center mt-8 px-6">
             Thoryx Wallet • Secure Digital Wallet
           </Text>
         </View>

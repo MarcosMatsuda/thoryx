@@ -4,7 +4,10 @@ import { UserAvatar } from "@presentation/components/user-avatar";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { useDocuments } from "@presentation/hooks/use-documents";
 import { useUserProfile } from "@presentation/hooks/use-user-profile";
-import { getDocumentIcon, getDocumentLabel } from "@presentation/utils/document-display";
+import {
+  getDocumentIcon,
+  getDocumentLabel,
+} from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useRouter, useFocusEffect } from "expo-router";
 import React, { useEffect } from "react";
@@ -54,7 +57,16 @@ export function WalletHomeScreen() {
   };
 
   const getMainFieldValue = (doc: any): string => {
-    const keys = ["registrationNumber", "rgNumber", "cpfNumber", "passportNumber", "ctpsNumber", "voterNumber", "certificateNumber", "documentNumber"];
+    const keys = [
+      "registrationNumber",
+      "rgNumber",
+      "cpfNumber",
+      "passportNumber",
+      "ctpsNumber",
+      "voterNumber",
+      "certificateNumber",
+      "documentNumber",
+    ];
     for (const key of keys) {
       if (doc.fields[key]) return doc.fields[key];
     }
@@ -62,20 +74,20 @@ export function WalletHomeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pt-4">
           <View className="flex-row items-center justify-between mb-6">
             <View className="flex-row items-center">
               <UserAvatar photoUri={profile?.photoUri} size={48} />
               <View className="ml-3">
-                <Text className="text-xs md:text-sm text-text-secondary mb-1">
+                <Text className="text-xs md:text-sm text-light-textSecondary dark:text-text-secondary mb-1">
                   {t("wallet.welcome")}
                 </Text>
                 {profileLoading ? (
                   <ActivityIndicator size="small" color="#3B82F6" />
                 ) : (
-                  <Text className="text-lg md:text-xl font-bold text-text-primary">
+                  <Text className="text-lg md:text-xl font-bold text-light-text dark:text-text-primary">
                     {profile?.name || t("wallet.guest")}
                   </Text>
                 )}
@@ -84,7 +96,7 @@ export function WalletHomeScreen() {
           </View>
 
           <View className="mb-6">
-            <Text className="text-xs md:text-sm font-semibold text-text-secondary mb-3 tracking-wider">
+            <Text className="text-xs md:text-sm font-semibold text-light-textSecondary dark:text-text-secondary mb-3 tracking-wider">
               {t("wallet.quickActions")}
             </Text>
             <View className="flex-row gap-3 md:gap-4 justify-between md:justify-start">
@@ -135,7 +147,7 @@ export function WalletHomeScreen() {
 
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-4">
-              <Text className="text-xs md:text-sm font-semibold text-text-secondary tracking-wider">
+              <Text className="text-xs md:text-sm font-semibold text-light-textSecondary dark:text-text-secondary tracking-wider">
                 {t("wallet.myDocuments")}
               </Text>
               <Pressable onPress={() => router.push("/(tabs)/documents")}>
@@ -147,16 +159,16 @@ export function WalletHomeScreen() {
 
             <View className="gap-3">
               {documentsLoading ? (
-                <View className="bg-background-secondary rounded-2xl p-6 items-center justify-center">
+                <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-6 items-center justify-center">
                   <ActivityIndicator size="large" color="#3B82F6" />
-                  <Text className="text-text-secondary mt-3">
+                  <Text className="text-light-textSecondary dark:text-text-secondary mt-3">
                     {t("wallet.loadingDocuments")}
                   </Text>
                 </View>
               ) : !documents || documents.length === 0 ? (
-                <View className="bg-background-secondary rounded-2xl p-6 items-center">
+                <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-6 items-center">
                   <Text className="text-4xl mb-3">📄</Text>
-                  <Text className="text-text-secondary text-center">
+                  <Text className="text-light-textSecondary dark:text-text-secondary text-center">
                     {t("wallet.noDocuments")}
                   </Text>
                 </View>
@@ -166,7 +178,7 @@ export function WalletHomeScreen() {
                   return (
                     <Pressable
                       key={doc.id}
-                      className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
+                      className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-4 active:opacity-80"
                       onPress={() =>
                         router.push({
                           pathname: "/document-details",
@@ -182,20 +194,24 @@ export function WalletHomeScreen() {
                             </Text>
                           </View>
                           <View className="flex-1">
-                            <Text className="text-base md:text-lg font-bold text-text-primary mb-1">
-                              {doc.typeName ?? getDocumentLabel(doc.typeId, customDocumentTypes)}
+                            <Text className="text-base md:text-lg font-bold text-light-text dark:text-text-primary mb-1">
+                              {doc.typeName ??
+                                getDocumentLabel(
+                                  doc.typeId,
+                                  customDocumentTypes,
+                                )}
                             </Text>
-                            <Text className="text-sm md:text-base font-semibold text-text-primary mb-1">
+                            <Text className="text-sm md:text-base font-semibold text-light-text dark:text-text-primary mb-1">
                               {doc.fields.fullName ?? ""}
                             </Text>
                             {mainField ? (
                               <>
                                 <View className="flex-row items-center">
-                                  <Text className="text-xs md:text-sm text-text-secondary">
+                                  <Text className="text-xs md:text-sm text-light-textSecondary dark:text-text-secondary">
                                     {t("wallet.documentNumber")}
                                   </Text>
                                 </View>
-                                <Text className="text-sm md:text-base text-text-secondary">
+                                <Text className="text-sm md:text-base text-light-textSecondary dark:text-text-secondary">
                                   •••• •••• {mainField.slice(-4)}
                                 </Text>
                               </>

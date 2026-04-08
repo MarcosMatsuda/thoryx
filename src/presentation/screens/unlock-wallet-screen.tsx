@@ -117,7 +117,7 @@ export function UnlockWalletScreen() {
 
   return (
     <SafeAreaView
-      className="flex-1 bg-background-primary"
+      className="flex-1 bg-light-bg dark:bg-background-primary"
       edges={["top", "bottom"]}
     >
       <View className="flex-1 w-full max-w-[500px] self-center">
@@ -142,10 +142,10 @@ export function UnlockWalletScreen() {
             </View>
 
             <View className="items-center mb-3">
-              <Text className="text-3xl font-bold text-text-primary mb-1">
+              <Text className="text-3xl font-bold text-light-text dark:text-text-primary mb-1">
                 {t("auth.unlockWallet")}
               </Text>
-              <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
+              <Text className="text-sm md:text-base text-light-textSecondary dark:text-text-secondary text-center px-6 md:px-8">
                 {biometryEnabled
                   ? `Use ${getBiometryName()} or enter your PIN to access your documents`
                   : "Enter your PIN to access your documents"}

@@ -152,8 +152,12 @@ describe("DocumentRepositoryImpl", () => {
       const beforeToggle = new Date();
       const updated = await repository.toggleAutoLock("doc_123");
       const afterToggle = new Date();
-      expect(updated.updatedAt.getTime()).toBeGreaterThanOrEqual(beforeToggle.getTime());
-      expect(updated.updatedAt.getTime()).toBeLessThanOrEqual(afterToggle.getTime());
+      expect(updated.updatedAt.getTime()).toBeGreaterThanOrEqual(
+        beforeToggle.getTime(),
+      );
+      expect(updated.updatedAt.getTime()).toBeLessThanOrEqual(
+        afterToggle.getTime(),
+      );
     });
 
     it("should throw error when document not found", async () => {
@@ -210,7 +214,10 @@ describe("DocumentRepositoryImpl", () => {
         createdAt: "2026-01-01T00:00:00Z",
         updatedAt: "2026-01-01T00:00:00Z",
       };
-      const v2Doc = createMockDocument({ id: "doc_new", isAutoLockEnabled: true });
+      const v2Doc = createMockDocument({
+        id: "doc_new",
+        isAutoLockEnabled: true,
+      });
       mockStorage.get.mockResolvedValue(JSON.stringify([v1Doc, v2Doc]));
       const documents = await repository.findAll();
       expect(documents.length).toBe(2);
@@ -233,8 +240,13 @@ describe("DocumentRepositoryImpl", () => {
 
   describe("decryptPhotos", () => {
     it("should decrypt all photo slots", async () => {
-      (ImageProcessingService.decryptAndDecode as jest.Mock).mockResolvedValue("decrypted_uri");
-      const result = await repository.decryptPhotos({ front: "enc1", back: "enc2" });
+      (ImageProcessingService.decryptAndDecode as jest.Mock).mockResolvedValue(
+        "decrypted_uri",
+      );
+      const result = await repository.decryptPhotos({
+        front: "enc1",
+        back: "enc2",
+      });
       expect(result.front).toBe("decrypted_uri");
       expect(result.back).toBe("decrypted_uri");
       expect(ImageProcessingService.decryptAndDecode).toHaveBeenCalledTimes(2);

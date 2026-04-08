@@ -150,7 +150,7 @@ export function DynamicDocumentForm({
 
       {/* Photos */}
       <View className="mb-6">
-        <Text className="text-xs font-semibold text-text-secondary tracking-wider mb-4">
+        <Text className="text-xs font-semibold text-light-textSecondary dark:text-text-secondary tracking-wider mb-4">
           {t("addDocument.documentPhotos")}
         </Text>
         {typeDefinition.photoSlots.map((slot) => (

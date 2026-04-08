@@ -420,9 +420,14 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
+      const toggleStart = componentCode.indexOf(
+        't("documentDetails.autoLock")',
+      );
       // Look at a generous section before the label
-      const sectionSlice = componentCode.substring(toggleStart - 500, toggleStart);
+      const sectionSlice = componentCode.substring(
+        toggleStart - 500,
+        toggleStart,
+      );
 
       expect(sectionSlice).toContain("px-6");
     });
@@ -437,8 +442,13 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
-      const sectionSlice = componentCode.substring(toggleStart - 500, toggleStart);
+      const toggleStart = componentCode.indexOf(
+        't("documentDetails.autoLock")',
+      );
+      const sectionSlice = componentCode.substring(
+        toggleStart - 500,
+        toggleStart,
+      );
 
       expect(sectionSlice).toContain("mb-6");
     });
@@ -453,10 +463,15 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
-      const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
+      const toggleStart = componentCode.indexOf(
+        't("documentDetails.autoLock")',
+      );
+      const sectionSlice = componentCode.substring(
+        toggleStart - 500,
+        toggleStart,
+      );
 
-      expect(sectionSlice).toContain("bg-background-secondary");
+      expect(sectionSlice).toContain("dark:bg-background-secondary");
     });
 
     it("should have rounded-2xl border radius", () => {
@@ -469,8 +484,13 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
-      const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
+      const toggleStart = componentCode.indexOf(
+        't("documentDetails.autoLock")',
+      );
+      const sectionSlice = componentCode.substring(
+        toggleStart - 300,
+        toggleStart,
+      );
 
       expect(sectionSlice).toContain("rounded-2xl");
     });
@@ -485,8 +505,13 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
-      const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
+      const toggleStart = componentCode.indexOf(
+        't("documentDetails.autoLock")',
+      );
+      const sectionSlice = componentCode.substring(
+        toggleStart - 300,
+        toggleStart,
+      );
 
       expect(sectionSlice).toContain("overflow-hidden");
     });

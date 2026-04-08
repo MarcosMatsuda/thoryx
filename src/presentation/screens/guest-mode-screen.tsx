@@ -110,10 +110,10 @@ export function GuestModeScreen() {
 
   const renderEmptyState = () => (
     <View className="flex-1 items-center justify-center px-8">
-      <Text className="text-2xl font-bold text-center text-text-secondary mb-4">
+      <Text className="text-2xl font-bold text-center text-light-textSecondary dark:text-text-secondary mb-4">
         {t("guestMode.noDocuments")}
       </Text>
-      <Text className="text-base text-center text-text-tertiary mb-8">
+      <Text className="text-base text-center text-light-textTertiary dark:text-text-tertiary mb-8">
         {t("guestMode.noDocumentsDesc")}
       </Text>
       <CountdownTimer
@@ -133,7 +133,7 @@ export function GuestModeScreen() {
             <Pressable
               key={document.id}
               onPress={() => handleDocumentPress(document.id)}
-              className="bg-background-secondary rounded-2xl p-4 active:opacity-80"
+              className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-4 active:opacity-80"
             >
               <View className="flex-row items-start justify-between">
                 <View className="flex-row flex-1">
@@ -143,15 +143,15 @@ export function GuestModeScreen() {
                     </Text>
                   </View>
                   <View className="flex-1">
-                    <Text className="text-base font-bold text-text-primary mb-1">
+                    <Text className="text-base font-bold text-light-text dark:text-text-primary mb-1">
                       {document.fields.fullName ?? document.typeName}
                     </Text>
                     {mainField ? (
                       <>
-                        <Text className="text-xs text-text-secondary">
+                        <Text className="text-xs text-light-textSecondary dark:text-text-secondary">
                           {t("guestMode.documentNumber")}
                         </Text>
-                        <Text className="text-sm text-text-secondary">
+                        <Text className="text-sm text-light-textSecondary dark:text-text-secondary">
                           •••• •••• {mainField.slice(-4)}
                         </Text>
                       </>
@@ -170,13 +170,13 @@ export function GuestModeScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary">
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary">
       {/* Header */}
-      <View className="px-6 pt-6 pb-4 border-b border-border-primary">
-        <Text className="text-3xl font-bold text-text-primary mb-4">
+      <View className="px-6 pt-6 pb-4 border-b border-light-border dark:border-border-primary">
+        <Text className="text-3xl font-bold text-light-text dark:text-text-primary mb-4">
           {t("guestMode.title")}
         </Text>
-        <Text className="text-base text-text-secondary mb-4">
+        <Text className="text-base text-light-textSecondary dark:text-text-secondary mb-4">
           {t("guestMode.expiresIn")}
         </Text>
         <CountdownTimer
@@ -189,7 +189,9 @@ export function GuestModeScreen() {
       {/* Content */}
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
-          <Text className="text-base text-text-secondary">{t("common.loading")}</Text>
+          <Text className="text-base text-light-textSecondary dark:text-text-secondary">
+            {t("common.loading")}
+          </Text>
         </View>
       ) : documents.length === 0 ? (
         renderEmptyState()
@@ -198,7 +200,7 @@ export function GuestModeScreen() {
       )}
 
       {/* Fixed bottom exit button */}
-      <View className="px-6 pb-6 pt-4 bg-background-primary border-t border-ui-border">
+      <View className="px-6 pb-6 pt-4 bg-light-bg dark:bg-background-primary border-t border-light-border dark:border-ui-border">
         <Pressable
           onPress={handleExitSecureMode}
           className="bg-status-error rounded-xl py-4 items-center active:opacity-80"

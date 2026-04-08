@@ -18,13 +18,13 @@ export function ActionCard({
   const getCardStyles = () => {
     switch (variant) {
       case "primary":
-        return "bg-background-secondary border border-ui-border";
+        return "bg-light-bgSecondary dark:bg-background-secondary border border-light-border dark:border-ui-border";
       case "danger":
         return "bg-status-error/10 border border-status-error/30";
       case "secondary":
-        return "bg-background-secondary border border-ui-border";
+        return "bg-light-bgSecondary dark:bg-background-secondary border border-light-border dark:border-ui-border";
       default:
-        return "bg-background-secondary border border-ui-border";
+        return "bg-light-bgSecondary dark:bg-background-secondary border border-light-border dark:border-ui-border";
     }
   };
 
@@ -46,7 +46,7 @@ export function ActionCard({
       case "danger":
         return "text-status-error";
       default:
-        return "text-text-primary";
+        return "text-light-text dark:text-text-primary";
     }
   };
 

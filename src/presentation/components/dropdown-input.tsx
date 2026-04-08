@@ -30,15 +30,15 @@ export function DropdownInput({
 
   return (
     <View className="mb-4">
-      <Text className="text-sm text-text-secondary mb-2">{label}</Text>
+      <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">{label}</Text>
       <Pressable
-        className="bg-background-secondary rounded-xl px-4 py-4 flex-row items-center justify-between active:bg-background-tertiary"
+        className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 flex-row items-center justify-between active:bg-light-bgTertiary dark:active:bg-background-tertiary"
         onPress={() => setShowOptions(true)}
       >
-        <Text className={value ? "text-text-primary" : "text-text-secondary"}>
+        <Text className={value ? "text-light-text dark:text-text-primary" : "text-light-textSecondary dark:text-text-secondary"}>
           {selectedLabel || placeholder}
         </Text>
-        <Text className="text-text-secondary text-xl">›</Text>
+        <Text className="text-light-textSecondary dark:text-text-secondary text-xl">›</Text>
       </Pressable>
 
       <Modal visible={showOptions} transparent animationType="slide">
@@ -47,16 +47,16 @@ export function DropdownInput({
           onPress={() => setShowOptions(false)}
         >
           <Pressable
-            className="bg-background-primary rounded-t-3xl p-6"
+            className="bg-light-bg dark:bg-background-primary rounded-t-3xl p-6"
             onPress={(e) => e.stopPropagation()}
           >
-            <Text className="text-lg font-bold text-text-primary mb-4">
+            <Text className="text-lg font-bold text-light-text dark:text-text-primary mb-4">
               {label}
             </Text>
             {options.map((option) => (
               <View
                 key={option.value}
-                className="flex-row items-center border-b border-ui-border"
+                className="flex-row items-center border-b border-light-border dark:border-ui-border"
               >
                 <Pressable
                   className="flex-1 py-4 active:opacity-70"
@@ -69,7 +69,7 @@ export function DropdownInput({
                     className={`text-base ${
                       value === option.value
                         ? "text-primary-main font-bold"
-                        : "text-text-primary"
+                        : "text-light-text dark:text-text-primary"
                     }`}
                   >
                     {option.label}

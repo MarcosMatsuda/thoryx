@@ -19,7 +19,7 @@ export function SelectableDocumentItem({
 }: SelectableDocumentItemProps) {
   return (
     <Pressable
-      className="flex-row items-center justify-between py-4 border-b border-ui-border active:opacity-70"
+      className="flex-row items-center justify-between py-4 border-b border-light-border dark:border-ui-border active:opacity-70"
       onPress={onToggle}
     >
       <View className="flex-row items-center flex-1">
@@ -27,17 +27,17 @@ export function SelectableDocumentItem({
           className={`w-6 h-6 rounded-full border-2 mr-4 items-center justify-center ${
             selected
               ? "bg-primary-main border-primary-main"
-              : "border-ui-border"
+              : "border-light-border dark:border-ui-border"
           }`}
         >
           {selected && <Text className="text-white text-xs font-bold">✓</Text>}
         </View>
 
         <View className="flex-1">
-          <Text className="text-base md:text-lg font-bold text-text-primary mb-1">
+          <Text className="text-base md:text-lg font-bold text-light-text dark:text-text-primary mb-1">
             {title}
           </Text>
-          <Text className="text-sm md:text-base text-text-secondary">
+          <Text className="text-sm md:text-base text-light-textSecondary dark:text-text-secondary">
             {subtitle}
           </Text>
         </View>

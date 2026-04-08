@@ -11,7 +11,6 @@ import "../global.css";
 
 import { useColorScheme } from "@presentation/hooks/use-color-scheme";
 import { usePreventScreenCapture } from "expo-screen-capture";
-import "@shared/i18n";
 import { initLanguage } from "@shared/i18n";
 import { useEffect } from "react";
 import { useThemeStore } from "@stores/theme.store";

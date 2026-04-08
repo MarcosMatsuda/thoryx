@@ -17,10 +17,10 @@ export function DateInput({
 }: DateInputProps) {
   return (
     <View className="mb-4">
-      <Text className="text-sm text-text-secondary mb-2">{label}</Text>
-      <View className="bg-background-secondary rounded-xl px-4 py-4 flex-row items-center justify-between">
+      <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">{label}</Text>
+      <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 flex-row items-center justify-between">
         <TextInput
-          className="flex-1 text-text-primary"
+          className="flex-1 text-light-text dark:text-text-primary"
           placeholder={placeholder}
           placeholderTextColor="#64748B"
           value={value}

@@ -11,19 +11,37 @@ module.exports = {
           light: "#4A7EF0",
           dark: "#0D47B8",
         },
+        // Dark mode colors (original)
         background: {
-          primary: "var(--color-bg-primary)",
-          secondary: "var(--color-bg-secondary)",
-          tertiary: "var(--color-bg-tertiary)",
+          primary: "#0A1628",
+          secondary: "#0F1F38",
+          tertiary: "#152840",
         },
         text: {
-          primary: "var(--color-text-primary)",
-          secondary: "var(--color-text-secondary)",
-          tertiary: "var(--color-text-tertiary)",
+          primary: "#FFFFFF",
+          secondary: "#94A3B8",
+          tertiary: "#64748B",
         },
         surface: {
-          card: "var(--color-surface-card)",
-          hover: "var(--color-surface-hover)",
+          card: "#1A2942",
+          hover: "#243352",
+        },
+        ui: {
+          border: "#1E293B",
+          divider: "#334155",
+          overlay: "rgba(0, 0, 0, 0.5)",
+        },
+        // Light mode colors
+        light: {
+          bg: "#FFFFFF",
+          bgSecondary: "#F1F5F9",
+          bgTertiary: "#E2E8F0",
+          text: "#0F172A",
+          textSecondary: "#64748B",
+          textTertiary: "#94A3B8",
+          card: "#FFFFFF",
+          border: "#E2E8F0",
+          divider: "#CBD5E1",
         },
         status: {
           success: "#10B981",
@@ -31,18 +49,13 @@ module.exports = {
           warning: "#F59E0B",
           info: "#3B82F6",
         },
-        ui: {
-          border: "var(--color-ui-border)",
-          divider: "var(--color-ui-divider)",
-          overlay: "rgba(0, 0, 0, 0.5)",
-        },
         accent: {
           orange: "#F97316",
           green: "#22C55E",
         },
         border: {
-          primary: "var(--color-ui-border)",
-          subtle: "var(--color-ui-border)",
+          primary: "#1E293B",
+          subtle: "#1E293B",
         },
       },
       spacing: {

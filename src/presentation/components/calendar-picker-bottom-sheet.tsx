@@ -108,26 +108,26 @@ export function CalendarPickerBottomSheet({
     >
       <Pressable className="flex-1 bg-black/50 justify-end" onPress={onClose}>
         <Pressable
-          className="bg-background-secondary rounded-t-3xl"
+          className="bg-light-bgSecondary dark:bg-background-secondary rounded-t-3xl"
           onPress={(e) => e.stopPropagation()}
         >
           <View className="px-6 py-4">
-            <View className="w-12 h-1 bg-ui-border rounded-full self-center mb-4" />
+            <View className="w-12 h-1 bg-light-border dark:bg-ui-border rounded-full self-center mb-4" />
 
             <View className="flex-row items-center justify-between mb-6">
               <Pressable
                 className="w-10 h-10 items-center justify-center active:opacity-60"
                 onPress={handlePreviousYear}
               >
-                <Text className="text-xl font-bold text-text-primary">‹‹</Text>
+                <Text className="text-xl font-bold text-light-text dark:text-text-primary">‹‹</Text>
               </Pressable>
               <Pressable
                 className="w-10 h-10 items-center justify-center active:opacity-60"
                 onPress={handlePreviousMonth}
               >
-                <Text className="text-xl text-text-primary">‹</Text>
+                <Text className="text-xl text-light-text dark:text-text-primary">‹</Text>
               </Pressable>
-              <Text className="text-xl md:text-2xl font-bold text-text-primary">
+              <Text className="text-xl md:text-2xl font-bold text-light-text dark:text-text-primary">
                 {monthNames[currentMonth.getMonth()]}{" "}
                 {currentMonth.getFullYear()}
               </Text>
@@ -135,20 +135,20 @@ export function CalendarPickerBottomSheet({
                 className="w-10 h-10 items-center justify-center active:opacity-60"
                 onPress={handleNextMonth}
               >
-                <Text className="text-xl text-text-primary">›</Text>
+                <Text className="text-xl text-light-text dark:text-text-primary">›</Text>
               </Pressable>
               <Pressable
                 className="w-10 h-10 items-center justify-center active:opacity-60"
                 onPress={handleNextYear}
               >
-                <Text className="text-xl font-bold text-text-primary">››</Text>
+                <Text className="text-xl font-bold text-light-text dark:text-text-primary">››</Text>
               </Pressable>
             </View>
 
             <View className="flex-row mb-3">
               {daysOfWeek.map((day) => (
                 <View key={day} className="flex-1 items-center">
-                  <Text className="text-xs font-semibold text-text-secondary">
+                  <Text className="text-xs font-semibold text-light-textSecondary dark:text-text-secondary">
                     {day}
                   </Text>
                 </View>
@@ -163,15 +163,15 @@ export function CalendarPickerBottomSheet({
                       className={`flex-1 items-center justify-center rounded-full ${
                         selectedDay === day
                           ? "bg-primary-main"
-                          : "active:bg-background-tertiary"
+                          : "active:bg-light-bgTertiary dark:active:bg-background-tertiary"
                       }`}
                       onPress={() => handleDayPress(day)}
                     >
                       <Text
                         className={`text-base font-medium ${
                           selectedDay === day
-                            ? "text-text-primary"
-                            : "text-text-primary"
+                            ? "text-light-text dark:text-text-primary"
+                            : "text-light-text dark:text-text-primary"
                         }`}
                       >
                         {day}
@@ -188,14 +188,14 @@ export function CalendarPickerBottomSheet({
               className={`rounded-xl py-4 items-center mb-4 ${
                 selectedDay
                   ? "bg-primary-main active:bg-primary-dark"
-                  : "bg-ui-border"
+                  : "bg-light-border dark:bg-ui-border"
               }`}
               disabled={!selectedDay}
               onPress={handleConfirm}
             >
               <Text
                 className={`text-base font-bold ${
-                  selectedDay ? "text-text-primary" : "text-text-secondary"
+                  selectedDay ? "text-light-text dark:text-text-primary" : "text-light-textSecondary dark:text-text-secondary"
                 }`}
               >
                 Select Date

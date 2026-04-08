@@ -19,15 +19,15 @@ export function BloodTypeSelector({
           className={`px-5 py-3 rounded-lg ${
             selectedType === type
               ? "bg-primary-main"
-              : "bg-background-tertiary active:bg-ui-border"
+              : "bg-light-bgTertiary dark:bg-background-tertiary active:bg-light-border dark:active:bg-ui-border"
           }`}
           onPress={() => onSelect?.(type)}
         >
           <Text
             className={`text-base font-semibold ${
               selectedType === type
-                ? "text-text-primary"
-                : "text-text-secondary"
+                ? "text-light-text dark:text-text-primary"
+                : "text-light-textSecondary dark:text-text-secondary"
             }`}
           >
             {type}

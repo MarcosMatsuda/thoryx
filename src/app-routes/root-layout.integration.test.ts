@@ -218,7 +218,9 @@ describe("Root Layout (app/_layout.tsx)", () => {
 
     it("should set StatusBar style dynamically based on theme", () => {
       const fileContent = fs.readFileSync(rootLayoutPath, "utf8");
-      expect(fileContent).toContain("colorScheme === \"dark\" ? \"light\" : \"dark\"");
+      expect(fileContent).toContain(
+        'colorScheme === "dark" ? "light" : "dark"',
+      );
       expect(fileContent).toContain("<StatusBar");
     });
   });

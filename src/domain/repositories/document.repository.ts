@@ -6,6 +6,8 @@ export interface DocumentRepository {
   findAll(): Promise<Document[]>;
   delete(id: string): Promise<void>;
   decryptPhoto(encryptedPhoto: string): Promise<string>;
-  decryptPhotos(photos: Record<string, string>): Promise<Record<string, string>>;
+  decryptPhotos(
+    photos: Record<string, string>,
+  ): Promise<Record<string, string>>;
   toggleAutoLock(id: string): Promise<Document>;
 }

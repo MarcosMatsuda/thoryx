@@ -139,24 +139,24 @@ export function EmergencySetupScreen() {
 
   if (isLoadingInfo) {
     return (
-      <SafeAreaView className="flex-1 bg-background-primary items-center justify-center">
+      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary items-center justify-center">
         <ActivityIndicator size="large" color="#3B82F6" />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <View className="flex-1">
-        <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+        <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
             disabled={isSaving}
           >
-            <Text className="text-2xl text-text-primary">←</Text>
+            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
           </Pressable>
-          <Text className="text-lg font-bold text-text-primary">
+          <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {t("emergencySetup.title")}
           </Text>
           <Pressable
@@ -201,7 +201,7 @@ export function EmergencySetupScreen() {
             />
 
             <View className="mb-4">
-              <Text className="text-sm text-text-secondary mb-3">
+              <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-3">
                 {t("emergencySetup.bloodType")}
               </Text>
               <BloodTypeSelector
@@ -211,11 +211,11 @@ export function EmergencySetupScreen() {
             </View>
 
             <View className="mb-4">
-              <Text className="text-sm text-text-secondary mb-2">
+              <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
                 {t("emergencySetup.allergies")}
               </Text>
               <TextInput
-                className="bg-background-secondary rounded-xl px-4 py-3 text-text-primary min-h-[80px]"
+                className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary min-h-[80px]"
                 placeholder={t("emergencySetup.allergiesPlaceholder")}
                 placeholderTextColor="#64748B"
                 multiline
@@ -226,11 +226,11 @@ export function EmergencySetupScreen() {
             </View>
 
             <View className="mb-4">
-              <Text className="text-sm text-text-secondary mb-2">
+              <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
                 {t("emergencySetup.healthConditions")}
               </Text>
               <TextInput
-                className="bg-background-secondary rounded-xl px-4 py-3 text-text-primary min-h-[80px]"
+                className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary min-h-[80px]"
                 placeholder={t("emergencySetup.healthConditionsPlaceholder")}
                 placeholderTextColor="#64748B"
                 multiline
@@ -242,21 +242,21 @@ export function EmergencySetupScreen() {
 
             <View className="mb-4">
               <View className="flex-row items-center justify-between mb-2">
-                <Text className="text-sm text-text-secondary">
+                <Text className="text-sm text-light-textSecondary dark:text-text-secondary">
                   {t("emergencySetup.medications")}
                 </Text>
                 <Pressable
                   className="w-8 h-8 bg-primary-main rounded-full items-center justify-center active:opacity-80"
                   onPress={handleAddMedicationField}
                 >
-                  <Text className="text-xl text-text-primary font-bold">+</Text>
+                  <Text className="text-xl text-light-text dark:text-text-primary font-bold">+</Text>
                 </Pressable>
               </View>
 
               {medicationInputs.map((medication, index) => (
                 <View key={index} className="flex-row items-center mb-2">
                   <TextInput
-                    className="flex-1 bg-background-secondary rounded-xl px-4 py-3 text-text-primary"
+                    className="flex-1 bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary"
                     placeholder={t("emergencySetup.medicationPlaceholder")}
                     placeholderTextColor="#64748B"
                     value={medication}
@@ -295,11 +295,11 @@ export function EmergencySetupScreen() {
             ))}
 
             <Pressable
-              className="bg-background-secondary rounded-xl p-4 flex-row items-center justify-center border-2 border-dashed border-ui-border active:bg-background-tertiary"
+              className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 flex-row items-center justify-center border-2 border-dashed border-light-border dark:border-ui-border active:bg-light-bgTertiary dark:active:bg-background-tertiary"
               onPress={() => openAddContactSheet(contacts.length === 0)}
             >
               <Text className="text-xl mr-2">👥</Text>
-              <Text className="text-sm font-medium text-text-secondary">
+              <Text className="text-sm font-medium text-light-textSecondary dark:text-text-secondary">
                 {contacts.length === 0
                   ? t("emergencySetup.addContact")
                   : t("emergencySetup.addContact")}
@@ -308,12 +308,12 @@ export function EmergencySetupScreen() {
           </View>
         </ScrollView>
 
-        <View className="px-6 py-4 bg-background-primary border-t border-ui-border">
+        <View className="px-6 py-4 bg-light-bg dark:bg-background-primary border-t border-light-border dark:border-ui-border">
           <Pressable
             className={`rounded-xl py-4 items-center ${
               contacts.length > 0
                 ? "bg-primary-main active:bg-primary-dark"
-                : "bg-ui-border"
+                : "bg-light-border dark:bg-ui-border"
             }`}
             disabled={contacts.length === 0 || isSaving}
             onPress={handleSave}
@@ -324,8 +324,8 @@ export function EmergencySetupScreen() {
               <Text
                 className={`text-base font-bold ${
                   contacts.length > 0
-                    ? "text-text-primary"
-                    : "text-text-secondary"
+                    ? "text-light-text dark:text-text-primary"
+                    : "text-light-textSecondary dark:text-text-secondary"
                 }`}
               >
                 {t("emergencySetup.saveProfile")}

@@ -30,13 +30,19 @@ export function AddDocumentScreen() {
 
   const typeOptions = useMemo(
     () => [
-      ...allTypes.map((dt) => ({ label: dt.label, value: dt.id, editable: !dt.builtIn })),
+      ...allTypes.map((dt) => ({
+        label: dt.label,
+        value: dt.id,
+        editable: !dt.builtIn,
+      })),
       { label: t("addDocument.createCustomType"), value: "__custom__" },
     ],
     [allTypes],
   );
 
-  const [selectedTypeId, setSelectedTypeId] = useState(allTypes[0]?.id ?? "CNH");
+  const [selectedTypeId, setSelectedTypeId] = useState(
+    allTypes[0]?.id ?? "CNH",
+  );
   const [fields, setFields] = useState<Record<string, string>>({});
   const [photos, setPhotos] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -95,7 +101,10 @@ export function AddDocumentScreen() {
   const handleTakePhoto = async (slot: string) => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert(t("addDocument.cameraPermission"), t("addDocument.cameraPermissionMsg"));
+      Alert.alert(
+        t("addDocument.cameraPermission"),
+        t("addDocument.cameraPermissionMsg"),
+      );
       return;
     }
 
@@ -171,17 +180,17 @@ export function AddDocumentScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <View className="flex-1">
         {/* Header */}
-        <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+        <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <Text className="text-2xl text-text-primary">←</Text>
+            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
           </Pressable>
-          <Text className="text-lg font-bold text-text-primary">
+          <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {isEditMode ? t("addDocument.editTitle") : t("addDocument.title")}
           </Text>
           {isEditMode && documentId ? (
@@ -232,10 +241,10 @@ export function AddDocumentScreen() {
           <View className="flex-row bg-primary-main/10 rounded-xl p-4 mb-6">
             <View className="mr-3">
               <View className="w-6 h-6 bg-primary-main rounded-full items-center justify-center">
-                <Text className="text-xs text-text-primary">🔒</Text>
+                <Text className="text-xs text-light-text dark:text-text-primary">🔒</Text>
               </View>
             </View>
-            <Text className="flex-1 text-sm text-text-secondary leading-5">
+            <Text className="flex-1 text-sm text-light-textSecondary dark:text-text-secondary leading-5">
               {t("addDocument.encryptionNotice")}
             </Text>
           </View>
@@ -250,7 +259,7 @@ export function AddDocumentScreen() {
             onPress={handleSaveDocument}
             disabled={isLoading}
           >
-            <Text className="text-base font-bold text-text-primary">
+            <Text className="text-base font-bold text-light-text dark:text-text-primary">
               {isLoading
                 ? t("common.saving")
                 : isEditMode

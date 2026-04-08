@@ -43,14 +43,17 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
       if (supported) {
         Linking.openURL(url);
       } else {
-        Alert.alert(t("common.error"), t("emergency.callError", { name: contactName }));
+        Alert.alert(
+          t("common.error"),
+          t("emergency.callError", { name: contactName }),
+        );
       }
     });
   };
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-background-primary items-center justify-center">
+      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary items-center justify-center">
         <ActivityIndicator size="large" color="#3B82F6" />
       </SafeAreaView>
     );
@@ -58,16 +61,16 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
 
   if (!emergencyInfo) {
     return (
-      <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
         <View className="flex-1">
-          <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+          <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
             <Pressable
               className="w-10 h-10 items-center justify-center"
               onPress={() => router.back()}
             >
-              <Text className="text-2xl text-text-primary">←</Text>
+              <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
             </Pressable>
-            <Text className="text-lg font-bold text-text-primary">
+            <Text className="text-lg font-bold text-light-text dark:text-text-primary">
               {t("emergency.title")}
             </Text>
             {isAuthenticated ? (
@@ -84,10 +87,10 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
 
           <View className="flex-1 items-center justify-center px-6">
             <Text className="text-2xl mb-2">🚨</Text>
-            <Text className="text-lg font-bold text-text-primary mb-2 text-center">
+            <Text className="text-lg font-bold text-light-text dark:text-text-primary mb-2 text-center">
               {t("emergency.noInfo")}
             </Text>
-            <Text className="text-sm text-text-secondary text-center mb-6">
+            <Text className="text-sm text-light-textSecondary dark:text-text-secondary text-center mb-6">
               {t("emergency.noInfoDesc")}
             </Text>
             {isAuthenticated && (
@@ -95,7 +98,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                 className="bg-primary-main rounded-xl py-3 px-6 active:bg-primary-dark"
                 onPress={handleEditPress}
               >
-                <Text className="text-base font-bold text-text-primary">
+                <Text className="text-base font-bold text-light-text dark:text-text-primary">
                   {t("emergency.setupProfile")}
                 </Text>
               </Pressable>
@@ -107,16 +110,16 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <View className="flex-1">
-        <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+        <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <Text className="text-2xl text-text-primary">←</Text>
+            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
           </Pressable>
-          <Text className="text-lg font-bold text-text-primary">
+          <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {t("emergency.title")}
           </Text>
           {isAuthenticated ? (
@@ -141,7 +144,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                     <Text className="text-sm font-bold text-primary-main mb-1">
                       {t("emergency.lockScreenAccess")}
                     </Text>
-                    <Text className="text-xs text-text-secondary leading-5">
+                    <Text className="text-xs text-light-textSecondary dark:text-text-secondary leading-5">
                       {t("emergency.lockScreenDesc")}
                     </Text>
                   </View>
@@ -161,28 +164,28 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
 
               <View className="flex-row gap-3 mb-3">
                 {emergencyInfo.bloodType && (
-                  <View className="flex-1 bg-background-secondary rounded-xl p-4">
+                  <View className="flex-1 bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4">
                     <View className="w-10 h-10 bg-status-error/20 rounded-lg items-center justify-center mb-3">
                       <Text className="text-2xl">🩸</Text>
                     </View>
-                    <Text className="text-xs font-semibold text-text-secondary mb-1 tracking-wide">
+                    <Text className="text-xs font-semibold text-light-textSecondary dark:text-text-secondary mb-1 tracking-wide">
                       {t("emergency.bloodType")}
                     </Text>
-                    <Text className="text-lg font-bold text-text-primary">
+                    <Text className="text-lg font-bold text-light-text dark:text-text-primary">
                       {emergencyInfo.bloodType}
                     </Text>
                   </View>
                 )}
 
                 {emergencyInfo.healthPlan && (
-                  <View className="flex-1 bg-background-secondary rounded-xl p-4">
+                  <View className="flex-1 bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4">
                     <View className="w-10 h-10 bg-primary-main/20 rounded-lg items-center justify-center mb-3">
                       <Text className="text-2xl">🛡️</Text>
                     </View>
-                    <Text className="text-xs font-semibold text-text-secondary mb-1 tracking-wide">
+                    <Text className="text-xs font-semibold text-light-textSecondary dark:text-text-secondary mb-1 tracking-wide">
                       {t("emergency.healthPlan")}
                     </Text>
-                    <Text className="text-base font-bold text-text-primary">
+                    <Text className="text-base font-bold text-light-text dark:text-text-primary">
                       {emergencyInfo.healthPlan}
                     </Text>
                   </View>
@@ -190,48 +193,48 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
               </View>
 
               {emergencyInfo.allergies && (
-                <View className="bg-background-secondary rounded-xl p-4 mb-3">
+                <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 mb-3">
                   <View className="flex-row items-center mb-3">
                     <View className="w-10 h-10 bg-accent-orange/20 rounded-lg items-center justify-center mr-3">
                       <Text className="text-2xl">⚠️</Text>
                     </View>
-                    <Text className="text-base font-bold text-text-primary">
+                    <Text className="text-base font-bold text-light-text dark:text-text-primary">
                       {t("emergency.allergies")}
                     </Text>
                   </View>
-                  <Text className="text-sm text-text-secondary">
+                  <Text className="text-sm text-light-textSecondary dark:text-text-secondary">
                     {emergencyInfo.allergies}
                   </Text>
                 </View>
               )}
 
               {emergencyInfo.healthConditions && (
-                <View className="bg-background-secondary rounded-xl p-4 mb-3">
+                <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 mb-3">
                   <View className="flex-row items-center mb-3">
                     <View className="w-10 h-10 bg-primary-main/20 rounded-lg items-center justify-center mr-3">
                       <Text className="text-2xl">🏥</Text>
                     </View>
-                    <Text className="text-base font-bold text-text-primary">
+                    <Text className="text-base font-bold text-light-text dark:text-text-primary">
                       {t("emergency.healthConditions")}
                     </Text>
                   </View>
-                  <Text className="text-sm text-text-secondary">
+                  <Text className="text-sm text-light-textSecondary dark:text-text-secondary">
                     {emergencyInfo.healthConditions}
                   </Text>
                 </View>
               )}
 
               {emergencyInfo.medications.length > 0 && (
-                <View className="bg-background-secondary rounded-xl p-4">
+                <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4">
                   <View className="flex-row items-center mb-3">
                     <View className="w-10 h-10 bg-accent-green/20 rounded-lg items-center justify-center mr-3">
                       <Text className="text-2xl">💊</Text>
                     </View>
-                    <Text className="text-base font-bold text-text-primary">
+                    <Text className="text-base font-bold text-light-text dark:text-text-primary">
                       {t("emergency.medications")}
                     </Text>
                   </View>
-                  <Text className="text-sm text-text-secondary">
+                  <Text className="text-sm text-light-textSecondary dark:text-text-secondary">
                     {emergencyInfo.medications.join(", ")}
                   </Text>
                 </View>
@@ -241,7 +244,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
             {emergencyInfo.contacts.length > 0 && (
               <View className="mb-6">
                 <View className="flex-row items-center mb-4">
-                  <Text className="text-xs font-bold text-text-secondary tracking-wider">
+                  <Text className="text-xs font-bold text-light-textSecondary dark:text-text-secondary tracking-wider">
                     {t("emergency.iceContacts")}
                   </Text>
                 </View>
@@ -257,7 +260,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                   return (
                     <Pressable
                       key={contact.id}
-                      className="bg-background-secondary rounded-xl p-4 mb-3 active:opacity-80"
+                      className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 mb-3 active:opacity-80"
                       onPress={() =>
                         handleCallContact(contact.phoneNumber, contact.fullName)
                       }
@@ -272,16 +275,16 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                             </View>
                           ) : (
                             <View className="w-12 h-12 rounded-full bg-text-secondary/20 items-center justify-center mr-3">
-                              <Text className="text-lg font-bold text-text-primary">
+                              <Text className="text-lg font-bold text-light-text dark:text-text-primary">
                                 {initials}
                               </Text>
                             </View>
                           )}
                           <View className="flex-1">
-                            <Text className="text-base font-bold text-text-primary mb-0.5">
+                            <Text className="text-base font-bold text-light-text dark:text-text-primary mb-0.5">
                               {contact.fullName}
                             </Text>
-                            <Text className="text-sm text-text-secondary">
+                            <Text className="text-sm text-light-textSecondary dark:text-text-secondary">
                               {contact.relationship}
                             </Text>
                             <Text className="text-sm text-primary-main mt-1">

@@ -192,16 +192,16 @@ export function AddCreditCardScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <View className="flex-1">
-        <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+        <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <Text className="text-2xl text-text-primary">←</Text>
+            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
           </Pressable>
-          <Text className="text-lg font-bold text-text-primary">
+          <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {cards.length > 0 && isEditMode ? "Credit Card" : "New Credit Card"}
           </Text>
           {cards.length > 0 && isEditMode ? (
@@ -235,7 +235,7 @@ export function AddCreditCardScreen() {
 
             <View className="mb-6">
               <View className="flex-row items-center justify-between mb-4">
-                <Text className="text-lg font-bold text-text-primary">
+                <Text className="text-lg font-bold text-light-text dark:text-text-primary">
                   Card Details
                 </Text>
                 {isEditMode && editingCardId && (
@@ -249,18 +249,18 @@ export function AddCreditCardScreen() {
                 )}
               </View>
               {!isEditMode && (
-                <Text className="text-sm text-text-secondary mb-4">
+                <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-4">
                   Fields will be automatically filled after scanning
                 </Text>
               )}
 
               <View className="mb-4">
-                <Text className="text-sm text-text-secondary mb-2">
+                <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
                   Cardholder Name
                 </Text>
-                <View className="bg-background-secondary rounded-xl px-4 py-4 flex-row items-center">
+                <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 flex-row items-center">
                   <TextInput
-                    className="flex-1 text-text-primary"
+                    className="flex-1 text-light-text dark:text-text-primary"
                     placeholder="e.g. JONATHAN DOE"
                     placeholderTextColor="#64748B"
                     value={cardholderName}
@@ -272,12 +272,12 @@ export function AddCreditCardScreen() {
               </View>
 
               <View className="mb-4">
-                <Text className="text-sm text-text-secondary mb-2">
+                <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
                   Card Number
                 </Text>
-                <View className="bg-background-secondary rounded-xl px-4 py-4 flex-row items-center">
+                <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 flex-row items-center">
                   <TextInput
-                    className="flex-1 text-text-primary"
+                    className="flex-1 text-light-text dark:text-text-primary"
                     placeholder="0000 0000 0000 0000"
                     placeholderTextColor="#64748B"
                     keyboardType="number-pad"
@@ -291,11 +291,11 @@ export function AddCreditCardScreen() {
               </View>
 
               <View className="mb-4">
-                <Text className="text-sm text-text-secondary mb-2">
+                <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
                   Expiry Date
                 </Text>
                 <TextInput
-                  className="bg-background-secondary rounded-xl px-4 py-4 text-text-primary"
+                  className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 text-light-text dark:text-text-primary"
                   placeholder="MM/YY"
                   placeholderTextColor="#64748B"
                   keyboardType="number-pad"
@@ -323,7 +323,7 @@ export function AddCreditCardScreen() {
               disabled={isLoading || (isEditMode && !hasChanges())}
             >
               <Text className="text-lg mr-2">🔒</Text>
-              <Text className="text-base font-bold text-text-primary">
+              <Text className="text-base font-bold text-light-text dark:text-text-primary">
                 {isLoading
                   ? "Saving..."
                   : isEditMode

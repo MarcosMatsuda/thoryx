@@ -34,7 +34,7 @@ export function SettingsItem({
     <View
       className={`
         flex-row items-center justify-between px-4 py-4
-        ${!isLast ? "border-b border-border-subtle" : ""}
+        ${!isLast ? "border-b border-light-border dark:border-border-subtle" : ""}
       `}
     >
       <View className="flex-row items-center flex-1">
@@ -42,7 +42,7 @@ export function SettingsItem({
         <Text
           className={`
             text-base md:text-lg
-            ${destructive ? "text-status-error" : "text-text-primary"}
+            ${destructive ? "text-status-error" : "text-light-text dark:text-text-primary"}
           `}
         >
           {label}
@@ -51,7 +51,7 @@ export function SettingsItem({
 
       <View className="flex-row items-center gap-2">
         {value && (
-          <Text className="text-sm md:text-base text-text-secondary">
+          <Text className="text-sm md:text-base text-light-textSecondary dark:text-text-secondary">
             {value}
           </Text>
         )}
@@ -75,7 +75,7 @@ export function SettingsItem({
           </View>
         )}
         {showChevron && !onSwitchChange && (
-          <Text className="text-text-secondary text-lg">›</Text>
+          <Text className="text-light-textSecondary dark:text-text-secondary text-lg">›</Text>
         )}
       </View>
     </View>
