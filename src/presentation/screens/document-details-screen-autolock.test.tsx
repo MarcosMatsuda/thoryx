@@ -1,5 +1,5 @@
 // Component structure tests for DocumentDetailsScreen Auto-lock Toggle
-// Validates implementation of auto-lock toggle for RG/CNH documents
+// Validates implementation of auto-lock toggle for all document types
 
 describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
   beforeEach(() => {
@@ -296,8 +296,8 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
     });
   });
 
-  describe("SettingsItem Component Integration", () => {
-    it("should import SettingsItem component", () => {
+  describe("Auto-lock Toggle UI", () => {
+    it("should render toggle label text", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -307,12 +307,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain(
-        'import { SettingsItem } from "@presentation/components/settings-item"',
-      );
+      expect(componentCode).toContain("Incluir no Auto-lock");
     });
 
-    it("should render SettingsItem with correct label", () => {
+    it("should render toggle description text", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -322,10 +320,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('label="Incluir no Auto-lock"');
+      expect(componentCode).toContain("Documento visível no Modo Convidado");
     });
 
-    it("should render SettingsItem with correct value/description", () => {
+    it("should use isAutoLockEnabled state for toggle visual", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -335,12 +333,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain(
-        'value="Documento visível no Modo Convidado"',
-      );
+      expect(componentCode).toContain("isAutoLockEnabled");
     });
 
-    it("should pass switchValue prop with isAutoLockEnabled state", () => {
+    it("should call handleToggleAutoLock on press", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -350,10 +346,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain("switchValue={isAutoLockEnabled}");
+      expect(componentCode).toContain("onPress={handleToggleAutoLock}");
     });
 
-    it("should pass onSwitchChange handler", () => {
+    it("should show ActivityIndicator while toggling", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -363,51 +359,13 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain("onSwitchChange={handleToggleAutoLock}");
-    });
-
-    it("should pass loading prop with isTogglingAutoLock state", () => {
-      const fs = require("fs");
-      const path = require("path");
-
-      const componentPath = path.join(
-        __dirname,
-        "./document-details-screen.tsx",
-      );
-      const componentCode = fs.readFileSync(componentPath, "utf8");
-
-      expect(componentCode).toContain("loading={isTogglingAutoLock}");
-    });
-
-    it("should set isFirst={true} for SettingsItem", () => {
-      const fs = require("fs");
-      const path = require("path");
-
-      const componentPath = path.join(
-        __dirname,
-        "./document-details-screen.tsx",
-      );
-      const componentCode = fs.readFileSync(componentPath, "utf8");
-
-      expect(componentCode).toContain("isFirst={true}");
-    });
-
-    it("should set isLast={true} for SettingsItem", () => {
-      const fs = require("fs");
-      const path = require("path");
-
-      const componentPath = path.join(
-        __dirname,
-        "./document-details-screen.tsx",
-      );
-      const componentCode = fs.readFileSync(componentPath, "utf8");
-
-      expect(componentCode).toContain("isLast={true}");
+      expect(componentCode).toContain("isTogglingAutoLock");
+      expect(componentCode).toContain("ActivityIndicator");
     });
   });
 
   describe("Conditional Rendering", () => {
-    it("should only render toggle for RG documents", () => {
+    it("should render toggle for all document types when not in guest mode", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -417,10 +375,11 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('document.type === "RG"');
+      // Toggle is now available for ALL document types, guarded only by !isGuestMode
+      expect(componentCode).toContain("!isGuestMode");
     });
 
-    it("should only render toggle for CNH documents", () => {
+    it("should NOT have old type-based conditional (RG/CNH check removed)", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -430,10 +389,12 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('document.type === "CNH"');
+      // Old pattern should no longer exist
+      expect(componentCode).not.toContain('document.type === "RG"');
+      expect(componentCode).not.toContain('document.type === "CNH"');
     });
 
-    it("should use OR operator to check both RG and CNH", () => {
+    it("should hide toggle when in guest mode", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -443,43 +404,8 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      // Should have pattern like: document.type === "RG" || document.type === "CNH"
-      expect(componentCode).toContain(
-        'document.type === "RG" || document.type === "CNH"',
-      );
-    });
-
-    it("should render null when document type is not RG or CNH", () => {
-      const fs = require("fs");
-      const path = require("path");
-
-      const componentPath = path.join(
-        __dirname,
-        "./document-details-screen.tsx",
-      );
-      const componentCode = fs.readFileSync(componentPath, "utf8");
-
-      expect(componentCode).toContain(") : null}");
-    });
-
-    it("should be inside a conditional ternary operator", () => {
-      const fs = require("fs");
-      const path = require("path");
-
-      const componentPath = path.join(
-        __dirname,
-        "./document-details-screen.tsx",
-      );
-      const componentCode = fs.readFileSync(componentPath, "utf8");
-
-      // Pattern: {condition ? (<JSX>) : null}
-      const toggleSection = componentCode.substring(
-        componentCode.indexOf('document.type === "RG"'),
-        componentCode.indexOf(") : null}") + 10,
-      );
-
-      expect(toggleSection).toContain("? (");
-      expect(toggleSection).toContain(") : null}");
+      // The toggle section is wrapped in {!isGuestMode && (...)}
+      expect(componentCode).toContain("{!isGuestMode && (");
     });
   });
 
@@ -494,13 +420,11 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf(
-        'document.type === "RG" || document.type === "CNH"',
-      );
-      const nextView = componentCode.indexOf("<View", toggleStart);
-      const viewLine = componentCode.substring(nextView, nextView + 100);
+      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      // Look at a generous section before the label
+      const sectionSlice = componentCode.substring(toggleStart - 500, toggleStart);
 
-      expect(viewLine).toContain('className="px-6');
+      expect(sectionSlice).toContain("px-6");
     });
 
     it("should have mb-6 margin bottom spacing", () => {
@@ -513,13 +437,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf(
-        'document.type === "RG" || document.type === "CNH"',
-      );
-      const nextView = componentCode.indexOf("<View", toggleStart);
-      const viewLine = componentCode.substring(nextView, nextView + 100);
+      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const sectionSlice = componentCode.substring(toggleStart - 500, toggleStart);
 
-      expect(viewLine).toContain("mb-6");
+      expect(sectionSlice).toContain("mb-6");
     });
 
     it("should use bg-background-secondary background color", () => {
@@ -532,15 +453,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf(
-        'document.type === "RG" || document.type === "CNH"',
-      );
-      const bgIndex = componentCode.indexOf(
-        "bg-background-secondary",
-        toggleStart,
-      );
+      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
 
-      expect(bgIndex).toBeGreaterThan(toggleStart);
+      expect(sectionSlice).toContain("bg-background-secondary");
     });
 
     it("should have rounded-2xl border radius", () => {
@@ -553,12 +469,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf(
-        'document.type === "RG" || document.type === "CNH"',
-      );
-      const roundedIndex = componentCode.indexOf("rounded-2xl", toggleStart);
+      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
 
-      expect(roundedIndex).toBeGreaterThan(toggleStart);
+      expect(sectionSlice).toContain("rounded-2xl");
     });
 
     it("should have overflow-hidden for proper border radius", () => {
@@ -571,15 +485,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf(
-        'document.type === "RG" || document.type === "CNH"',
-      );
-      const overflowIndex = componentCode.indexOf(
-        "overflow-hidden",
-        toggleStart,
-      );
+      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
 
-      expect(overflowIndex).toBeGreaterThan(toggleStart);
+      expect(sectionSlice).toContain("overflow-hidden");
     });
   });
 

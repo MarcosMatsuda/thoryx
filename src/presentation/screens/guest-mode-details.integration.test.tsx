@@ -21,6 +21,7 @@ jest.mock("@data/repositories/document.repository.impl", () => ({
     delete: jest.fn(),
     toggleAutoLock: jest.fn(),
     decryptPhoto: jest.fn(),
+    decryptPhotos: jest.fn(),
   })),
 }));
 
@@ -35,15 +36,23 @@ jest.mock("expo-router", () => ({
   useFocusEffect: jest.fn(),
 }));
 
+jest.mock("@stores/documents.store", () => ({
+  useDocumentsStore: jest.fn(() => ({
+    customDocumentTypes: [],
+  })),
+}));
+
 const mockDocument = {
   id: "doc1",
-  type: "RG",
-  documentNumber: "123456789",
-  fullName: "John Doe",
-  dateOfBirth: "1990-01-01",
-  expiryDate: "2030-12-31",
-  frontPhotoEncrypted: "encrypted-front",
-  backPhotoEncrypted: "encrypted-back",
+  typeId: "RG",
+  typeName: "RG",
+  fields: {
+    fullName: "John Doe",
+    documentNumber: "123456789",
+    dateOfBirth: "1990-01-01",
+    expiryDate: "2030-12-31",
+  },
+  photos: { front: "encrypted-front", back: "encrypted-back" },
   isAutoLockEnabled: true,
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -78,6 +87,10 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
       delete: jest.fn(),
       toggleAutoLock: mockToggleAutoLock,
       decryptPhoto: mockDecryptPhoto,
+      decryptPhotos: jest.fn().mockResolvedValue({
+        front: "data:image/png;base64,test",
+        back: "data:image/png;base64,test",
+      }),
     }));
   });
 
@@ -203,7 +216,8 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
   it("should handle credit card documents correctly in guest mode", async () => {
     const creditCardDocument = {
       ...mockDocument,
-      type: "CreditCard",
+      typeId: "CreditCard",
+      typeName: "Credit Card",
       isAutoLockEnabled: true,
     };
 
@@ -221,7 +235,7 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
       expect(screen.getByText("John Doe")).toBeTruthy();
     });
 
-    // Para cartões de crédito, o toggle de auto-lock nunca aparece
+    // In guest mode, auto-lock toggle is hidden for all document types
     expect(screen.queryByText("Incluir no Auto-lock")).toBeNull();
   });
 });

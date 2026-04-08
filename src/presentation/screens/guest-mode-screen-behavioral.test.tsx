@@ -67,6 +67,12 @@ jest.mock("@presentation/components/countdown-timer", () => ({
   },
 }));
 
+jest.mock("@stores/documents.store", () => ({
+  useDocumentsStore: jest.fn(() => ({
+    customDocumentTypes: [],
+  })),
+}));
+
 jest.mock("@presentation/components/pin-auth-bottom-sheet", () => ({
   PinAuthBottomSheet: () => null,
 }));
@@ -117,7 +123,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       render(<GuestModeScreen />);
 
       await waitFor(() => {
-        expect(screen.getByText("No documents shared")).toBeTruthy();
+        expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
       });
 
       // Trigger the onExpire callback that was captured
@@ -132,11 +138,13 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       const mockDocuments = [
         {
           id: "doc1",
-          type: "RG",
-          documentNumber: "123456789",
-          fullName: "John Doe",
-          expiryDate: "2030-12-31",
+          typeId: "RG",
+          typeName: "RG",
+          fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+          photos: {},
           isAutoLockEnabled: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ];
 
@@ -146,7 +154,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       render(<GuestModeScreen />);
 
       await waitFor(() => {
-        expect(screen.getByText("No documents shared")).toBeTruthy();
+        expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
       });
 
       // Reset mocks to clear previous calls
@@ -167,7 +175,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       render(<GuestModeScreen />);
 
       await waitFor(() => {
-        expect(screen.getByText("No documents shared")).toBeTruthy();
+        expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
       });
 
       // Check that the timer is rendered (should be called with the timeout)
@@ -183,7 +191,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       render(<GuestModeScreen />);
 
       await waitFor(() => {
-        expect(screen.getByText("No documents shared")).toBeTruthy();
+        expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
       });
 
       // Timer should still be rendered with fallback
@@ -198,35 +206,43 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       const mockDocuments = [
         {
           id: "doc1",
-          type: "RG",
-          documentNumber: "111111111",
-          fullName: "Alice Silva",
-          expiryDate: "2030-01-01",
+          typeId: "RG",
+          typeName: "RG",
+          fields: { fullName: "Alice Silva", documentNumber: "111111111", expiryDate: "2030-01-01" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           id: "doc2",
-          type: "CNH",
-          documentNumber: "222222222",
-          fullName: "Bob Santos",
-          expiryDate: "2031-06-01",
+          typeId: "CNH",
+          typeName: "CNH",
+          fields: { fullName: "Bob Santos", documentNumber: "222222222", expiryDate: "2031-06-01" },
+          photos: {},
           isAutoLockEnabled: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           id: "doc3",
-          type: "RG",
-          documentNumber: "333333333",
-          fullName: "Charlie Costa",
-          expiryDate: "2032-12-01",
+          typeId: "RG",
+          typeName: "RG",
+          fields: { fullName: "Charlie Costa", documentNumber: "333333333", expiryDate: "2032-12-01" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           id: "doc4",
-          type: "CreditCard",
-          documentNumber: "444444444",
-          fullName: "Diana Moon",
-          expiryDate: "2029-03-01",
+          typeId: "CreditCard",
+          typeName: "Credit Card",
+          fields: { fullName: "Diana Moon", documentNumber: "444444444", expiryDate: "2029-03-01" },
+          photos: {},
           isAutoLockEnabled: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ];
 
@@ -250,27 +266,33 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       const mockDocuments = [
         {
           id: "doc1",
-          type: "RG",
-          documentNumber: "111111111",
-          fullName: "John RG",
-          expiryDate: "2030-01-01",
+          typeId: "RG",
+          typeName: "RG",
+          fields: { fullName: "John RG", documentNumber: "111111111", expiryDate: "2030-01-01" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           id: "doc2",
-          type: "CNH",
-          documentNumber: "222222222",
-          fullName: "Jane CNH",
-          expiryDate: "2031-06-01",
+          typeId: "CNH",
+          typeName: "CNH",
+          fields: { fullName: "Jane CNH", documentNumber: "222222222", expiryDate: "2031-06-01" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           id: "doc3",
-          type: "CreditCard",
-          documentNumber: "333333333",
-          fullName: "Charlie Card",
-          expiryDate: "2029-03-01",
+          typeId: "CreditCard",
+          typeName: "Credit Card",
+          fields: { fullName: "Charlie Card", documentNumber: "333333333", expiryDate: "2029-03-01" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ];
 
@@ -286,18 +308,20 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       // Check icons are rendered inline
       expect(screen.getByText("🆔")).toBeTruthy(); // RG icon
       expect(screen.getByText("🚗")).toBeTruthy(); // CNH icon
-      expect(screen.getByText("💳")).toBeTruthy(); // CreditCard icon
+      expect(screen.getByText("📄")).toBeTruthy(); // CreditCard falls back to default icon
     });
 
     it("should display masked document number with last 4 digits", async () => {
       const mockDocuments = [
         {
           id: "doc1",
-          type: "RG",
-          documentNumber: "123456789",
-          fullName: "John Doe",
-          expiryDate: "2030-12-31",
+          typeId: "RG",
+          typeName: "RG",
+          fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ];
 
@@ -323,8 +347,8 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       render(<GuestModeScreen />);
 
       await waitFor(() => {
-        expect(screen.getByText("Shared Documents")).toBeTruthy();
-        expect(screen.getByText("Access expires in")).toBeTruthy();
+        expect(screen.getByText("Documentos Compartilhados")).toBeTruthy();
+        expect(screen.getByText("Acesso expira em")).toBeTruthy();
       });
     });
 
@@ -335,7 +359,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       render(<GuestModeScreen />);
 
       await waitFor(() => {
-        expect(screen.getByText("No documents shared")).toBeTruthy();
+        expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
       });
 
       // Both header and empty state should have countdown timers
@@ -350,7 +374,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
 
       render(<GuestModeScreen />);
 
-      expect(screen.getByText("Loading...")).toBeTruthy();
+      expect(screen.getByText("Carregando...")).toBeTruthy();
     });
   });
 
@@ -362,7 +386,7 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       render(<GuestModeScreen />);
 
       await waitFor(() => {
-        expect(screen.getByText("No documents shared")).toBeTruthy();
+        expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
       });
     });
 
@@ -370,11 +394,13 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       mockFindAll.mockResolvedValue([
         {
           id: "doc1",
-          type: "RG",
-          documentNumber: "123456789",
-          fullName: "John Doe",
-          expiryDate: "2030-12-31",
+          typeId: "RG",
+          typeName: "RG",
+          fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ]);
       mockStorageGet.mockRejectedValue(new Error("Storage error"));
@@ -393,11 +419,13 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       const mockDocuments = [
         {
           id: "doc-abc-123",
-          type: "RG",
-          documentNumber: "123456789",
-          fullName: "John Doe",
-          expiryDate: "2030-12-31",
+          typeId: "RG",
+          typeName: "RG",
+          fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ];
 
@@ -422,19 +450,23 @@ describe("GuestModeScreen - Behavioral Tests", () => {
       const mockDocuments = [
         {
           id: "doc1",
-          type: "RG",
-          documentNumber: "111111111",
-          fullName: "Alice",
-          expiryDate: "2030-01-01",
+          typeId: "RG",
+          typeName: "RG",
+          fields: { fullName: "Alice", documentNumber: "111111111", expiryDate: "2030-01-01" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           id: "doc2",
-          type: "CNH",
-          documentNumber: "222222222",
-          fullName: "Bob",
-          expiryDate: "2031-06-01",
+          typeId: "CNH",
+          typeName: "CNH",
+          fields: { fullName: "Bob", documentNumber: "222222222", expiryDate: "2031-06-01" },
+          photos: {},
           isAutoLockEnabled: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ];
 

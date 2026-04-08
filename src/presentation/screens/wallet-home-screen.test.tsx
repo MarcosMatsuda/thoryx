@@ -45,6 +45,12 @@ jest.mock("react-native-safe-area-context", () => ({
   SafeAreaView: ({ children }: any) => children,
 }));
 
+jest.mock("@stores/documents.store", () => ({
+  useDocumentsStore: jest.fn(() => ({
+    customDocumentTypes: [],
+  })),
+}));
+
 const mockRouter = {
   push: jest.fn(),
   replace: jest.fn(),
@@ -53,17 +59,23 @@ const mockRouter = {
 const mockDocuments = [
   {
     id: "1",
-    type: "CNH",
-    fullName: "John Doe",
-    documentNumber: "12345678901",
+    typeId: "CNH",
+    typeName: "CNH",
+    fields: { fullName: "John Doe", documentNumber: "12345678901" },
+    photos: {},
     isAutoLockEnabled: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: "2",
-    type: "RG",
-    fullName: "John Doe",
-    documentNumber: "98765432100",
+    typeId: "RG",
+    typeName: "RG",
+    fields: { fullName: "John Doe", documentNumber: "98765432100" },
+    photos: {},
     isAutoLockEnabled: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 
@@ -132,8 +144,26 @@ describe("WalletHomeScreen", () => {
     it("should NOT render auto-lock button even when all documents have isAutoLockEnabled: true", () => {
       (useDocuments as jest.Mock).mockReturnValue({
         documents: [
-          { id: "1", type: "CNH", fullName: "John Doe", documentNumber: "12345678901", isAutoLockEnabled: true },
-          { id: "2", type: "RG", fullName: "John Doe", documentNumber: "98765432100", isAutoLockEnabled: true },
+          {
+            id: "1",
+            typeId: "CNH",
+            typeName: "CNH",
+            fields: { fullName: "John Doe", documentNumber: "12345678901" },
+            photos: {},
+            isAutoLockEnabled: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            id: "2",
+            typeId: "RG",
+            typeName: "RG",
+            fields: { fullName: "John Doe", documentNumber: "98765432100" },
+            photos: {},
+            isAutoLockEnabled: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
         ],
         isLoading: false,
         reload: jest.fn(),
@@ -212,7 +242,7 @@ describe("WalletHomeScreen", () => {
 
     it("should render documents list", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Driver's License")).toBeTruthy();
+      expect(getByText("CNH")).toBeTruthy();
     });
 
     it("should show empty state when no documents", () => {
@@ -223,7 +253,9 @@ describe("WalletHomeScreen", () => {
       });
 
       const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("No documents yet. Add your first document!")).toBeTruthy();
+      expect(
+        getByText("No documents yet. Add your first document!"),
+      ).toBeTruthy();
     });
 
     it("should handle undefined documents gracefully", () => {

@@ -5,17 +5,19 @@ import {
   Pressable,
   ActivityIndicator,
   BackHandler,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DocumentPhotoCarousel } from "@presentation/components/document-photo-carousel";
 import { DetailRow } from "@presentation/components/detail-row";
 import { ActionButtonLarge } from "@presentation/components/action-button-large";
 import { InfoBanner } from "@presentation/components/info-banner";
-import { SettingsItem } from "@presentation/components/settings-item";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
 import { Document } from "@domain/entities/document.entity";
+import { getDocumentTypeById } from "@domain/entities/document-type-registry";
+import { useDocumentsStore } from "@stores/documents.store";
 
 export function DocumentDetailsScreen() {
   const router = useRouter();
@@ -25,10 +27,10 @@ export function DocumentDetailsScreen() {
     guestMode?: string;
   };
   const isGuestMode = guestMode === "true";
+  const { customDocumentTypes } = useDocumentsStore();
 
   const [document, setDocument] = useState<Document | null>(null);
-  const [frontPhotoUri, setFrontPhotoUri] = useState<string | null>(null);
-  const [backPhotoUri, setBackPhotoUri] = useState<string | null>(null);
+  const [photoUris, setPhotoUris] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isAutoLockEnabled, setIsAutoLockEnabled] = useState(false);
   const [isTogglingAutoLock, setIsTogglingAutoLock] = useState(false);
@@ -41,15 +43,13 @@ export function DocumentDetailsScreen() {
     }
   }, [documentId]);
 
-  // Block hardware back button on Android when in guest mode
   useEffect(() => {
     if (!isGuestMode) return;
-
     const subscription = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
         router.replace("/guest-mode" as any);
-        return true; // true = evento consumido, não sai da tela
+        return true;
       },
     );
     return () => subscription.remove();
@@ -57,19 +57,15 @@ export function DocumentDetailsScreen() {
 
   const loadDocument = async () => {
     if (!documentId) return;
-
     try {
       setIsLoading(true);
       const repository = new DocumentRepositoryImpl();
       const doc = await repository.findById(documentId);
-
       if (doc) {
         setDocument(doc);
         setIsAutoLockEnabled(doc.isAutoLockEnabled || false);
-        const frontUri = await repository.decryptPhoto(doc.frontPhotoEncrypted);
-        const backUri = await repository.decryptPhoto(doc.backPhotoEncrypted);
-        setFrontPhotoUri(frontUri);
-        setBackPhotoUri(backUri);
+        const decrypted = await repository.decryptPhotos(doc.photos);
+        setPhotoUris(decrypted);
       }
     } catch (error) {
       console.error("Error loading document:", error);
@@ -80,40 +76,20 @@ export function DocumentDetailsScreen() {
 
   const handleToggleAutoLock = async () => {
     if (!documentId || !document) return;
-
-    // Store the previous state for rollback
     const previousState = isAutoLockEnabled;
-
     try {
-      // Optimistic update: toggle immediately
       const newState = !isAutoLockEnabled;
       setIsAutoLockEnabled(newState);
       setIsTogglingAutoLock(true);
-
-      // Then make the async call
       const repository = new DocumentRepositoryImpl();
       const updatedDocument = await repository.toggleAutoLock(documentId);
-
-      // Update document with server response
       setDocument(updatedDocument);
       setIsAutoLockEnabled(updatedDocument.isAutoLockEnabled);
     } catch (error) {
       console.error("Error toggling auto-lock:", error);
-      // Revert to previous state on error
       setIsAutoLockEnabled(previousState);
     } finally {
       setIsTogglingAutoLock(false);
-    }
-  };
-
-  const getDocumentTitle = (type: string) => {
-    switch (type) {
-      case "CNH":
-        return "Driver's License";
-      case "RG":
-        return "National ID";
-      default:
-        return "Document";
     }
   };
 
@@ -132,12 +108,15 @@ export function DocumentDetailsScreen() {
       <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
           <Text className="text-lg text-text-secondary">
-            Document not found
+            Documento não encontrado
           </Text>
         </View>
       </SafeAreaView>
     );
   }
+
+  const typeDef = getDocumentTypeById(document.typeId, customDocumentTypes);
+  const photoSlots = Object.keys(photoUris);
 
   return (
     <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
@@ -156,7 +135,7 @@ export function DocumentDetailsScreen() {
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
           <Text className="text-lg font-bold text-text-primary">
-            {getDocumentTitle(document.type)}
+            {document.typeName ?? typeDef?.label ?? "Documento"}
           </Text>
           {!isGuestMode && (
             <Pressable
@@ -175,74 +154,108 @@ export function DocumentDetailsScreen() {
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="py-6">
-            {frontPhotoUri && backPhotoUri && (
-              <DocumentPhotoCarousel
-                frontPhotoUri={frontPhotoUri}
-                backPhotoUri={backPhotoUri}
-              />
+            {/* Photo carousel — adapt to available photos */}
+            {photoSlots.length >= 2 &&
+              photoUris[photoSlots[0]] &&
+              photoUris[photoSlots[1]] && (
+                <DocumentPhotoCarousel
+                  frontPhotoUri={photoUris[photoSlots[0]]}
+                  backPhotoUri={photoUris[photoSlots[1]]}
+                />
+              )}
+            {photoSlots.length === 1 && photoUris[photoSlots[0]] && (
+              <View className="px-6 mb-4">
+                <View className="rounded-2xl overflow-hidden">
+                  <Image
+                    source={{ uri: photoUris[photoSlots[0]] }}
+                    className="w-full aspect-[4/3]"
+                    resizeMode="cover"
+                  />
+                </View>
+              </View>
             )}
 
             <View className="px-6 mb-6">
               <View className="flex-row items-center justify-between mb-4">
                 <Text className="text-xl font-bold text-text-primary">
-                  Document Details
+                  Detalhes do Documento
                 </Text>
               </View>
 
               <View className="bg-background-secondary rounded-2xl px-4">
-                <DetailRow label="Full Name" value={document.fullName} />
-                <DetailRow
-                  label="Document Number"
-                  value={document.documentNumber}
-                />
-                <DetailRow label="Date of Birth" value={document.dateOfBirth} />
-                <View className="flex-row justify-between items-center py-4">
-                  <Text className="text-sm text-text-secondary">
-                    Expiry Date
-                  </Text>
-                  <Text className="text-base font-semibold text-text-primary">
-                    {document.expiryDate}
-                  </Text>
-                </View>
+                {/* Render fields dynamically from schema or raw fields */}
+                {typeDef
+                  ? typeDef.fields.map((fieldDef) => {
+                      const value = document.fields[fieldDef.key];
+                      if (!value) return null;
+                      return (
+                        <DetailRow
+                          key={fieldDef.key}
+                          label={fieldDef.label}
+                          value={value}
+                        />
+                      );
+                    })
+                  : Object.entries(document.fields).map(([key, value]) => (
+                      <DetailRow key={key} label={key} value={value} />
+                    ))}
               </View>
             </View>
           </View>
 
-          {/* Auto-lock toggle section - only for Document type (RG, CNH) and NOT in guest mode */}
-          {!isGuestMode &&
-          (document.type === "RG" || document.type === "CNH") ? (
+          {/* Auto-lock toggle — available for all document types */}
+          {!isGuestMode && (
             <View className="px-6 mb-6">
-              <View className="bg-background-secondary rounded-2xl overflow-hidden">
-                <SettingsItem
-                  label="Incluir no Auto-lock"
-                  value="Documento visível no Modo Convidado"
-                  switchValue={isAutoLockEnabled}
-                  onSwitchChange={handleToggleAutoLock}
-                  loading={isTogglingAutoLock}
-                  isFirst={true}
-                  isLast={true}
-                />
+              <View className="bg-background-secondary rounded-2xl overflow-hidden px-4 py-4">
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-1 mr-3">
+                    <Text className="text-base font-medium text-text-primary">
+                      Incluir no Auto-lock
+                    </Text>
+                    <Text className="text-sm text-text-secondary mt-1">
+                      Documento visível no Modo Convidado
+                    </Text>
+                  </View>
+                  <View>
+                    {isTogglingAutoLock ? (
+                      <ActivityIndicator size="small" color="#3B82F6" />
+                    ) : (
+                      <Pressable
+                        onPress={handleToggleAutoLock}
+                        className={`w-12 h-7 rounded-full justify-center ${
+                          isAutoLockEnabled ? "bg-primary-main" : "bg-text-secondary/30"
+                        }`}
+                      >
+                        <View
+                          className={`w-5 h-5 rounded-full bg-white mx-1 ${
+                            isAutoLockEnabled ? "self-end" : "self-start"
+                          }`}
+                        />
+                      </Pressable>
+                    )}
+                  </View>
+                </View>
               </View>
             </View>
-          ) : null}
+          )}
 
           <View className="px-6">
             <View className="gap-3 mb-6">
               <ActionButtonLarge
                 icon="🔗"
-                label="Share Securely"
+                label="Compartilhar com Segurança"
                 variant="primary"
               />
               <ActionButtonLarge
                 icon="📱"
-                label="Show QR Code"
+                label="Mostrar QR Code"
                 variant="secondary"
               />
             </View>
 
             <InfoBanner
               icon="🔒"
-              message="This document is encrypted and stored locally on your device. Sharing creates a temporary time-limited link."
+              message="Este documento é criptografado e armazenado localmente no seu dispositivo. Compartilhar cria um link temporário com tempo limitado."
             />
           </View>
         </ScrollView>

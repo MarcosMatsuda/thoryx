@@ -4,6 +4,7 @@ import { useState } from "react";
 interface DropdownOption {
   label: string;
   value: string;
+  editable?: boolean;
 }
 
 interface DropdownInputProps {
@@ -12,6 +13,7 @@ interface DropdownInputProps {
   placeholder?: string;
   options?: DropdownOption[];
   onSelect?: (value: string) => void;
+  onEditOption?: (value: string) => void;
 }
 
 export function DropdownInput({
@@ -20,6 +22,7 @@ export function DropdownInput({
   placeholder = "Select type",
   options = [],
   onSelect,
+  onEditOption,
 }: DropdownInputProps) {
   const [showOptions, setShowOptions] = useState(false);
 
@@ -51,24 +54,39 @@ export function DropdownInput({
               {label}
             </Text>
             {options.map((option) => (
-              <Pressable
+              <View
                 key={option.value}
-                className="py-4 border-b border-ui-border active:opacity-70"
-                onPress={() => {
-                  onSelect?.(option.value);
-                  setShowOptions(false);
-                }}
+                className="flex-row items-center border-b border-ui-border"
               >
-                <Text
-                  className={`text-base ${
-                    value === option.value
-                      ? "text-primary-main font-bold"
-                      : "text-text-primary"
-                  }`}
+                <Pressable
+                  className="flex-1 py-4 active:opacity-70"
+                  onPress={() => {
+                    onSelect?.(option.value);
+                    setShowOptions(false);
+                  }}
                 >
-                  {option.label}
-                </Text>
-              </Pressable>
+                  <Text
+                    className={`text-base ${
+                      value === option.value
+                        ? "text-primary-main font-bold"
+                        : "text-text-primary"
+                    }`}
+                  >
+                    {option.label}
+                  </Text>
+                </Pressable>
+                {option.editable && onEditOption && (
+                  <Pressable
+                    className="px-3 py-4 active:opacity-60"
+                    onPress={() => {
+                      setShowOptions(false);
+                      onEditOption(option.value);
+                    }}
+                  >
+                    <Text className="text-primary-main text-sm">✏️</Text>
+                  </Pressable>
+                )}
+              </View>
             ))}
           </Pressable>
         </Pressable>

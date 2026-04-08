@@ -4,10 +4,13 @@ import { SelectableDocumentItem } from "@presentation/components/selectable-docu
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 import { useDocuments } from "@presentation/hooks/use-documents";
+import { getDocumentIcon, getDocumentLabel } from "@presentation/utils/document-display";
+import { useDocumentsStore } from "@stores/documents.store";
 
 export function SelectDocumentsScreen() {
   const router = useRouter();
   const { documents, isLoading } = useDocuments();
+  const { customDocumentTypes } = useDocumentsStore();
   const [selectedDocIds, setSelectedDocIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -22,39 +25,26 @@ export function SelectDocumentsScreen() {
     );
   };
 
-  const getDocumentIcon = (type: string) => {
-    switch (type) {
-      case "CNH":
-        return "🚗";
-      case "RG":
-        return "🆔";
-      default:
-        return "📄";
+  const getMainFieldValue = (doc: any): string => {
+    // Try common field keys for the document number display
+    const keys = ["registrationNumber", "rgNumber", "cpfNumber", "passportNumber", "ctpsNumber", "voterNumber", "certificateNumber", "documentNumber"];
+    for (const key of keys) {
+      if (doc.fields[key]) return doc.fields[key];
     }
-  };
-
-  const getDocumentLabel = (type: string) => {
-    switch (type) {
-      case "CNH":
-        return "Driver's License";
-      case "RG":
-        return "National ID";
-      default:
-        return "Document";
-    }
+    return "";
   };
 
   const handleConfirm = () => {
     if (selectedDocIds.length === 0) {
       Alert.alert(
-        "Select at least one document",
-        "You need to select at least one document to enter Guest Mode.",
-        [{ text: "OK" }]
+        "Selecione pelo menos um documento",
+        "Você precisa selecionar pelo menos um documento para entrar no Modo Convidado.",
+        [{ text: "OK" }],
       );
       return;
     }
 
-    router.push(`/guest-mode?docIds=${selectedDocIds.join(',')}`);
+    router.push(`/guest-mode?docIds=${selectedDocIds.join(",")}`);
   };
 
   return (
@@ -65,11 +55,11 @@ export function SelectDocumentsScreen() {
             <Text className="text-2xl text-text-primary">✕</Text>
           </Pressable>
           <Text className="text-lg md:text-xl font-bold text-text-primary">
-            Select Documents
+            Selecionar Documentos
           </Text>
           <Pressable>
             <Text className="text-base md:text-lg font-semibold text-primary-main">
-              Help
+              Ajuda
             </Text>
           </Pressable>
         </View>
@@ -77,36 +67,39 @@ export function SelectDocumentsScreen() {
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="px-6 py-6">
             <Text className="text-2xl md:text-3xl font-bold text-text-primary mb-3 leading-tight">
-              Which documents do you want to share?
+              Quais documentos deseja compartilhar?
             </Text>
             <Text className="text-sm md:text-base text-text-secondary mb-6 leading-5">
-              The app will enter a restricted &quot;Secure Mode&quot; showing
-              only your selected documents for verification.
+              O app entrará em modo restrito mostrando apenas os documentos
+              selecionados para verificação.
             </Text>
 
             <View className="mb-6">
               {isLoading ? (
                 <Text className="text-text-secondary text-center py-8">
-                  Loading documents...
+                  Carregando documentos...
                 </Text>
               ) : documents.length === 0 ? (
                 <View className="items-center justify-center py-12">
                   <Text className="text-6xl mb-4">📄</Text>
                   <Text className="text-base md:text-lg text-text-secondary mb-6 text-center">
-                    No documents registered. Add documents in the main app first.
+                    Nenhum documento cadastrado. Adicione documentos primeiro.
                   </Text>
                 </View>
               ) : (
-                documents.map((doc) => (
-                  <SelectableDocumentItem
-                    key={doc.id}
-                    icon={getDocumentIcon(doc.type)}
-                    title={doc.fullName}
-                    subtitle={`${getDocumentLabel(doc.type)} • **** ${doc.documentNumber.slice(-4)}`}
-                    selected={selectedDocIds.includes(doc.id)}
-                    onToggle={() => toggleDocument(doc.id)}
-                  />
-                ))
+                documents.map((doc) => {
+                  const mainField = getMainFieldValue(doc);
+                  return (
+                    <SelectableDocumentItem
+                      key={doc.id}
+                      icon={getDocumentIcon(doc.typeId, customDocumentTypes)}
+                      title={doc.fields.fullName ?? ""}
+                      subtitle={`${doc.typeName ?? getDocumentLabel(doc.typeId, customDocumentTypes)}${mainField ? ` • **** ${mainField.slice(-4)}` : ""}`}
+                      selected={selectedDocIds.includes(doc.id)}
+                      onToggle={() => toggleDocument(doc.id)}
+                    />
+                  );
+                })
               )}
             </View>
 
@@ -115,12 +108,12 @@ export function SelectDocumentsScreen() {
                 <Text className="text-2xl mr-3">🔒</Text>
                 <View className="flex-1">
                   <Text className="text-sm md:text-base font-bold text-text-primary mb-2">
-                    Secure Lock Mode:
+                    Modo de Bloqueio Seguro:
                   </Text>
                   <Text className="text-xs md:text-sm text-text-secondary leading-5">
-                    Once confirmed, your device will be locked to this screen.
-                    Biometric authentication will be required to exit and access
-                    the rest of your app.
+                    Após confirmar, seu dispositivo ficará bloqueado nesta tela.
+                    Autenticação por PIN será necessária para sair e acessar o
+                    restante do app.
                   </Text>
                 </View>
               </View>
@@ -130,11 +123,11 @@ export function SelectDocumentsScreen() {
               <View className="flex-row items-center">
                 <Text className="text-xl md:text-2xl mr-2">🛡️</Text>
                 <Text className="text-base md:text-lg font-semibold text-text-primary">
-                  You are sharing{" "}
+                  Compartilhando{" "}
                   <Text className="text-primary-main">
                     {selectedDocIds.length}
                   </Text>{" "}
-                  documents
+                  documento{selectedDocIds.length !== 1 ? "s" : ""}
                 </Text>
               </View>
             </View>
@@ -147,7 +140,7 @@ export function SelectDocumentsScreen() {
             onPress={handleConfirm}
           >
             <Text className="text-base md:text-lg font-bold text-text-primary">
-              Confirm & Lock App
+              Confirmar e Bloquear App
             </Text>
           </Pressable>
         </View>

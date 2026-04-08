@@ -54,6 +54,12 @@ jest.mock("@presentation/components/countdown-timer", () => ({
 }));
 
 // Mock para DocumentCard para simplificar asserções
+jest.mock("@stores/documents.store", () => ({
+  useDocumentsStore: jest.fn(() => ({
+    customDocumentTypes: [],
+  })),
+}));
+
 jest.mock("@presentation/components/document-card", () => ({
   DocumentCard: ({ title, subtitle }: { title: string; subtitle: string }) => {
     const { View, Text } = require("react-native");
@@ -110,34 +116,40 @@ describe("GuestModeScreen", () => {
 
     render(<GuestModeScreen />);
 
-    expect(screen.getByText("Loading...")).toBeTruthy();
+    expect(screen.getByText("Carregando...")).toBeTruthy();
   });
 
   it("should load and display documents with auto-lock enabled", async () => {
     const mockDocuments = [
       {
         id: "doc1",
-        type: "RG",
-        documentNumber: "123456789",
-        fullName: "John Doe",
-        expiryDate: "2030-12-31",
+        typeId: "RG",
+        typeName: "RG",
+        fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+        photos: {},
         isAutoLockEnabled: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         id: "doc2",
-        type: "CNH",
-        documentNumber: "987654321",
-        fullName: "Jane Smith",
-        expiryDate: "2031-06-30",
+        typeId: "CNH",
+        typeName: "CNH",
+        fields: { fullName: "Jane Smith", documentNumber: "987654321", expiryDate: "2031-06-30" },
+        photos: {},
         isAutoLockEnabled: false, // Não deve aparecer
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         id: "doc3",
-        type: "RG",
-        documentNumber: "555555555",
-        fullName: "Bob Johnson",
-        expiryDate: "2029-03-15",
+        typeId: "RG",
+        typeName: "RG",
+        fields: { fullName: "Bob Johnson", documentNumber: "555555555", expiryDate: "2029-03-15" },
+        photos: {},
         isAutoLockEnabled: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ];
 
@@ -154,19 +166,21 @@ describe("GuestModeScreen", () => {
     });
 
     // Deve mostrar o cabeçalho correto
-    expect(screen.getByText("Shared Documents")).toBeTruthy();
-    expect(screen.getByText("Access expires in")).toBeTruthy();
+    expect(screen.getByText("Documentos Compartilhados")).toBeTruthy();
+    expect(screen.getByText("Acesso expira em")).toBeTruthy();
   });
 
   it("should display empty state when no documents have auto-lock enabled", async () => {
     const mockDocuments = [
       {
         id: "doc1",
-        type: "RG",
-        documentNumber: "123456789",
-        fullName: "John Doe",
-        expiryDate: "2030-12-31",
+        typeId: "RG",
+        typeName: "RG",
+        fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+        photos: {},
         isAutoLockEnabled: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ];
 
@@ -176,10 +190,10 @@ describe("GuestModeScreen", () => {
     render(<GuestModeScreen />);
 
     await waitFor(() => {
-      expect(screen.getByText("No documents shared")).toBeTruthy();
+      expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
       expect(
         screen.getByText(
-          "The timer will still expire and redirect to the lock screen.",
+          "O timer continuará e redirecionará para a tela de bloqueio.",
         ),
       ).toBeTruthy();
     });
@@ -192,7 +206,7 @@ describe("GuestModeScreen", () => {
     render(<GuestModeScreen />);
 
     await waitFor(() => {
-      expect(screen.getByText("No documents shared")).toBeTruthy();
+      expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
     });
 
     // Timer deve estar presente (pode haver mais de um — header + empty state)
@@ -203,11 +217,13 @@ describe("GuestModeScreen", () => {
     const mockDocuments = [
       {
         id: "doc1",
-        type: "RG",
-        documentNumber: "123456789",
-        fullName: "John Doe",
-        expiryDate: "2030-12-31",
+        typeId: "RG",
+        typeName: "RG",
+        fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+        photos: {},
         isAutoLockEnabled: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ];
 
@@ -236,7 +252,7 @@ describe("GuestModeScreen", () => {
 
     await waitFor(() => {
       // Deve mostrar estado vazio em caso de erro
-      expect(screen.getByText("No documents shared")).toBeTruthy();
+      expect(screen.getByText("Nenhum documento compartilhado")).toBeTruthy();
     });
   });
 
@@ -247,8 +263,8 @@ describe("GuestModeScreen", () => {
     render(<GuestModeScreen />);
 
     await waitFor(() => {
-      expect(screen.getByText("Shared Documents")).toBeTruthy();
-      expect(screen.getByText("Access expires in")).toBeTruthy();
+      expect(screen.getByText("Documentos Compartilhados")).toBeTruthy();
+      expect(screen.getByText("Acesso expira em")).toBeTruthy();
     });
 
     // Header timer deve estar visível

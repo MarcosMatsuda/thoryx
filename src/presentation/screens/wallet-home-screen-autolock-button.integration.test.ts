@@ -37,7 +37,9 @@ describe("WalletHomeScreen - Auto-lock Button Removal Integration Tests", () => 
     });
 
     it("should NOT display button subtitle text", () => {
-      expect(componentCode).not.toContain("Compartilhar documentos selecionados");
+      expect(componentCode).not.toContain(
+        "Compartilhar documentos selecionados",
+      );
     });
 
     it("should NOT display action button text in Portuguese", () => {
@@ -56,8 +58,8 @@ describe("WalletHomeScreen - Auto-lock Button Removal Integration Tests", () => 
       // The component should not have router.replace("/guest-mode") for auto-lock button
       // It might still exist elsewhere in the codebase, but not for auto-lock
       const lines = componentCode.split("\n");
-      const guestModeLines = lines.filter((line) => 
-        line.includes('router.replace("/guest-mode")')
+      const guestModeLines = lines.filter((line) =>
+        line.includes('router.replace("/guest-mode")'),
       );
       expect(guestModeLines.length).toBe(0);
     });
