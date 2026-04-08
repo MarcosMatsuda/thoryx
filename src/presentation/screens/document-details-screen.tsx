@@ -6,6 +6,8 @@ import {
   ActivityIndicator,
   BackHandler,
   Image,
+  Modal,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DocumentPhotoCarousel } from "@presentation/components/document-photo-carousel";
@@ -33,6 +35,7 @@ export function DocumentDetailsScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAutoLockEnabled, setIsAutoLockEnabled] = useState(false);
   const [isTogglingAutoLock, setIsTogglingAutoLock] = useState(false);
+  const [fullscreenPhoto, setFullscreenPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     loadCustomTypes();
@@ -154,17 +157,24 @@ export function DocumentDetailsScreen() {
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="py-6">
-            {/* Photo carousel — adapt to available photos */}
+            {/* Photos — tap to view fullscreen */}
             {photoSlots.length >= 2 &&
               photoUris[photoSlots[0]] &&
               photoUris[photoSlots[1]] && (
-                <DocumentPhotoCarousel
-                  frontPhotoUri={photoUris[photoSlots[0]]}
-                  backPhotoUri={photoUris[photoSlots[1]]}
-                />
+                <View>
+                  <Pressable onPress={() => setFullscreenPhoto(photoUris[photoSlots[0]])}>
+                    <DocumentPhotoCarousel
+                      frontPhotoUri={photoUris[photoSlots[0]]}
+                      backPhotoUri={photoUris[photoSlots[1]]}
+                    />
+                  </Pressable>
+                </View>
               )}
             {photoSlots.length === 1 && photoUris[photoSlots[0]] && (
-              <View className="px-6 mb-4">
+              <Pressable
+                className="px-6 mb-4"
+                onPress={() => setFullscreenPhoto(photoUris[photoSlots[0]])}
+              >
                 <View className="rounded-2xl overflow-hidden">
                   <Image
                     source={{ uri: photoUris[photoSlots[0]] }}
@@ -172,7 +182,7 @@ export function DocumentDetailsScreen() {
                     resizeMode="cover"
                   />
                 </View>
-              </View>
+              </Pressable>
             )}
 
             <View className="px-6 mb-6">
@@ -249,6 +259,36 @@ export function DocumentDetailsScreen() {
           </View>
         </ScrollView>
       </View>
+
+      {/* Fullscreen photo modal */}
+      <Modal
+        visible={fullscreenPhoto !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setFullscreenPhoto(null)}
+      >
+        <Pressable
+          className="flex-1 bg-black items-center justify-center"
+          onPress={() => setFullscreenPhoto(null)}
+        >
+          {fullscreenPhoto && (
+            <Image
+              source={{ uri: fullscreenPhoto }}
+              style={{
+                width: Dimensions.get("window").width,
+                height: Dimensions.get("window").height * 0.85,
+              }}
+              resizeMode="contain"
+            />
+          )}
+          <Pressable
+            className="absolute top-14 right-6 w-10 h-10 bg-white/20 rounded-full items-center justify-center"
+            onPress={() => setFullscreenPhoto(null)}
+          >
+            <Text className="text-white text-xl font-bold">✕</Text>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
