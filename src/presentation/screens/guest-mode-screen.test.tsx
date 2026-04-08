@@ -57,6 +57,7 @@ jest.mock("@presentation/components/countdown-timer", () => ({
 jest.mock("@stores/documents.store", () => ({
   useDocumentsStore: jest.fn(() => ({
     customDocumentTypes: [],
+    loadCustomTypes: jest.fn(),
   })),
 }));
 
@@ -125,7 +126,11 @@ describe("GuestModeScreen", () => {
         id: "doc1",
         typeId: "RG",
         typeName: "RG",
-        fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+        fields: {
+          fullName: "John Doe",
+          documentNumber: "123456789",
+          expiryDate: "2030-12-31",
+        },
         photos: {},
         isAutoLockEnabled: true,
         createdAt: new Date(),
@@ -135,7 +140,11 @@ describe("GuestModeScreen", () => {
         id: "doc2",
         typeId: "CNH",
         typeName: "CNH",
-        fields: { fullName: "Jane Smith", documentNumber: "987654321", expiryDate: "2031-06-30" },
+        fields: {
+          fullName: "Jane Smith",
+          documentNumber: "987654321",
+          expiryDate: "2031-06-30",
+        },
         photos: {},
         isAutoLockEnabled: false, // Não deve aparecer
         createdAt: new Date(),
@@ -145,7 +154,11 @@ describe("GuestModeScreen", () => {
         id: "doc3",
         typeId: "RG",
         typeName: "RG",
-        fields: { fullName: "Bob Johnson", documentNumber: "555555555", expiryDate: "2029-03-15" },
+        fields: {
+          fullName: "Bob Johnson",
+          documentNumber: "555555555",
+          expiryDate: "2029-03-15",
+        },
         photos: {},
         isAutoLockEnabled: true,
         createdAt: new Date(),
@@ -176,7 +189,11 @@ describe("GuestModeScreen", () => {
         id: "doc1",
         typeId: "RG",
         typeName: "RG",
-        fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+        fields: {
+          fullName: "John Doe",
+          documentNumber: "123456789",
+          expiryDate: "2030-12-31",
+        },
         photos: {},
         isAutoLockEnabled: false,
         createdAt: new Date(),
@@ -219,7 +236,11 @@ describe("GuestModeScreen", () => {
         id: "doc1",
         typeId: "RG",
         typeName: "RG",
-        fields: { fullName: "John Doe", documentNumber: "123456789", expiryDate: "2030-12-31" },
+        fields: {
+          fullName: "John Doe",
+          documentNumber: "123456789",
+          expiryDate: "2030-12-31",
+        },
         photos: {},
         isAutoLockEnabled: true,
         createdAt: new Date(),
