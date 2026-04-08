@@ -10,7 +10,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DocumentPhotoCarousel } from "@presentation/components/document-photo-carousel";
 import { DetailRow } from "@presentation/components/detail-row";
-import { ActionButtonLarge } from "@presentation/components/action-button-large";
 import { InfoBanner } from "@presentation/components/info-banner";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
@@ -223,7 +222,9 @@ export function DocumentDetailsScreen() {
                       <Pressable
                         onPress={handleToggleAutoLock}
                         className={`w-12 h-7 rounded-full justify-center ${
-                          isAutoLockEnabled ? "bg-primary-main" : "bg-text-secondary/30"
+                          isAutoLockEnabled
+                            ? "bg-primary-main"
+                            : "bg-text-secondary/30"
                         }`}
                       >
                         <View
@@ -240,22 +241,9 @@ export function DocumentDetailsScreen() {
           )}
 
           <View className="px-6">
-            <View className="gap-3 mb-6">
-              <ActionButtonLarge
-                icon="🔗"
-                label="Compartilhar com Segurança"
-                variant="primary"
-              />
-              <ActionButtonLarge
-                icon="📱"
-                label="Mostrar QR Code"
-                variant="secondary"
-              />
-            </View>
-
             <InfoBanner
               icon="🔒"
-              message="Este documento é criptografado e armazenado localmente no seu dispositivo. Compartilhar cria um link temporário com tempo limitado."
+              message="Este documento é criptografado e armazenado localmente no seu dispositivo."
             />
           </View>
         </ScrollView>

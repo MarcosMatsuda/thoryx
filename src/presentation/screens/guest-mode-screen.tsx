@@ -57,7 +57,9 @@ export function GuestModeScreen() {
       const allDocuments = await documentRepository.findAll();
       if (params.docIds) {
         const selectedIds = params.docIds.split(",");
-        setDocuments(allDocuments.filter((doc) => selectedIds.includes(doc.id)));
+        setDocuments(
+          allDocuments.filter((doc) => selectedIds.includes(doc.id)),
+        );
       } else {
         setDocuments(allDocuments.filter((doc) => doc.isAutoLockEnabled));
       }
@@ -87,7 +89,16 @@ export function GuestModeScreen() {
   };
 
   const getMainFieldValue = (doc: Document): string => {
-    const keys = ["registrationNumber", "rgNumber", "cpfNumber", "passportNumber", "ctpsNumber", "voterNumber", "certificateNumber", "documentNumber"];
+    const keys = [
+      "registrationNumber",
+      "rgNumber",
+      "cpfNumber",
+      "passportNumber",
+      "ctpsNumber",
+      "voterNumber",
+      "certificateNumber",
+      "documentNumber",
+    ];
     for (const key of keys) {
       if (doc.fields[key]) return doc.fields[key];
     }
@@ -157,20 +168,11 @@ export function GuestModeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background-primary">
+      {/* Header */}
       <View className="px-6 pt-6 pb-4 border-b border-border-primary">
-        <View className="flex-row items-center justify-between mb-4">
-          <Text className="text-3xl font-bold text-text-primary">
-            Documentos Compartilhados
-          </Text>
-          <Pressable
-            onPress={handleExitSecureMode}
-            className="bg-status-error/10 rounded-lg px-3 py-2 active:opacity-75"
-          >
-            <Text className="text-sm font-semibold text-status-error">
-              Sair
-            </Text>
-          </Pressable>
-        </View>
+        <Text className="text-3xl font-bold text-text-primary mb-4">
+          Documentos Compartilhados
+        </Text>
         <Text className="text-base text-text-secondary mb-4">
           Acesso expira em
         </Text>
@@ -181,6 +183,7 @@ export function GuestModeScreen() {
         />
       </View>
 
+      {/* Content */}
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
           <Text className="text-base text-text-secondary">Carregando...</Text>
@@ -190,6 +193,18 @@ export function GuestModeScreen() {
       ) : (
         renderDocumentList()
       )}
+
+      {/* Fixed bottom exit button */}
+      <View className="px-6 pb-6 pt-4 bg-background-primary border-t border-ui-border">
+        <Pressable
+          onPress={handleExitSecureMode}
+          className="bg-status-error rounded-xl py-4 items-center active:opacity-80"
+        >
+          <Text className="text-base font-bold text-white">
+            Sair do Modo Seguro
+          </Text>
+        </Pressable>
+      </View>
 
       <PinAuthBottomSheet
         visible={showPinAuth}

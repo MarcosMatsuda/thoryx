@@ -4,7 +4,10 @@ import { SelectableDocumentItem } from "@presentation/components/selectable-docu
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 import { useDocuments } from "@presentation/hooks/use-documents";
-import { getDocumentIcon, getDocumentLabel } from "@presentation/utils/document-display";
+import {
+  getDocumentIcon,
+  getDocumentLabel,
+} from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
 
 export function SelectDocumentsScreen() {
@@ -13,9 +16,17 @@ export function SelectDocumentsScreen() {
   const { customDocumentTypes } = useDocumentsStore();
   const [selectedDocIds, setSelectedDocIds] = useState<string[]>([]);
 
+  // Pre-select documents that have auto-lock enabled
   useEffect(() => {
-    // Documents are loaded automatically by the useDocuments hook
-  }, []);
+    if (documents.length > 0) {
+      const autoLocked = documents
+        .filter((doc) => doc.isAutoLockEnabled)
+        .map((doc) => doc.id);
+      if (autoLocked.length > 0) {
+        setSelectedDocIds(autoLocked);
+      }
+    }
+  }, [documents]);
 
   const toggleDocument = (docId: string) => {
     setSelectedDocIds((prev) =>
@@ -27,7 +38,16 @@ export function SelectDocumentsScreen() {
 
   const getMainFieldValue = (doc: any): string => {
     // Try common field keys for the document number display
-    const keys = ["registrationNumber", "rgNumber", "cpfNumber", "passportNumber", "ctpsNumber", "voterNumber", "certificateNumber", "documentNumber"];
+    const keys = [
+      "registrationNumber",
+      "rgNumber",
+      "cpfNumber",
+      "passportNumber",
+      "ctpsNumber",
+      "voterNumber",
+      "certificateNumber",
+      "documentNumber",
+    ];
     for (const key of keys) {
       if (doc.fields[key]) return doc.fields[key];
     }
