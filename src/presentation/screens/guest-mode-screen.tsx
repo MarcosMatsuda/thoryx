@@ -9,6 +9,7 @@ import { PinAuthBottomSheet } from "@presentation/components/pin-auth-bottom-she
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 import { getDocumentIcon } from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
+import { useTranslation } from "react-i18next";
 
 const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
 const storage = new SecureStorageAdapter(
@@ -17,6 +18,7 @@ const storage = new SecureStorageAdapter(
 );
 
 export function GuestModeScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ docIds?: string }>();
   const { customDocumentTypes, loadCustomTypes } = useDocumentsStore();
@@ -109,10 +111,10 @@ export function GuestModeScreen() {
   const renderEmptyState = () => (
     <View className="flex-1 items-center justify-center px-8">
       <Text className="text-2xl font-bold text-center text-text-secondary mb-4">
-        Nenhum documento compartilhado
+        {t("guestMode.noDocuments")}
       </Text>
       <Text className="text-base text-center text-text-tertiary mb-8">
-        O timer continuará e redirecionará para a tela de bloqueio.
+        {t("guestMode.noDocumentsDesc")}
       </Text>
       <CountdownTimer
         durationMinutes={timeoutMinutes}
@@ -147,7 +149,7 @@ export function GuestModeScreen() {
                     {mainField ? (
                       <>
                         <Text className="text-xs text-text-secondary">
-                          Nº DOCUMENTO
+                          {t("guestMode.documentNumber")}
                         </Text>
                         <Text className="text-sm text-text-secondary">
                           •••• •••• {mainField.slice(-4)}
@@ -172,10 +174,10 @@ export function GuestModeScreen() {
       {/* Header */}
       <View className="px-6 pt-6 pb-4 border-b border-border-primary">
         <Text className="text-3xl font-bold text-text-primary mb-4">
-          Documentos Compartilhados
+          {t("guestMode.title")}
         </Text>
         <Text className="text-base text-text-secondary mb-4">
-          Acesso expira em
+          {t("guestMode.expiresIn")}
         </Text>
         <CountdownTimer
           durationMinutes={timeoutMinutes}
@@ -187,7 +189,7 @@ export function GuestModeScreen() {
       {/* Content */}
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
-          <Text className="text-base text-text-secondary">Carregando...</Text>
+          <Text className="text-base text-text-secondary">{t("common.loading")}</Text>
         </View>
       ) : documents.length === 0 ? (
         renderEmptyState()
@@ -202,7 +204,7 @@ export function GuestModeScreen() {
           className="bg-status-error rounded-xl py-4 items-center active:opacity-80"
         >
           <Text className="text-base font-bold text-white">
-            Sair do Modo Seguro
+            {t("guestMode.exitSecureMode")}
           </Text>
         </Pressable>
       </View>

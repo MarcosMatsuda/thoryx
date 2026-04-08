@@ -4,8 +4,10 @@ import { useRouter } from "expo-router";
 import { useDocuments } from "@presentation/hooks/use-documents";
 import { getDocumentIcon, getDocumentLabel } from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
+import { useTranslation } from "react-i18next";
 
 export function DocumentsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { documents, isLoading } = useDocuments();
   const { customDocumentTypes } = useDocumentsStore();
@@ -15,21 +17,21 @@ export function DocumentsScreen() {
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pt-4">
           <Text className="text-2xl md:text-3xl font-bold text-text-primary mb-6">
-            Documentos
+            {t("documents.title")}
           </Text>
 
           {documents.length === 0 ? (
             <View className="items-center justify-center py-12">
               <Text className="text-6xl mb-4">📄</Text>
               <Text className="text-base md:text-lg text-text-secondary mb-6 text-center">
-                Nenhum documento ainda
+                {t("documents.noDocuments")}
               </Text>
               <Pressable
                 onPress={() => router.push("/add-document")}
                 className="bg-primary-main px-6 py-3 rounded-xl active:opacity-80"
               >
                 <Text className="text-white font-semibold text-base md:text-lg">
-                  Adicionar Documento
+                  {t("documents.addDocument")}
                 </Text>
               </Pressable>
             </View>
@@ -70,7 +72,7 @@ export function DocumentsScreen() {
                 className="bg-primary-main/10 border-2 border-primary-main border-dashed p-4 rounded-2xl items-center active:opacity-80"
               >
                 <Text className="text-primary-main font-semibold text-base md:text-lg">
-                  + Adicionar Outro Documento
+                  {t("documents.addAnother")}
                 </Text>
               </Pressable>
             </>

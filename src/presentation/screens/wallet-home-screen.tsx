@@ -16,8 +16,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 export function WalletHomeScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const {
     documents,
@@ -46,9 +48,9 @@ export function WalletHomeScreen() {
   );
 
   const getCardLabel = () => {
-    if (cards.length === 0) return "New Card";
-    if (cards.length === 1) return "Card";
-    return "Cards";
+    if (cards.length === 0) return t("wallet.newCard");
+    if (cards.length === 1) return t("wallet.card");
+    return t("wallet.cards");
   };
 
   const getMainFieldValue = (doc: any): string => {
@@ -68,13 +70,13 @@ export function WalletHomeScreen() {
               <UserAvatar photoUri={profile?.photoUri} size={48} />
               <View className="ml-3">
                 <Text className="text-xs md:text-sm text-text-secondary mb-1">
-                  Welcome back,
+                  {t("wallet.welcome")}
                 </Text>
                 {profileLoading ? (
                   <ActivityIndicator size="small" color="#3B82F6" />
                 ) : (
                   <Text className="text-lg md:text-xl font-bold text-text-primary">
-                    {profile?.name || "Guest"}
+                    {profile?.name || t("wallet.guest")}
                   </Text>
                 )}
               </View>
@@ -83,7 +85,7 @@ export function WalletHomeScreen() {
 
           <View className="mb-6">
             <Text className="text-xs md:text-sm font-semibold text-text-secondary mb-3 tracking-wider">
-              QUICK ACTIONS
+              {t("wallet.quickActions")}
             </Text>
             <View className="flex-row gap-3 md:gap-4 justify-between md:justify-start">
               <ActionCard
@@ -96,13 +98,13 @@ export function WalletHomeScreen() {
                 icon={
                   <SvgIcon name="triangle-allergies" width={28} height={28} />
                 }
-                label="Emergency"
+                label={t("wallet.emergency")}
                 variant="danger"
                 onPress={() => router.push("/emergency")}
               />
               <ActionCard
                 icon={<SvgIcon name="add-doc" width={28} height={28} />}
-                label="Add Doc"
+                label={t("wallet.addDoc")}
                 variant="secondary"
                 onPress={() => router.push("/add-document")}
               />
@@ -115,19 +117,18 @@ export function WalletHomeScreen() {
                 <SvgIcon name="verified-shield" width={24} height={24} />
               </View>
               <Text className="text-lg md:text-xl font-bold text-text-primary">
-                Secure Sharing Mode
+                {t("wallet.secureSharingTitle")}
               </Text>
             </View>
             <Text className="text-sm md:text-base text-text-primary/80 mb-5 leading-5">
-              Select documents to share for check-ins or verification. Others
-              will be locked and hidden from view.
+              {t("wallet.secureSharingDesc")}
             </Text>
             <Pressable
               className="bg-white rounded-xl py-3.5 items-center active:opacity-90"
               onPress={() => router.push("/select-documents")}
             >
               <Text className="text-base md:text-lg font-bold text-primary-main">
-                Start Sharing
+                {t("wallet.startSharing")}
               </Text>
             </Pressable>
           </View>
@@ -135,11 +136,11 @@ export function WalletHomeScreen() {
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-4">
               <Text className="text-xs md:text-sm font-semibold text-text-secondary tracking-wider">
-                MY DOCUMENTS
+                {t("wallet.myDocuments")}
               </Text>
               <Pressable onPress={() => router.push("/(tabs)/documents")}>
                 <Text className="text-sm md:text-base font-semibold text-primary-main">
-                  See All
+                  {t("wallet.seeAll")}
                 </Text>
               </Pressable>
             </View>
@@ -149,14 +150,14 @@ export function WalletHomeScreen() {
                 <View className="bg-background-secondary rounded-2xl p-6 items-center justify-center">
                   <ActivityIndicator size="large" color="#3B82F6" />
                   <Text className="text-text-secondary mt-3">
-                    Loading documents...
+                    {t("wallet.loadingDocuments")}
                   </Text>
                 </View>
               ) : !documents || documents.length === 0 ? (
                 <View className="bg-background-secondary rounded-2xl p-6 items-center">
                   <Text className="text-4xl mb-3">📄</Text>
                   <Text className="text-text-secondary text-center">
-                    No documents yet. Add your first document!
+                    {t("wallet.noDocuments")}
                   </Text>
                 </View>
               ) : (
@@ -191,7 +192,7 @@ export function WalletHomeScreen() {
                               <>
                                 <View className="flex-row items-center">
                                   <Text className="text-xs md:text-sm text-text-secondary">
-                                    DOCUMENT NUMBER
+                                    {t("wallet.documentNumber")}
                                   </Text>
                                 </View>
                                 <Text className="text-sm md:text-base text-text-secondary">

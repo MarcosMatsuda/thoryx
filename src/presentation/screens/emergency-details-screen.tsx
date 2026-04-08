@@ -11,12 +11,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useEmergencyInfo } from "@presentation/hooks/use-emergency-info";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   isAuthenticated?: boolean;
 }
 
 export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { emergencyInfo, isLoading, refresh } = useEmergencyInfo();
 
@@ -33,7 +35,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
   const handleCallContact = (phoneNumber: string, contactName: string) => {
     const cleaned = phoneNumber.replace(/\D/g, "");
     if (!cleaned) {
-      Alert.alert("Erro", "Número de telefone inválido");
+      Alert.alert(t("common.error"), t("emergency.invalidPhone"));
       return;
     }
     const url = `tel:${cleaned}`;
@@ -41,7 +43,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
       if (supported) {
         Linking.openURL(url);
       } else {
-        Alert.alert("Erro", `Não foi possível ligar para ${contactName}`);
+        Alert.alert(t("common.error"), t("emergency.callError", { name: contactName }));
       }
     });
   };
@@ -66,7 +68,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
               <Text className="text-2xl text-text-primary">←</Text>
             </Pressable>
             <Text className="text-lg font-bold text-text-primary">
-              Emergency Details
+              {t("emergency.title")}
             </Text>
             {isAuthenticated ? (
               <Pressable
@@ -83,11 +85,10 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
           <View className="flex-1 items-center justify-center px-6">
             <Text className="text-2xl mb-2">🚨</Text>
             <Text className="text-lg font-bold text-text-primary mb-2 text-center">
-              No Emergency Information
+              {t("emergency.noInfo")}
             </Text>
             <Text className="text-sm text-text-secondary text-center mb-6">
-              Set up your emergency profile to help first responders in case of
-              emergency.
+              {t("emergency.noInfoDesc")}
             </Text>
             {isAuthenticated && (
               <Pressable
@@ -95,7 +96,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                 onPress={handleEditPress}
               >
                 <Text className="text-base font-bold text-text-primary">
-                  Set Up Emergency Profile
+                  {t("emergency.setupProfile")}
                 </Text>
               </Pressable>
             )}
@@ -116,7 +117,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
           <Text className="text-lg font-bold text-text-primary">
-            Emergency Details
+            {t("emergency.title")}
           </Text>
           {isAuthenticated ? (
             <Pressable
@@ -138,12 +139,10 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                   <Text className="text-xl mr-2">ℹ️</Text>
                   <View className="flex-1">
                     <Text className="text-sm font-bold text-primary-main mb-1">
-                      Lock Screen Accessibility
+                      {t("emergency.lockScreenAccess")}
                     </Text>
                     <Text className="text-xs text-text-secondary leading-5">
-                      This information will be accessible to first responders
-                      from the lock screen without a passcode in case of
-                      emergency.
+                      {t("emergency.lockScreenDesc")}
                     </Text>
                   </View>
                 </View>
@@ -156,7 +155,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                   <Text className="text-lg">✱</Text>
                 </View>
                 <Text className="text-xs font-bold text-status-error tracking-wider">
-                  VITAL MEDICAL INFO
+                  {t("emergency.vitalInfo")}
                 </Text>
               </View>
 
@@ -167,7 +166,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                       <Text className="text-2xl">🩸</Text>
                     </View>
                     <Text className="text-xs font-semibold text-text-secondary mb-1 tracking-wide">
-                      BLOOD TYPE
+                      {t("emergency.bloodType")}
                     </Text>
                     <Text className="text-lg font-bold text-text-primary">
                       {emergencyInfo.bloodType}
@@ -181,7 +180,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                       <Text className="text-2xl">🛡️</Text>
                     </View>
                     <Text className="text-xs font-semibold text-text-secondary mb-1 tracking-wide">
-                      HEALTH PLAN
+                      {t("emergency.healthPlan")}
                     </Text>
                     <Text className="text-base font-bold text-text-primary">
                       {emergencyInfo.healthPlan}
@@ -197,7 +196,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                       <Text className="text-2xl">⚠️</Text>
                     </View>
                     <Text className="text-base font-bold text-text-primary">
-                      Allergies
+                      {t("emergency.allergies")}
                     </Text>
                   </View>
                   <Text className="text-sm text-text-secondary">
@@ -213,7 +212,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                       <Text className="text-2xl">🏥</Text>
                     </View>
                     <Text className="text-base font-bold text-text-primary">
-                      Health Conditions
+                      {t("emergency.healthConditions")}
                     </Text>
                   </View>
                   <Text className="text-sm text-text-secondary">
@@ -229,7 +228,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                       <Text className="text-2xl">💊</Text>
                     </View>
                     <Text className="text-base font-bold text-text-primary">
-                      Continuous Meds
+                      {t("emergency.medications")}
                     </Text>
                   </View>
                   <Text className="text-sm text-text-secondary">
@@ -243,7 +242,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
               <View className="mb-6">
                 <View className="flex-row items-center mb-4">
                   <Text className="text-xs font-bold text-text-secondary tracking-wider">
-                    IN CASE OF EMERGENCY (ICE)
+                    {t("emergency.iceContacts")}
                   </Text>
                 </View>
 

@@ -20,8 +20,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 export function EmergencySetupScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const {
     emergencyInfo,
@@ -89,7 +91,7 @@ export function EmergencySetupScreen() {
 
   const handleSave = async () => {
     if (contacts.length === 0) {
-      Alert.alert("Error", "Please add at least one emergency contact");
+      Alert.alert(t("common.error"), t("emergencySetup.contactRequired"));
       return;
     }
 
@@ -115,9 +117,9 @@ export function EmergencySetupScreen() {
       });
 
       if (result.success) {
-        Alert.alert("Success", "Emergency information saved securely", [
+        Alert.alert(t("common.success"), t("emergencySetup.savedSuccess"), [
           {
-            text: "OK",
+            text: t("common.ok"),
             onPress: () => {
               refresh();
               router.back();
@@ -125,11 +127,11 @@ export function EmergencySetupScreen() {
           },
         ]);
       } else {
-        Alert.alert("Error", result.message);
+        Alert.alert(t("common.error"), result.message);
       }
     } catch (error) {
       console.error("Error saving emergency info:", error);
-      Alert.alert("Error", "Failed to save emergency information");
+      Alert.alert(t("common.error"), t("emergencySetup.saveError"));
     } finally {
       setIsSaving(false);
     }
@@ -155,7 +157,7 @@ export function EmergencySetupScreen() {
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
           <Text className="text-lg font-bold text-text-primary">
-            Emergency Information
+            {t("emergencySetup.title")}
           </Text>
           <Pressable
             className="w-10 h-10 items-center justify-center"
@@ -176,10 +178,10 @@ export function EmergencySetupScreen() {
           contentContainerClassName="px-6 py-6"
         >
           <AlertBanner
-            title="CRITICAL ACCESS"
-            message="These emergency details will be accessible even when the device is locked in case of emergency."
+            title={t("emergencySetup.criticalAccess")}
+            message={t("emergencySetup.criticalAccessDesc")}
             icon="⚠️"
-            toggleLabel="Visible on lock screen"
+            toggleLabel={t("emergencySetup.lockScreenVisible")}
             toggleEnabled={lockScreenVisible}
             onToggle={() => setLockScreenVisible(!lockScreenVisible)}
           />
@@ -187,12 +189,12 @@ export function EmergencySetupScreen() {
           <View className="mb-6">
             <SectionHeader
               icon="🏥"
-              title="Vital Medical Info"
+              title={t("emergency.vitalInfo")}
               iconBg="#3B82F6"
             />
 
             <TextInputField
-              label="Health Plan"
+              label={t("emergencySetup.healthPlan")}
               placeholder="e.g. Blue Shield Gold"
               value={healthPlan}
               onChangeText={setHealthPlan}
@@ -200,7 +202,7 @@ export function EmergencySetupScreen() {
 
             <View className="mb-4">
               <Text className="text-sm text-text-secondary mb-3">
-                Blood Type
+                {t("emergencySetup.bloodType")}
               </Text>
               <BloodTypeSelector
                 selectedType={bloodType}
@@ -210,11 +212,11 @@ export function EmergencySetupScreen() {
 
             <View className="mb-4">
               <Text className="text-sm text-text-secondary mb-2">
-                Serious Allergies
+                {t("emergencySetup.allergies")}
               </Text>
               <TextInput
                 className="bg-background-secondary rounded-xl px-4 py-3 text-text-primary min-h-[80px]"
-                placeholder="List any life-threatening allergies..."
+                placeholder={t("emergencySetup.allergiesPlaceholder")}
                 placeholderTextColor="#64748B"
                 multiline
                 textAlignVertical="top"
@@ -225,11 +227,11 @@ export function EmergencySetupScreen() {
 
             <View className="mb-4">
               <Text className="text-sm text-text-secondary mb-2">
-                Health Conditions
+                {t("emergencySetup.healthConditions")}
               </Text>
               <TextInput
                 className="bg-background-secondary rounded-xl px-4 py-3 text-text-primary min-h-[80px]"
-                placeholder="Diabetes, Hypertension, etc."
+                placeholder={t("emergencySetup.healthConditionsPlaceholder")}
                 placeholderTextColor="#64748B"
                 multiline
                 textAlignVertical="top"
@@ -241,7 +243,7 @@ export function EmergencySetupScreen() {
             <View className="mb-4">
               <View className="flex-row items-center justify-between mb-2">
                 <Text className="text-sm text-text-secondary">
-                  Chronic Medications
+                  {t("emergencySetup.medications")}
                 </Text>
                 <Pressable
                   className="w-8 h-8 bg-primary-main rounded-full items-center justify-center active:opacity-80"
@@ -255,7 +257,7 @@ export function EmergencySetupScreen() {
                 <View key={index} className="flex-row items-center mb-2">
                   <TextInput
                     className="flex-1 bg-background-secondary rounded-xl px-4 py-3 text-text-primary"
-                    placeholder="Add medication"
+                    placeholder={t("emergencySetup.medicationPlaceholder")}
                     placeholderTextColor="#64748B"
                     value={medication}
                     onChangeText={(text) => handleMedicationChange(index, text)}
@@ -276,7 +278,7 @@ export function EmergencySetupScreen() {
           <View className="mb-6">
             <SectionHeader
               icon="🚨"
-              title="Emergency Contacts (ICE)"
+              title={t("emergencySetup.contacts")}
               iconBg="#EF4444"
             />
 
@@ -299,8 +301,8 @@ export function EmergencySetupScreen() {
               <Text className="text-xl mr-2">👥</Text>
               <Text className="text-sm font-medium text-text-secondary">
                 {contacts.length === 0
-                  ? "Add your first emergency contact"
-                  : "Add a secondary emergency contact"}
+                  ? t("emergencySetup.addContact")
+                  : t("emergencySetup.addContact")}
               </Text>
             </Pressable>
           </View>
@@ -326,7 +328,7 @@ export function EmergencySetupScreen() {
                     : "text-text-secondary"
                 }`}
               >
-                Save Emergency Information
+                {t("emergencySetup.saveProfile")}
               </Text>
             )}
           </Pressable>

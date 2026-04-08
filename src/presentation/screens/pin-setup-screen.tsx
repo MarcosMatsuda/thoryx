@@ -8,10 +8,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
 import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
+import { useTranslation } from "react-i18next";
 
 const PIN_LENGTH = 6;
 
 export function PinSetupScreen() {
+  const { t } = useTranslation();
   const [pin, setPin] = useState("");
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -75,11 +77,10 @@ export function PinSetupScreen() {
 
             <View className="items-center mb-6">
               <Text className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
-                Create Your Security PIN
+                {t("auth.createPin")}
               </Text>
               <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
-                This PIN will be used to authorize transactions and secure your
-                wallet.
+                {t("auth.createPinDesc")}
               </Text>
             </View>
 
@@ -103,7 +104,7 @@ export function PinSetupScreen() {
         <View className="px-6 pb-6">
           <View className="mb-4">
             <ToggleOption
-              title="Enable Biometric Unlock?"
+              title={t("auth.enableBiometrics")}
               subtitle="Use FaceID or Fingerprint for faster access"
               enabled={biometricEnabled}
               onToggle={handleToggleBiometric}
@@ -127,7 +128,7 @@ export function PinSetupScreen() {
                     : "text-text-secondary"
                 }`}
               >
-                Confirm and Continue
+                {t("common.confirm")}
               </Text>
               <Text
                 className={

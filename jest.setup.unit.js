@@ -36,6 +36,57 @@ jest.mock("react-native-mmkv", () => ({
   })),
 }));
 
+// Mock react-i18next and i18next for unit tests
+jest.mock("react-i18next", () => {
+  const mockPtBR = require("./src/shared/i18n/locales/pt-BR.json");
+  function mockGetNested(obj, path) {
+    return path.split(".").reduce((acc, key) => acc && acc[key], obj);
+  }
+  function mockT(key, params) {
+    let value = mockGetNested(mockPtBR, key) || key;
+    if (params && typeof value === "string") {
+      Object.entries(params).forEach(([k, v]) => {
+        value = value.replace(`{{${k}}}`, v);
+      });
+    }
+    return value;
+  }
+  return {
+    useTranslation: () => ({
+      t: mockT,
+      i18n: { language: "pt-BR", changeLanguage: jest.fn() },
+    }),
+    initReactI18next: { type: "3rdParty", init: jest.fn() },
+  };
+});
+
+jest.mock("i18next", () => {
+  const mockPtBR = require("./src/shared/i18n/locales/pt-BR.json");
+  function mockGetNested(obj, path) {
+    return path.split(".").reduce((acc, key) => acc && acc[key], obj);
+  }
+  function mockT(key, params) {
+    let value = mockGetNested(mockPtBR, key) || key;
+    if (params && typeof value === "string") {
+      Object.entries(params).forEach(([k, v]) => {
+        value = value.replace(`{{${k}}}`, v);
+      });
+    }
+    return value;
+  }
+  return {
+    t: mockT,
+    use: jest.fn().mockReturnThis(),
+    init: jest.fn(),
+    changeLanguage: jest.fn(),
+    language: "pt-BR",
+  };
+});
+
+jest.mock("expo-localization", () => ({
+  getLocales: () => [{ languageTag: "pt-BR", languageCode: "pt" }],
+}));
+
 // Mock console.log to suppress MMKV logs
 global.console.log = jest.fn();
 global.console.error = jest.fn();

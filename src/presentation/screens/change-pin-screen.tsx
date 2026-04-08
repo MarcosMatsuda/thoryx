@@ -12,12 +12,14 @@ import {
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
 import { VerifyPinUseCase } from "@domain/use-cases/verify-pin.use-case";
 import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
+import { useTranslation } from "react-i18next";
 
 const PIN_LENGTH = 6;
 
 type Step = "current" | "new";
 
 export function ChangePinScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [step, setStep] = useState<Step>("current");
   const [currentPin, setCurrentPin] = useState("");
@@ -99,17 +101,17 @@ export function ChangePinScreen() {
 
         if (result.success) {
           setShowConfirmation(false);
-          Alert.alert("Success", "Your PIN has been changed successfully.", [
+          Alert.alert(t("common.success"), t("auth.changePinSuccess"), [
             {
-              text: "OK",
+              text: t("common.ok"),
               onPress: () => router.back(),
             },
           ]);
         } else {
-          Alert.alert("Error", result.message || "Failed to save new PIN.");
+          Alert.alert(t("common.error"), result.message || t("common.error"));
         }
       } catch {
-        Alert.alert("Error", "Failed to save new PIN. Please try again.");
+        Alert.alert(t("common.error"), t("common.error"));
       }
     }
   };
@@ -117,9 +119,9 @@ export function ChangePinScreen() {
   const getTitle = () => {
     switch (step) {
       case "current":
-        return "Enter your current PIN";
+        return t("auth.currentPin");
       case "new":
-        return "Enter your new PIN";
+        return t("auth.newPin");
       default:
         return "";
     }
@@ -128,9 +130,9 @@ export function ChangePinScreen() {
   const getSubtitle = () => {
     switch (step) {
       case "current":
-        return "Please enter your current 6-digit PIN to continue.";
+        return t("auth.enterPin");
       case "new":
-        return "Create a new 6-digit PIN for your account.";
+        return t("auth.confirmPin");
       default:
         return "";
     }
@@ -174,7 +176,7 @@ export function ChangePinScreen() {
             <View className="items-center mb-4">
               <View className="flex-row items-center">
                 <Text className="text-sm font-semibold text-status-error">
-                  Incorrect PIN. Please try again.
+                  {t("auth.wrongPin")}
                 </Text>
               </View>
             </View>
@@ -215,9 +217,9 @@ export function ChangePinScreen() {
         onClose={() => setShowConfirmation(false)}
         onConfirm={handleConfirmNewPin}
         originalPin={newPin}
-        title="Confirm New PIN"
-        subtitle="Please re-enter your new 6-digit PIN to verify."
-        context="Change PIN"
+        title={t("auth.confirmPin")}
+        subtitle={t("auth.enterPin")}
+        context={t("auth.changePin")}
       />
     </SafeAreaView>
   );

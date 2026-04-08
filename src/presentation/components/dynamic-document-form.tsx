@@ -10,6 +10,7 @@ import {
 } from "@domain/entities/document-type-definition.entity";
 import { PHOTO_SLOT_LABELS } from "@domain/entities/document-type-registry";
 import { PhotoUpload } from "@presentation/components/photo-upload";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   typeDefinition: DocumentTypeDefinition;
@@ -26,6 +27,7 @@ export function DynamicDocumentForm({
   onFieldChange,
   onTakePhoto,
 }: Props) {
+  const { t } = useTranslation();
   const [calendarKey, setCalendarKey] = useState<string | null>(null);
 
   const formatDateInput = (text: string) => {
@@ -92,7 +94,7 @@ export function DynamicDocumentForm({
           <DropdownInput
             key={field.key}
             label={field.label}
-            placeholder={`Selecione ${field.label.toLowerCase()}`}
+            placeholder={`${t("addDocument.selectType")} ${field.label.toLowerCase()}`}
             value={value}
             options={(field.options ?? []).map((opt) => ({
               label: opt,
@@ -149,13 +151,13 @@ export function DynamicDocumentForm({
       {/* Photos */}
       <View className="mb-6">
         <Text className="text-xs font-semibold text-text-secondary tracking-wider mb-4">
-          FOTOS DO DOCUMENTO
+          {t("addDocument.documentPhotos")}
         </Text>
         {typeDefinition.photoSlots.map((slot) => (
           <PhotoUpload
             key={slot}
             title={PHOTO_SLOT_LABELS[slot] ?? slot}
-            subtitle="Toque para tirar foto"
+            subtitle={t("addDocument.tapToPhoto")}
             imageUri={photos[slot] ?? null}
             onPress={() => onTakePhoto(slot)}
           />

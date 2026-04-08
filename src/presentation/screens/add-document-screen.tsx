@@ -14,8 +14,10 @@ import {
 } from "@domain/entities/document-type-registry";
 import { DocumentTypeDefinition } from "@domain/entities/document-type-definition.entity";
 import { useDocumentsStore } from "@stores/documents.store";
+import { useTranslation } from "react-i18next";
 
 export function AddDocumentScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
   const { documentId } = params as { documentId?: string };
@@ -28,8 +30,8 @@ export function AddDocumentScreen() {
 
   const typeOptions = useMemo(
     () => [
-      ...allTypes.map((t) => ({ label: t.label, value: t.id, editable: !t.builtIn })),
-      { label: "+ Criar tipo personalizado", value: "__custom__" },
+      ...allTypes.map((dt) => ({ label: dt.label, value: dt.id, editable: !dt.builtIn })),
+      { label: t("addDocument.createCustomType"), value: "__custom__" },
     ],
     [allTypes],
   );
@@ -72,7 +74,7 @@ export function AddDocumentScreen() {
       }
     } catch (error) {
       console.error("Error loading document:", error);
-      Alert.alert("Erro", "Não foi possível carregar o documento");
+      Alert.alert(t("common.error"), t("addDocument.loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -93,7 +95,7 @@ export function AddDocumentScreen() {
   const handleTakePhoto = async (slot: string) => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permissão necessária", "Precisamos de acesso à câmera");
+      Alert.alert(t("addDocument.cameraPermission"), t("addDocument.cameraPermissionMsg"));
       return;
     }
 
@@ -110,7 +112,7 @@ export function AddDocumentScreen() {
       }
     } catch (error) {
       console.error("Error taking photo:", error);
-      Alert.alert("Erro", "Não foi possível tirar a foto");
+      Alert.alert(t("common.error"), t("addDocument.photoError"));
     }
   };
 
@@ -124,10 +126,10 @@ export function AddDocumentScreen() {
       if (result.success) {
         router.push("/(tabs)");
       } else {
-        Alert.alert("Erro", result.message);
+        Alert.alert(t("common.error"), result.message);
       }
     } catch {
-      Alert.alert("Erro", "Não foi possível excluir o documento");
+      Alert.alert(t("common.error"), t("addDocument.deleteError"));
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +137,7 @@ export function AddDocumentScreen() {
 
   const handleSaveDocument = async () => {
     if (!typeDefinition) {
-      Alert.alert("Erro", "Selecione um tipo de documento");
+      Alert.alert(t("common.error"), t("addDocument.selectTypeError"));
       return;
     }
 
@@ -155,14 +157,14 @@ export function AddDocumentScreen() {
       );
 
       if (result.success) {
-        Alert.alert("Sucesso", "Documento salvo com segurança", [
-          { text: "OK", onPress: () => router.push("/(tabs)") },
+        Alert.alert(t("common.success"), t("addDocument.savedSuccess"), [
+          { text: t("common.ok"), onPress: () => router.push("/(tabs)") },
         ]);
       } else {
-        Alert.alert("Erro", result.message);
+        Alert.alert(t("common.error"), result.message);
       }
     } catch {
-      Alert.alert("Erro", "Não foi possível salvar o documento");
+      Alert.alert(t("common.error"), t("addDocument.saveError"));
     } finally {
       setIsLoading(false);
     }
@@ -180,7 +182,7 @@ export function AddDocumentScreen() {
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
           <Text className="text-lg font-bold text-text-primary">
-            {isEditMode ? "Editar Documento" : "Adicionar Documento"}
+            {isEditMode ? t("addDocument.editTitle") : t("addDocument.title")}
           </Text>
           {isEditMode && documentId ? (
             <Pressable
@@ -202,8 +204,8 @@ export function AddDocumentScreen() {
         >
           {/* Type selector */}
           <DropdownInput
-            label="Tipo de Documento"
-            placeholder="Selecione o tipo"
+            label={t("addDocument.documentType")}
+            placeholder={t("addDocument.selectType")}
             value={selectedTypeId}
             options={typeOptions}
             onSelect={handleTypeSelect}
@@ -234,8 +236,7 @@ export function AddDocumentScreen() {
               </View>
             </View>
             <Text className="flex-1 text-sm text-text-secondary leading-5">
-              Seu documento é criptografado e armazenado localmente no
-              dispositivo. Somente você pode acessar essas informações.
+              {t("addDocument.encryptionNotice")}
             </Text>
           </View>
 
@@ -251,10 +252,10 @@ export function AddDocumentScreen() {
           >
             <Text className="text-base font-bold text-text-primary">
               {isLoading
-                ? "Salvando..."
+                ? t("common.saving")
                 : isEditMode
-                  ? "Atualizar Documento"
-                  : "Salvar Documento"}
+                  ? t("addDocument.updateDocument")
+                  : t("addDocument.saveDocument")}
             </Text>
           </Pressable>
         </ScrollView>

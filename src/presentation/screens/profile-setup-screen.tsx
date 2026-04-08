@@ -12,8 +12,10 @@ import { useRouter, useFocusEffect } from "expo-router";
 import { useUserProfile } from "@presentation/hooks/use-user-profile";
 import { useProfilePhoto } from "@presentation/hooks/use-profile-photo";
 import { UserAvatar } from "@presentation/components/user-avatar";
+import { useTranslation } from "react-i18next";
 
 export function ProfileSetupScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const { profile, saveProfile, reloadProfile } = useUserProfile();
@@ -46,8 +48,8 @@ export function ProfileSetupScreen() {
   const handleSave = async () => {
     if (name.trim().length < 2) {
       Alert.alert(
-        "Invalid Name",
-        "Please enter a name with at least 2 characters",
+        t("common.error"),
+        t("profile.nameRequired"),
       );
       return;
     }
@@ -67,7 +69,7 @@ export function ProfileSetupScreen() {
         router.replace("/(tabs)");
       }
     } else {
-      Alert.alert("Error", result.message);
+      Alert.alert(t("common.error"), result.message);
     }
   };
 
@@ -89,27 +91,27 @@ export function ProfileSetupScreen() {
           />
           <Pressable onPress={handleSelectPhoto} className="mt-3">
             <Text className="text-sm text-primary-main font-semibold">
-              {photoUri ? "Change Image" : "Choose Image"}
+              {photoUri ? t("profile.changeImage") : t("profile.chooseImage")}
             </Text>
           </Pressable>
         </View>
 
         <Text className="text-2xl font-bold text-text-primary mb-2 text-center">
-          {profile ? "Edit Profile" : "Welcome to Thoryx"}
+          {profile ? t("profile.editProfile") : t("profile.welcomeTitle")}
         </Text>
         <Text className="text-base text-text-secondary text-center mb-8">
           {profile
-            ? "Update your profile information"
-            : "Let's set up your profile to get started"}
+            ? t("profile.editProfile")
+            : t("profile.welcomeDesc")}
         </Text>
 
         <View className="mb-6">
           <Text className="text-sm font-semibold text-text-secondary mb-2">
-            YOUR NAME
+            {t("profile.yourName")}
           </Text>
           <TextInput
             className="bg-background-secondary rounded-xl px-4 py-4 text-text-primary text-base"
-            placeholder="Enter your name"
+            placeholder={t("profile.namePlaceholder")}
             placeholderTextColor="#9CA3AF"
             value={name}
             onChangeText={setName}
@@ -127,7 +129,7 @@ export function ProfileSetupScreen() {
             <ActivityIndicator color="#FFFFFF" />
           ) : (
             <Text className="text-white font-bold text-base">
-              {profile ? "Save Changes" : "Continue"}
+              {profile ? t("profile.saveChanges") : t("common.continue")}
             </Text>
           )}
         </Pressable>

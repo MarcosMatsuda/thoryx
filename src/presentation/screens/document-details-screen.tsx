@@ -19,8 +19,10 @@ import { DocumentRepositoryImpl } from "@data/repositories/document.repository.i
 import { Document } from "@domain/entities/document.entity";
 import { getDocumentTypeById } from "@domain/entities/document-type-registry";
 import { useDocumentsStore } from "@stores/documents.store";
+import { useTranslation } from "react-i18next";
 
 export function DocumentDetailsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
   const { documentId, guestMode } = params as {
@@ -111,7 +113,7 @@ export function DocumentDetailsScreen() {
       <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
           <Text className="text-lg text-text-secondary">
-            Documento não encontrado
+            {t("documentDetails.notFound")}
           </Text>
         </View>
       </SafeAreaView>
@@ -190,7 +192,7 @@ export function DocumentDetailsScreen() {
             <View className="px-6 mb-6">
               <View className="flex-row items-center justify-between mb-4">
                 <Text className="text-xl font-bold text-text-primary">
-                  Detalhes do Documento
+                  {t("documentDetails.title")}
                 </Text>
               </View>
 
@@ -222,10 +224,10 @@ export function DocumentDetailsScreen() {
                 <View className="flex-row items-center justify-between">
                   <View className="flex-1 mr-3">
                     <Text className="text-base font-medium text-text-primary">
-                      Incluir no Auto-lock
+                      {t("documentDetails.autoLock")}
                     </Text>
                     <Text className="text-sm text-text-secondary mt-1">
-                      Documento visível no Modo Convidado
+                      {t("documentDetails.autoLockDesc")}
                     </Text>
                   </View>
                   <View>
@@ -256,7 +258,7 @@ export function DocumentDetailsScreen() {
           <View className="px-6">
             <InfoBanner
               icon="🔒"
-              message="Este documento é criptografado e armazenado localmente no seu dispositivo."
+              message={t("documentDetails.encryptionNotice")}
             />
           </View>
         </ScrollView>

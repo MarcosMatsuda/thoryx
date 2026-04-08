@@ -9,6 +9,7 @@ import { Pressable, Text, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBiometry } from "@presentation/hooks/use-biometry";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
+import { useTranslation } from "react-i18next";
 
 const PIN_LENGTH = 6;
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
@@ -18,6 +19,7 @@ const storage = new SecureStorageAdapter(
 );
 
 export function UnlockWalletScreen() {
+  const { t } = useTranslation();
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -141,7 +143,7 @@ export function UnlockWalletScreen() {
 
             <View className="items-center mb-3">
               <Text className="text-3xl font-bold text-text-primary mb-1">
-                Unlock Wallet
+                {t("auth.unlockWallet")}
               </Text>
               <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
                 {biometryEnabled
@@ -171,7 +173,7 @@ export function UnlockWalletScreen() {
               <View className="items-center mt-2 mb-2">
                 <View className="flex-row items-center">
                   <Text className="text-sm font-semibold text-status-error">
-                    Incorrect PIN. Please try again.
+                    {t("auth.wrongPin")}
                   </Text>
                 </View>
               </View>
@@ -201,7 +203,7 @@ export function UnlockWalletScreen() {
         <View className="items-center pb-8">
           <Pressable className="py-3" onPress={() => router.push("/emergency")}>
             <Text className="text-base md:text-lg text-primary-main font-semibold">
-              Emergency Details
+              {t("auth.emergencyDetails")}
             </Text>
           </Pressable>
         </View>

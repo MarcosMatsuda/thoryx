@@ -4,8 +4,10 @@ import { ActivityIndicator, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function EmergencyRoute() {
+  const { t } = useTranslation();
   const { emergencyInfo, isLoading } = useEmergencyInfo();
   const router = useRouter();
 
@@ -30,16 +32,16 @@ export default function EmergencyRoute() {
               <Text className="text-2xl text-text-primary">←</Text>
             </Pressable>
             <Text className="text-lg font-bold text-text-primary ml-2">
-              Emergency Details
+              {t("emergency.title")}
             </Text>
           </View>
           <View className="flex-1 items-center justify-center px-6">
             <Text className="text-2xl mb-2">🚨</Text>
             <Text className="text-lg font-bold text-text-primary mb-2 text-center">
-              No Emergency Information
+              {t("emergency.noInfo")}
             </Text>
             <Text className="text-sm text-text-secondary text-center">
-              Emergency profile has not been set up yet. Log in to configure.
+              {t("emergency.noInfoUnauthDesc")}
             </Text>
           </View>
         </View>
