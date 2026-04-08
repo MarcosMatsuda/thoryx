@@ -6,11 +6,12 @@ import {
   ActivityIndicator,
   BackHandler,
   Image,
+  Modal,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DocumentPhotoCarousel } from "@presentation/components/document-photo-carousel";
 import { DetailRow } from "@presentation/components/detail-row";
-import { ActionButtonLarge } from "@presentation/components/action-button-large";
 import { InfoBanner } from "@presentation/components/info-banner";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
@@ -27,15 +28,17 @@ export function DocumentDetailsScreen() {
     guestMode?: string;
   };
   const isGuestMode = guestMode === "true";
-  const { customDocumentTypes } = useDocumentsStore();
+  const { customDocumentTypes, loadCustomTypes } = useDocumentsStore();
 
   const [document, setDocument] = useState<Document | null>(null);
   const [photoUris, setPhotoUris] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isAutoLockEnabled, setIsAutoLockEnabled] = useState(false);
   const [isTogglingAutoLock, setIsTogglingAutoLock] = useState(false);
+  const [fullscreenPhoto, setFullscreenPhoto] = useState<string | null>(null);
 
   useEffect(() => {
+    loadCustomTypes();
     if (documentId) {
       loadDocument();
     } else {
@@ -154,17 +157,26 @@ export function DocumentDetailsScreen() {
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="py-6">
-            {/* Photo carousel — adapt to available photos */}
+            {/* Photos — tap to view fullscreen */}
             {photoSlots.length >= 2 &&
               photoUris[photoSlots[0]] &&
               photoUris[photoSlots[1]] && (
-                <DocumentPhotoCarousel
-                  frontPhotoUri={photoUris[photoSlots[0]]}
-                  backPhotoUri={photoUris[photoSlots[1]]}
-                />
+                <View>
+                  <Pressable
+                    onPress={() => setFullscreenPhoto(photoUris[photoSlots[0]])}
+                  >
+                    <DocumentPhotoCarousel
+                      frontPhotoUri={photoUris[photoSlots[0]]}
+                      backPhotoUri={photoUris[photoSlots[1]]}
+                    />
+                  </Pressable>
+                </View>
               )}
             {photoSlots.length === 1 && photoUris[photoSlots[0]] && (
-              <View className="px-6 mb-4">
+              <Pressable
+                className="px-6 mb-4"
+                onPress={() => setFullscreenPhoto(photoUris[photoSlots[0]])}
+              >
                 <View className="rounded-2xl overflow-hidden">
                   <Image
                     source={{ uri: photoUris[photoSlots[0]] }}
@@ -172,7 +184,7 @@ export function DocumentDetailsScreen() {
                     resizeMode="cover"
                   />
                 </View>
-              </View>
+              </Pressable>
             )}
 
             <View className="px-6 mb-6">
@@ -223,7 +235,9 @@ export function DocumentDetailsScreen() {
                       <Pressable
                         onPress={handleToggleAutoLock}
                         className={`w-12 h-7 rounded-full justify-center ${
-                          isAutoLockEnabled ? "bg-primary-main" : "bg-text-secondary/30"
+                          isAutoLockEnabled
+                            ? "bg-primary-main"
+                            : "bg-text-secondary/30"
                         }`}
                       >
                         <View
@@ -240,26 +254,52 @@ export function DocumentDetailsScreen() {
           )}
 
           <View className="px-6">
-            <View className="gap-3 mb-6">
-              <ActionButtonLarge
-                icon="🔗"
-                label="Compartilhar com Segurança"
-                variant="primary"
-              />
-              <ActionButtonLarge
-                icon="📱"
-                label="Mostrar QR Code"
-                variant="secondary"
-              />
-            </View>
-
             <InfoBanner
               icon="🔒"
-              message="Este documento é criptografado e armazenado localmente no seu dispositivo. Compartilhar cria um link temporário com tempo limitado."
+              message="Este documento é criptografado e armazenado localmente no seu dispositivo."
             />
           </View>
         </ScrollView>
       </View>
+
+      {/* Fullscreen photo modal — rotated to fill screen */}
+      <Modal
+        visible={fullscreenPhoto !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setFullscreenPhoto(null)}
+      >
+        <Pressable
+          className="flex-1 bg-black items-center justify-center"
+          onPress={() => setFullscreenPhoto(null)}
+        >
+          {fullscreenPhoto && (
+            <View
+              style={{
+                transform: [{ rotate: "90deg" }],
+                width: Dimensions.get("window").height,
+                height: Dimensions.get("window").width,
+              }}
+              className="items-center justify-center"
+            >
+              <Image
+                source={{ uri: fullscreenPhoto }}
+                style={{
+                  width: Dimensions.get("window").height * 0.95,
+                  height: Dimensions.get("window").width * 0.95,
+                }}
+                resizeMode="contain"
+              />
+            </View>
+          )}
+          <Pressable
+            className="absolute top-14 right-6 w-10 h-10 bg-white/20 rounded-full items-center justify-center"
+            onPress={() => setFullscreenPhoto(null)}
+          >
+            <Text className="text-white text-xl font-bold">✕</Text>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }

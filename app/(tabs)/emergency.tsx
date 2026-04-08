@@ -28,5 +28,5 @@ export default function EmergencyTab() {
   }
 
   // Se tem informações, mostra a tela de detalhes
-  return <EmergencyDetailsScreen />;
+  return <EmergencyDetailsScreen isAuthenticated={true} />;
 }

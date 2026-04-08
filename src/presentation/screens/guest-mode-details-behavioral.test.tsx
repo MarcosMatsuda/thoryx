@@ -81,6 +81,7 @@ jest.mock("@presentation/components/info-banner", () => ({
 jest.mock("@stores/documents.store", () => ({
   useDocumentsStore: jest.fn(() => ({
     customDocumentTypes: [],
+    loadCustomTypes: jest.fn(),
   })),
 }));
 
@@ -275,9 +276,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       });
 
       // Auto-lock toggle should NOT exist in guest mode
-      expect(
-        screen.queryByText("Incluir no Auto-lock"),
-      ).toBeNull();
+      expect(screen.queryByText("Incluir no Auto-lock")).toBeNull();
     });
 
     it("should show auto-lock toggle for RG documents when NOT in guest mode", async () => {
@@ -295,9 +294,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       });
 
       // Auto-lock toggle should exist
-      expect(
-        screen.getByText("Incluir no Auto-lock"),
-      ).toBeTruthy();
+      expect(screen.getByText("Incluir no Auto-lock")).toBeTruthy();
     });
 
     it("should show auto-lock toggle for CNH documents when NOT in guest mode", async () => {
@@ -317,13 +314,15 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       });
 
       // Auto-lock toggle should exist for CNH
-      expect(
-        screen.getByText("Incluir no Auto-lock"),
-      ).toBeTruthy();
+      expect(screen.getByText("Incluir no Auto-lock")).toBeTruthy();
     });
 
     it("should show auto-lock toggle for CreditCard documents when not in guest mode", async () => {
-      const creditCardDoc = { ...mockDocument, typeId: "CreditCard", typeName: "Credit Card" };
+      const creditCardDoc = {
+        ...mockDocument,
+        typeId: "CreditCard",
+        typeName: "Credit Card",
+      };
 
       (useLocalSearchParams as jest.Mock).mockReturnValue({
         documentId: "doc-123",
@@ -340,9 +339,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       });
 
       // Auto-lock toggle should exist for ALL document types when not in guest mode
-      expect(
-        screen.getByText("Incluir no Auto-lock"),
-      ).toBeTruthy();
+      expect(screen.getByText("Incluir no Auto-lock")).toBeTruthy();
     });
   });
 
@@ -367,7 +364,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       expect(screen.getByTestId("detail-row-Data de Nascimento")).toBeTruthy();
     });
 
-    it("should display action buttons in guest mode", async () => {
+    it("should display encryption info banner in guest mode", async () => {
       (useLocalSearchParams as jest.Mock).mockReturnValue({
         documentId: "doc-123",
         guestMode: "true",
@@ -382,9 +379,10 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
         expect(screen.getByText("John Doe")).toBeTruthy();
       });
 
-      // Action buttons should still be visible (Portuguese labels)
-      expect(screen.getByTestId("action-button-Compartilhar com Segurança")).toBeTruthy();
-      expect(screen.getByTestId("action-button-Mostrar QR Code")).toBeTruthy();
+      // Encryption info banner should be visible
+      expect(
+        screen.getByText(/criptografado e armazenado localmente/),
+      ).toBeTruthy();
     });
 
     it("should display photo carousel when photos are decrypted", async () => {
@@ -457,7 +455,11 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
         guestMode: "true",
       });
 
-      mockFindById.mockResolvedValue({ ...mockDocument, typeId: "RG", typeName: "RG" });
+      mockFindById.mockResolvedValue({
+        ...mockDocument,
+        typeId: "RG",
+        typeName: "RG",
+      });
       mockDecryptPhoto.mockResolvedValue("data:image/png;base64,test");
 
       render(<DocumentDetailsScreen />);
@@ -473,7 +475,11 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
         guestMode: "true",
       });
 
-      mockFindById.mockResolvedValue({ ...mockDocument, typeId: "CNH", typeName: "CNH" });
+      mockFindById.mockResolvedValue({
+        ...mockDocument,
+        typeId: "CNH",
+        typeName: "CNH",
+      });
       mockDecryptPhoto.mockResolvedValue("data:image/png;base64,test");
 
       render(<DocumentDetailsScreen />);
@@ -489,7 +495,11 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
         guestMode: "true",
       });
 
-      mockFindById.mockResolvedValue({ ...mockDocument, typeId: "UnknownType", typeName: "UnknownType" });
+      mockFindById.mockResolvedValue({
+        ...mockDocument,
+        typeId: "UnknownType",
+        typeName: "UnknownType",
+      });
       mockDecryptPhoto.mockResolvedValue("data:image/png;base64,test");
 
       render(<DocumentDetailsScreen />);
