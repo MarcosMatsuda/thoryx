@@ -4,6 +4,16 @@ import { PinDot } from "./pin-dot";
 import { NumericKeypad } from "./numeric-keypad";
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
 import { VerifyPinUseCase } from "@domain/use-cases/verify-pin.use-case";
+import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
+import { useBiometry } from "@presentation/hooks/use-biometry";
+import { useTranslation } from "react-i18next";
+import { Fingerprint } from "lucide-react-native";
+
+const BIOMETRY_ENABLED_KEY = "biometry_enabled";
+const settingsStorage = new SecureStorageAdapter(
+  "settings-storage",
+  "thoryx-mmkv-encryption-key-2026",
+);
 
 interface PinAuthBottomSheetProps {
   visible: boolean;
@@ -19,12 +29,53 @@ export function PinAuthBottomSheet({
   visible,
   onSuccess,
   onClose,
-  title = "Enter PIN to Exit",
-  subtitle = "Please enter your 6-digit PIN to exit Secure Mode.",
+  title,
+  subtitle,
 }: PinAuthBottomSheetProps) {
+  const { t } = useTranslation();
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [biometryEnabled, setBiometryEnabled] = useState(false);
+  const { isAvailable: biometryAvailable, authenticate, getBiometryName } = useBiometry();
+
+  useEffect(() => {
+    if (visible) {
+      loadBiometryPreference();
+    }
+  }, [visible]);
+
+  const loadBiometryPreference = async () => {
+    try {
+      const saved = await settingsStorage.get(BIOMETRY_ENABLED_KEY);
+      setBiometryEnabled(saved === "true" && biometryAvailable);
+    } catch {
+      setBiometryEnabled(false);
+    }
+  };
+
+  const handleBiometryAuth = async () => {
+    try {
+      const result = await authenticate();
+      if (result.success) {
+        setPin("");
+        setError("");
+        onSuccess();
+      } else {
+        setError(t("auth.wrongPin"));
+      }
+    } catch {
+      setError(t("common.error"));
+    }
+  };
+
+  // Auto-trigger biometry when sheet opens
+  useEffect(() => {
+    if (visible && biometryEnabled) {
+      const timer = setTimeout(handleBiometryAuth, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [visible, biometryEnabled]);
 
   const handleKeyPress = (value: string) => {
     if (pin.length < PIN_LENGTH) {
@@ -39,10 +90,7 @@ export function PinAuthBottomSheet({
   };
 
   const verifyPin = async () => {
-    if (pin.length !== PIN_LENGTH) {
-      setError("PIN must be 6 digits");
-      return;
-    }
+    if (pin.length !== PIN_LENGTH) return;
 
     setIsVerifying(true);
     try {
@@ -55,14 +103,14 @@ export function PinAuthBottomSheet({
         setError("");
         onSuccess();
       } else {
-        setError(result.message || "Invalid PIN. Please try again.");
+        setError(result.message || t("auth.wrongPin"));
         setTimeout(() => {
           setPin("");
           setError("");
         }, 1500);
       }
-    } catch (err) {
-      setError("Failed to verify PIN. Please try again.");
+    } catch {
+      setError(t("common.error"));
       setTimeout(() => {
         setPin("");
         setError("");
@@ -102,16 +150,18 @@ export function PinAuthBottomSheet({
           <View className="flex-1 w-full max-w-[500px] self-center">
             <View className="items-center pt-4 pb-2">
               <View className="w-12 h-1 bg-light-border dark:bg-ui-border rounded-full mb-4" />
-              <Text className="text-base text-light-textSecondary dark:text-text-secondary">Secure Mode</Text>
+              <Text className="text-base text-light-textSecondary dark:text-text-secondary">
+                {t("guestMode.exitSecureMode")}
+              </Text>
             </View>
 
             <View className="px-4 md:px-8 pt-4">
               <View className="items-center">
                 <Text className="text-3xl md:text-4xl font-bold text-light-text dark:text-text-primary mb-2">
-                  {title}
+                  {title || t("auth.enterPin")}
                 </Text>
                 <Text className="text-sm md:text-base text-light-textSecondary dark:text-text-secondary text-center px-6 md:px-8">
-                  {subtitle}
+                  {subtitle || t("auth.createPinDesc")}
                 </Text>
               </View>
 
@@ -145,13 +195,24 @@ export function PinAuthBottomSheet({
               </View>
             </View>
 
-            <View className="px-6 pb-8">
+            <View className="px-6 pb-8 gap-3">
+              {biometryEnabled && (
+                <Pressable
+                  className="bg-primary-main rounded-xl py-4 flex-row items-center justify-center active:bg-primary-dark"
+                  onPress={handleBiometryAuth}
+                >
+                  <Fingerprint size={20} color="#FFFFFF" />
+                  <Text className="text-base font-semibold text-white ml-2">
+                    {getBiometryName()}
+                  </Text>
+                </Pressable>
+              )}
               <Pressable
                 className="bg-light-border dark:bg-ui-border rounded-xl py-4 items-center"
                 onPress={handleClose}
               >
                 <Text className="text-base font-semibold text-light-text dark:text-text-primary">
-                  Cancel
+                  {t("common.cancel")}
                 </Text>
               </Pressable>
             </View>
