@@ -15,7 +15,7 @@ export function PinDot({ filled, error = false, testID }: PinDotProps) {
           ? "bg-status-error border-status-error"
           : filled
             ? "bg-primary-main border-primary-main"
-            : "bg-transparent border-ui-border"
+            : "bg-transparent border-light-border dark:border-ui-border"
       }`}
     />
   );

@@ -43,7 +43,7 @@ export function DocumentPhotoCarousel({
         <View style={{ width: photoWidth, marginRight: 16 }}>
           <Image
             source={{ uri: frontPhotoUri }}
-            className="w-full rounded-2xl bg-background-secondary"
+            className="w-full rounded-2xl bg-light-bgSecondary dark:bg-background-secondary"
             style={{ aspectRatio: 4 / 3 }}
             resizeMode="cover"
           />
@@ -51,7 +51,7 @@ export function DocumentPhotoCarousel({
         <View style={{ width: photoWidth }}>
           <Image
             source={{ uri: backPhotoUri }}
-            className="w-full rounded-2xl bg-background-secondary"
+            className="w-full rounded-2xl bg-light-bgSecondary dark:bg-background-secondary"
             style={{ aspectRatio: 4 / 3 }}
             resizeMode="cover"
           />
@@ -60,10 +60,10 @@ export function DocumentPhotoCarousel({
 
       <View className="flex-row justify-center gap-2 mt-4">
         <View
-          className={`w-2 h-2 rounded-full ${currentIndex === 0 ? "bg-primary-main" : "bg-ui-border"}`}
+          className={`w-2 h-2 rounded-full ${currentIndex === 0 ? "bg-primary-main" : "bg-light-border dark:bg-ui-border"}`}
         />
         <View
-          className={`w-2 h-2 rounded-full ${currentIndex === 1 ? "bg-primary-main" : "bg-ui-border"}`}
+          className={`w-2 h-2 rounded-full ${currentIndex === 1 ? "bg-primary-main" : "bg-light-border dark:bg-ui-border"}`}
         />
       </View>
     </View>

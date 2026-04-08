@@ -100,7 +100,7 @@ export function DocumentDetailsScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#3B82F6" />
         </View>
@@ -110,9 +110,9 @@ export function DocumentDetailsScreen() {
 
   if (!document) {
     return (
-      <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
-          <Text className="text-lg text-text-secondary">
+          <Text className="text-lg text-light-textSecondary dark:text-text-secondary">
             {t("documentDetails.notFound")}
           </Text>
         </View>
@@ -124,9 +124,9 @@ export function DocumentDetailsScreen() {
   const photoSlots = Object.keys(photoUris);
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <View className="flex-1">
-        <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+        <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => {
@@ -137,9 +137,9 @@ export function DocumentDetailsScreen() {
               }
             }}
           >
-            <Text className="text-2xl text-text-primary">←</Text>
+            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
           </Pressable>
-          <Text className="text-lg font-bold text-text-primary">
+          <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {document.typeName ?? typeDef?.label ?? "Documento"}
           </Text>
           {!isGuestMode && (
@@ -191,12 +191,12 @@ export function DocumentDetailsScreen() {
 
             <View className="px-6 mb-6">
               <View className="flex-row items-center justify-between mb-4">
-                <Text className="text-xl font-bold text-text-primary">
+                <Text className="text-xl font-bold text-light-text dark:text-text-primary">
                   {t("documentDetails.title")}
                 </Text>
               </View>
 
-              <View className="bg-background-secondary rounded-2xl px-4">
+              <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl px-4">
                 {/* Render fields dynamically from schema or raw fields */}
                 {typeDef
                   ? typeDef.fields.map((fieldDef) => {
@@ -220,13 +220,13 @@ export function DocumentDetailsScreen() {
           {/* Auto-lock toggle — available for all document types */}
           {!isGuestMode && (
             <View className="px-6 mb-6">
-              <View className="bg-background-secondary rounded-2xl overflow-hidden px-4 py-4">
+              <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl overflow-hidden px-4 py-4">
                 <View className="flex-row items-center justify-between">
                   <View className="flex-1 mr-3">
-                    <Text className="text-base font-medium text-text-primary">
+                    <Text className="text-base font-medium text-light-text dark:text-text-primary">
                       {t("documentDetails.autoLock")}
                     </Text>
-                    <Text className="text-sm text-text-secondary mt-1">
+                    <Text className="text-sm text-light-textSecondary dark:text-text-secondary mt-1">
                       {t("documentDetails.autoLockDesc")}
                     </Text>
                   </View>

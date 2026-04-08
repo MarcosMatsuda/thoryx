@@ -70,13 +70,13 @@ export function SelectDocumentsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <View className="flex-1">
-        <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+        <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable onPress={() => router.back()}>
-            <Text className="text-2xl text-text-primary">✕</Text>
+            <Text className="text-2xl text-light-text dark:text-text-primary">✕</Text>
           </Pressable>
-          <Text className="text-lg md:text-xl font-bold text-text-primary">
+          <Text className="text-lg md:text-xl font-bold text-light-text dark:text-text-primary">
             {t("selectDocuments.title")}
           </Text>
           <Pressable>
@@ -88,22 +88,22 @@ export function SelectDocumentsScreen() {
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="px-6 py-6">
-            <Text className="text-2xl md:text-3xl font-bold text-text-primary mb-3 leading-tight">
+            <Text className="text-2xl md:text-3xl font-bold text-light-text dark:text-text-primary mb-3 leading-tight">
               {t("selectDocuments.heading")}
             </Text>
-            <Text className="text-sm md:text-base text-text-secondary mb-6 leading-5">
+            <Text className="text-sm md:text-base text-light-textSecondary dark:text-text-secondary mb-6 leading-5">
               {t("selectDocuments.description")}
             </Text>
 
             <View className="mb-6">
               {isLoading ? (
-                <Text className="text-text-secondary text-center py-8">
+                <Text className="text-light-textSecondary dark:text-text-secondary text-center py-8">
                   {t("selectDocuments.loadingDocuments")}
                 </Text>
               ) : documents.length === 0 ? (
                 <View className="items-center justify-center py-12">
                   <Text className="text-6xl mb-4">📄</Text>
-                  <Text className="text-base md:text-lg text-text-secondary mb-6 text-center">
+                  <Text className="text-base md:text-lg text-light-textSecondary dark:text-text-secondary mb-6 text-center">
                     {t("selectDocuments.noDocuments")}
                   </Text>
                 </View>
@@ -128,37 +128,39 @@ export function SelectDocumentsScreen() {
               <View className="flex-row items-start">
                 <Text className="text-2xl mr-3">🔒</Text>
                 <View className="flex-1">
-                  <Text className="text-sm md:text-base font-bold text-text-primary mb-2">
+                  <Text className="text-sm md:text-base font-bold text-light-text dark:text-text-primary mb-2">
                     {t("selectDocuments.secureLockTitle")}
                   </Text>
-                  <Text className="text-xs md:text-sm text-text-secondary leading-5">
+                  <Text className="text-xs md:text-sm text-light-textSecondary dark:text-text-secondary leading-5">
                     {t("selectDocuments.secureLockDesc")}
                   </Text>
                 </View>
               </View>
             </View>
 
-            <View className="bg-background-secondary rounded-2xl p-4 md:p-5 mb-6 flex-row items-center justify-between">
+            <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-4 md:p-5 mb-6 flex-row items-center justify-between">
               <View className="flex-row items-center">
                 <Text className="text-xl md:text-2xl mr-2">🛡️</Text>
-                <Text className="text-base md:text-lg font-semibold text-text-primary">
+                <Text className="text-base md:text-lg font-semibold text-light-text dark:text-text-primary">
                   {t("selectDocuments.sharingCount")}{" "}
                   <Text className="text-primary-main">
                     {selectedDocIds.length}
                   </Text>{" "}
-                  {selectedDocIds.length !== 1 ? t("selectDocuments.sharingDocumentsPlural") : t("selectDocuments.sharingDocuments")}
+                  {selectedDocIds.length !== 1
+                    ? t("selectDocuments.sharingDocumentsPlural")
+                    : t("selectDocuments.sharingDocuments")}
                 </Text>
               </View>
             </View>
           </View>
         </ScrollView>
 
-        <View className="px-6 pb-6 pt-4 bg-background-primary border-t border-ui-border">
+        <View className="px-6 pb-6 pt-4 bg-light-bg dark:bg-background-primary border-t border-light-border dark:border-ui-border">
           <Pressable
             className="bg-primary-main rounded-xl py-4 items-center active:opacity-90"
             onPress={handleConfirm}
           >
-            <Text className="text-base md:text-lg font-bold text-text-primary">
+            <Text className="text-base md:text-lg font-bold text-light-text dark:text-text-primary">
               {t("selectDocuments.confirmLock")}
             </Text>
           </Pressable>

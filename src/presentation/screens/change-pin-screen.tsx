@@ -154,7 +154,7 @@ export function ChangePinScreen() {
 
   return (
     <SafeAreaView
-      className="flex-1 bg-background-primary"
+      className="flex-1 bg-light-bg dark:bg-background-primary"
       edges={["top", "bottom"]}
     >
       {/* Header */}
@@ -163,10 +163,10 @@ export function ChangePinScreen() {
       <View className="flex-1 w-full max-w-[500px] self-center">
         <View className="px-6 pt-6 pb-4">
           <View className="items-center mb-6">
-            <Text className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
+            <Text className="text-3xl md:text-4xl font-bold text-light-text dark:text-text-primary mb-2">
               {getTitle()}
             </Text>
-            <Text className="text-sm md:text-base text-text-secondary text-center px-6 md:px-8">
+            <Text className="text-sm md:text-base text-light-textSecondary dark:text-text-secondary text-center px-6 md:px-8">
               {getSubtitle()}
             </Text>
           </View>

@@ -32,7 +32,11 @@ describe("useDocumentsStore", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useDocumentsStore.setState({ documents: [], customDocumentTypes: [], isLoading: false });
+    useDocumentsStore.setState({
+      documents: [],
+      customDocumentTypes: [],
+      isLoading: false,
+    });
   });
 
   describe("Initial state", () => {
@@ -55,8 +59,12 @@ describe("useDocumentsStore", () => {
 
   describe("loadDocuments action", () => {
     it("should load documents successfully", async () => {
-      const mockUseCase = { execute: jest.fn().mockResolvedValue(mockDocuments) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(mockDocuments),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -67,8 +75,12 @@ describe("useDocumentsStore", () => {
     });
 
     it("should handle error when loading documents fails", async () => {
-      const mockUseCase = { execute: jest.fn().mockRejectedValue(new Error("Network error")) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("Network error")),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -80,7 +92,9 @@ describe("useDocumentsStore", () => {
 
     it("should load empty array when no documents exist", async () => {
       const mockUseCase = { execute: jest.fn().mockResolvedValue([]) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -90,13 +104,17 @@ describe("useDocumentsStore", () => {
 
     it("should replace previous documents on new load", async () => {
       const mockUseCase = { execute: jest.fn() };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
 
       mockUseCase.execute.mockResolvedValueOnce([mockDocuments[0]]);
       await loadDocuments();
-      expect(useDocumentsStore.getState().documents).toEqual([mockDocuments[0]]);
+      expect(useDocumentsStore.getState().documents).toEqual([
+        mockDocuments[0],
+      ]);
 
       mockUseCase.execute.mockResolvedValueOnce(mockDocuments);
       await loadDocuments();
@@ -106,8 +124,12 @@ describe("useDocumentsStore", () => {
 
   describe("reset action", () => {
     it("should reset documents to empty array", async () => {
-      const mockUseCase = { execute: jest.fn().mockResolvedValue(mockDocuments) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(mockDocuments),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments, reset } = useDocumentsStore.getState();
       await loadDocuments();
@@ -123,8 +145,12 @@ describe("useDocumentsStore", () => {
 
   describe("Document structure validation", () => {
     it("should maintain document structure after load", async () => {
-      const mockUseCase = { execute: jest.fn().mockResolvedValue(mockDocuments) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(mockDocuments),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
@@ -137,14 +163,22 @@ describe("useDocumentsStore", () => {
     });
 
     it("should handle documents with auto-lock disabled", async () => {
-      const docsWithoutAutoLock = [{ ...mockDocuments[0], isAutoLockEnabled: false }];
-      const mockUseCase = { execute: jest.fn().mockResolvedValue(docsWithoutAutoLock) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const docsWithoutAutoLock = [
+        { ...mockDocuments[0], isAutoLockEnabled: false },
+      ];
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(docsWithoutAutoLock),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();
 
-      expect(useDocumentsStore.getState().documents[0].isAutoLockEnabled).toBe(false);
+      expect(useDocumentsStore.getState().documents[0].isAutoLockEnabled).toBe(
+        false,
+      );
     });
   });
 
@@ -162,7 +196,9 @@ describe("useDocumentsStore", () => {
       }));
 
       const mockUseCase = { execute: jest.fn().mockResolvedValue(largeArray) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { loadDocuments } = useDocumentsStore.getState();
       await loadDocuments();

@@ -38,7 +38,11 @@ const mockDocuments: Document[] = [
 describe("useDocuments Hook - Integration Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useDocumentsStore.setState({ documents: [], customDocumentTypes: [], isLoading: false });
+    useDocumentsStore.setState({
+      documents: [],
+      customDocumentTypes: [],
+      isLoading: false,
+    });
   });
 
   describe("Hook initialization and loading", () => {
@@ -56,9 +60,15 @@ describe("useDocuments Hook - Integration Tests", () => {
 
   describe("Hook with store integration", () => {
     it("should load documents from store after mount", async () => {
-      const { GetAllDocumentsUseCase } = require("@domain/use-cases/get-all-documents.use-case");
-      const mockUseCase = { execute: jest.fn().mockResolvedValue(mockDocuments) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const {
+        GetAllDocumentsUseCase,
+      } = require("@domain/use-cases/get-all-documents.use-case");
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(mockDocuments),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { result } = renderHook(() => useDocuments());
 
@@ -68,9 +78,15 @@ describe("useDocuments Hook - Integration Tests", () => {
     });
 
     it("should handle errors gracefully during load", async () => {
-      const { GetAllDocumentsUseCase } = require("@domain/use-cases/get-all-documents.use-case");
-      const mockUseCase = { execute: jest.fn().mockRejectedValue(new Error("Network error")) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const {
+        GetAllDocumentsUseCase,
+      } = require("@domain/use-cases/get-all-documents.use-case");
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error("Network error")),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { result } = renderHook(() => useDocuments());
 
@@ -92,7 +108,9 @@ describe("useDocuments Hook - Integration Tests", () => {
 
   describe("Integration: Hook → Store → UseCase", () => {
     it("should correctly pass through store data to hook", async () => {
-      const { GetAllDocumentsUseCase } = require("@domain/use-cases/get-all-documents.use-case");
+      const {
+        GetAllDocumentsUseCase,
+      } = require("@domain/use-cases/get-all-documents.use-case");
       const testDoc: Document = {
         id: "doc-test",
         typeId: "RG",
@@ -105,7 +123,9 @@ describe("useDocuments Hook - Integration Tests", () => {
       };
 
       const mockUseCase = { execute: jest.fn().mockResolvedValue([testDoc]) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { result } = renderHook(() => useDocuments());
 
@@ -113,14 +133,22 @@ describe("useDocuments Hook - Integration Tests", () => {
         expect(result.current.documents).toContainEqual(testDoc);
       });
 
-      expect(result.current.documents[0].fields.fullName).toBe("Integration Test");
+      expect(result.current.documents[0].fields.fullName).toBe(
+        "Integration Test",
+      );
       expect(result.current.documents[0].typeId).toBe("RG");
     });
 
     it("should maintain document data structure through hook", async () => {
-      const { GetAllDocumentsUseCase } = require("@domain/use-cases/get-all-documents.use-case");
-      const mockUseCase = { execute: jest.fn().mockResolvedValue(mockDocuments) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const {
+        GetAllDocumentsUseCase,
+      } = require("@domain/use-cases/get-all-documents.use-case");
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(mockDocuments),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { result } = renderHook(() => useDocuments());
 
@@ -137,9 +165,15 @@ describe("useDocuments Hook - Integration Tests", () => {
     });
 
     it("should preserve isAutoLockEnabled flag through hook", async () => {
-      const { GetAllDocumentsUseCase } = require("@domain/use-cases/get-all-documents.use-case");
-      const mockUseCase = { execute: jest.fn().mockResolvedValue(mockDocuments) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const {
+        GetAllDocumentsUseCase,
+      } = require("@domain/use-cases/get-all-documents.use-case");
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(mockDocuments),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { result } = renderHook(() => useDocuments());
 
@@ -147,7 +181,9 @@ describe("useDocuments Hook - Integration Tests", () => {
         expect(result.current.documents.length).toBe(2);
       });
 
-      const autoLockedDocs = result.current.documents.filter((d) => d.isAutoLockEnabled);
+      const autoLockedDocs = result.current.documents.filter(
+        (d) => d.isAutoLockEnabled,
+      );
       expect(autoLockedDocs).toHaveLength(1);
       expect(autoLockedDocs[0].id).toBe("doc-2");
     });
@@ -155,9 +191,15 @@ describe("useDocuments Hook - Integration Tests", () => {
 
   describe("Edge cases", () => {
     it("should handle multiple document types correctly", async () => {
-      const { GetAllDocumentsUseCase } = require("@domain/use-cases/get-all-documents.use-case");
-      const mockUseCase = { execute: jest.fn().mockResolvedValue(mockDocuments) };
-      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+      const {
+        GetAllDocumentsUseCase,
+      } = require("@domain/use-cases/get-all-documents.use-case");
+      const mockUseCase = {
+        execute: jest.fn().mockResolvedValue(mockDocuments),
+      };
+      (GetAllDocumentsUseCase as jest.Mock).mockImplementation(
+        () => mockUseCase,
+      );
 
       const { result } = renderHook(() => useDocuments());
 

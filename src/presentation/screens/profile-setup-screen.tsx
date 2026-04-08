@@ -47,10 +47,7 @@ export function ProfileSetupScreen() {
 
   const handleSave = async () => {
     if (name.trim().length < 2) {
-      Alert.alert(
-        t("common.error"),
-        t("profile.nameRequired"),
-      );
+      Alert.alert(t("common.error"), t("profile.nameRequired"));
       return;
     }
 
@@ -81,7 +78,7 @@ export function ProfileSetupScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary px-6" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary px-6" edges={["top"]}>
       <View className="flex-1 justify-center">
         <View className="items-center mb-6">
           <UserAvatar
@@ -96,21 +93,19 @@ export function ProfileSetupScreen() {
           </Pressable>
         </View>
 
-        <Text className="text-2xl font-bold text-text-primary mb-2 text-center">
+        <Text className="text-2xl font-bold text-light-text dark:text-text-primary mb-2 text-center">
           {profile ? t("profile.editProfile") : t("profile.welcomeTitle")}
         </Text>
-        <Text className="text-base text-text-secondary text-center mb-8">
-          {profile
-            ? t("profile.editProfile")
-            : t("profile.welcomeDesc")}
+        <Text className="text-base text-light-textSecondary dark:text-text-secondary text-center mb-8">
+          {profile ? t("profile.editProfile") : t("profile.welcomeDesc")}
         </Text>
 
         <View className="mb-6">
-          <Text className="text-sm font-semibold text-text-secondary mb-2">
+          <Text className="text-sm font-semibold text-light-textSecondary dark:text-text-secondary mb-2">
             {t("profile.yourName")}
           </Text>
           <TextInput
-            className="bg-background-secondary rounded-xl px-4 py-4 text-text-primary text-base"
+            className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 text-light-text dark:text-text-primary text-base"
             placeholder={t("profile.namePlaceholder")}
             placeholderTextColor="#9CA3AF"
             value={name}

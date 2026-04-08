@@ -28,7 +28,7 @@ export function AlertBanner({
           <Text className="text-sm font-bold text-status-error mb-1 tracking-wide">
             {title}
           </Text>
-          <Text className="text-xs text-text-secondary leading-5">
+          <Text className="text-xs text-light-textSecondary dark:text-text-secondary leading-5">
             {message}
           </Text>
         </View>
@@ -37,13 +37,13 @@ export function AlertBanner({
       {toggleLabel && toggleSubtitle && (
         <View className="mt-2">
           <View className="flex-row items-center justify-between">
-            <Text className="text-sm text-text-secondary flex-1">
+            <Text className="text-sm text-light-textSecondary dark:text-text-secondary flex-1">
               {toggleLabel}
             </Text>
             <View className="ml-4">
               <View
                 className={`w-12 h-7 rounded-full justify-center ${
-                  toggleEnabled ? "bg-primary-main" : "bg-ui-border"
+                  toggleEnabled ? "bg-primary-main" : "bg-light-border dark:bg-ui-border"
                 }`}
               >
                 <View

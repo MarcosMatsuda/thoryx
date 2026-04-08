@@ -15,8 +15,26 @@ import { useDocumentsStore } from "@stores/documents.store";
 import { useTranslation } from "react-i18next";
 
 const ICON_OPTIONS = [
-  "📄", "📋", "🏥", "🎖️", "⚖️", "🎓", "🏢", "🚗", "✈️", "💼",
-  "🆔", "📜", "🛡️", "⭐", "🔑", "📝", "🏠", "💳", "🎫", "📌",
+  "📄",
+  "📋",
+  "🏥",
+  "🎖️",
+  "⚖️",
+  "🎓",
+  "🏢",
+  "🚗",
+  "✈️",
+  "💼",
+  "🆔",
+  "📜",
+  "🛡️",
+  "⭐",
+  "🔑",
+  "📝",
+  "🏠",
+  "💳",
+  "🎫",
+  "📌",
 ];
 
 // These will be populated with t() inside the component
@@ -50,7 +68,8 @@ export function CreateCustomDocumentTypeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { typeId } = params as { typeId?: string };
-  const { customDocumentTypes, documents, loadCustomTypes } = useDocumentsStore();
+  const { customDocumentTypes, documents, loadCustomTypes } =
+    useDocumentsStore();
 
   FIELD_TYPE_OPTIONS = [
     { label: t("customDocType.fieldTypeText"), value: "text" as FieldType },
@@ -140,15 +159,19 @@ export function CreateCustomDocumentTypeScreen() {
       const id = isEditMode && typeId ? typeId : `custom_${Date.now()}`;
 
       const fieldDefinitions: FieldDefinition[] = validFields.map((f, i) => ({
-        key: isEditMode && existingType?.fields[i]
-          ? existingType.fields[i].key
-          : `field_${i}_${f.label.toLowerCase().replace(/\s+/g, "_")}`,
+        key:
+          isEditMode && existingType?.fields[i]
+            ? existingType.fields[i].key
+            : `field_${i}_${f.label.toLowerCase().replace(/\s+/g, "_")}`,
         label: f.label.trim(),
         type: f.type,
         required: f.required,
         options:
           f.type === "select" && f.options
-            ? f.options.split(",").map((o) => o.trim()).filter(Boolean)
+            ? f.options
+                .split(",")
+                .map((o) => o.trim())
+                .filter(Boolean)
             : undefined,
       }));
 
@@ -166,7 +189,9 @@ export function CreateCustomDocumentTypeScreen() {
 
       Alert.alert(
         t("common.success"),
-        isEditMode ? t("customDocType.updatedSuccess") : t("customDocType.createdSuccess"),
+        isEditMode
+          ? t("customDocType.updatedSuccess")
+          : t("customDocType.createdSuccess"),
         [{ text: t("common.ok"), onPress: () => router.back() }],
       );
     } catch {
@@ -211,17 +236,19 @@ export function CreateCustomDocumentTypeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <View className="flex-1">
-        <View className="flex-row items-center justify-between px-6 py-4 border-b border-ui-border">
+        <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <Text className="text-2xl text-text-primary">←</Text>
+            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
           </Pressable>
-          <Text className="text-lg font-bold text-text-primary">
-            {isEditMode ? t("customDocType.editTitle") : t("customDocType.createTitle")}
+          <Text className="text-lg font-bold text-light-text dark:text-text-primary">
+            {isEditMode
+              ? t("customDocType.editTitle")
+              : t("customDocType.createTitle")}
           </Text>
           {isEditMode ? (
             <Pressable
@@ -249,7 +276,7 @@ export function CreateCustomDocumentTypeScreen() {
           />
 
           {/* Icon selector */}
-          <Text className="text-xs font-semibold text-text-secondary tracking-wider mb-2">
+          <Text className="text-xs font-semibold text-light-textSecondary dark:text-text-secondary tracking-wider mb-2">
             {t("customDocType.icon")}
           </Text>
           <View className="flex-row flex-wrap gap-2 mb-6">
@@ -260,7 +287,7 @@ export function CreateCustomDocumentTypeScreen() {
                 className={`w-12 h-12 rounded-xl items-center justify-center ${
                   selectedIcon === icon
                     ? "bg-primary-main/20 border-2 border-primary-main"
-                    : "bg-background-secondary"
+                    : "bg-light-bgSecondary dark:bg-background-secondary"
                 }`}
               >
                 <Text className="text-2xl">{icon}</Text>
@@ -278,22 +305,24 @@ export function CreateCustomDocumentTypeScreen() {
           />
 
           {/* Fields */}
-          <Text className="text-xs font-semibold text-text-secondary tracking-wider mb-3">
+          <Text className="text-xs font-semibold text-light-textSecondary dark:text-text-secondary tracking-wider mb-3">
             {t("customDocType.fields")}
           </Text>
 
           {fields.map((field, index) => (
             <View
               key={index}
-              className="bg-background-secondary rounded-xl p-4 mb-3"
+              className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 mb-3"
             >
               <View className="flex-row items-center justify-between mb-2">
-                <Text className="text-sm font-semibold text-text-primary">
+                <Text className="text-sm font-semibold text-light-text dark:text-text-primary">
                   {t("customDocType.field")} {index + 1}
                 </Text>
                 {fields.length > 1 && (
                   <Pressable onPress={() => removeField(index)}>
-                    <Text className="text-status-error text-sm">{t("common.remove")}</Text>
+                    <Text className="text-status-error text-sm">
+                      {t("common.remove")}
+                    </Text>
                   </Pressable>
                 )}
               </View>
@@ -325,17 +354,19 @@ export function CreateCustomDocumentTypeScreen() {
                     className={`rounded-xl py-3 items-center border ${
                       field.required
                         ? "border-primary-main bg-primary-main/10"
-                        : "border-ui-border bg-background-secondary"
+                        : "border-light-border dark:border-ui-border bg-light-bgSecondary dark:bg-background-secondary"
                     }`}
                   >
                     <Text
                       className={`text-sm font-semibold ${
                         field.required
                           ? "text-primary-main"
-                          : "text-text-secondary"
+                          : "text-light-textSecondary dark:text-text-secondary"
                       }`}
                     >
-                      {field.required ? t("customDocType.fieldRequired") : t("customDocType.fieldOptional")}
+                      {field.required
+                        ? t("customDocType.fieldRequired")
+                        : t("customDocType.fieldOptional")}
                     </Text>
                   </Pressable>
                 </View>
@@ -371,7 +402,7 @@ export function CreateCustomDocumentTypeScreen() {
             onPress={handleSave}
             disabled={isSaving}
           >
-            <Text className="text-base font-bold text-text-primary">
+            <Text className="text-base font-bold text-light-text dark:text-text-primary">
               {isSaving
                 ? t("common.saving")
                 : isEditMode

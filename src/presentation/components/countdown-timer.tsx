@@ -43,7 +43,7 @@ export function CountdownTimer({
 
   if (style === "prominent") {
     return (
-      <View className="flex-row items-center justify-center bg-background-secondary rounded-xl px-4 py-3">
+      <View className="flex-row items-center justify-center bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3">
         <Text className="text-xl mr-2" style={{ color: iconColor }}>
           {icon}
         </Text>

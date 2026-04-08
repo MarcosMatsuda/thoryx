@@ -2,7 +2,10 @@ import { View, Text, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useDocuments } from "@presentation/hooks/use-documents";
-import { getDocumentIcon, getDocumentLabel } from "@presentation/utils/document-display";
+import {
+  getDocumentIcon,
+  getDocumentLabel,
+} from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useTranslation } from "react-i18next";
 
@@ -13,17 +16,17 @@ export function DocumentsScreen() {
   const { customDocumentTypes } = useDocumentsStore();
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pt-4">
-          <Text className="text-2xl md:text-3xl font-bold text-text-primary mb-6">
+          <Text className="text-2xl md:text-3xl font-bold text-light-text dark:text-text-primary mb-6">
             {t("documents.title")}
           </Text>
 
           {documents.length === 0 ? (
             <View className="items-center justify-center py-12">
               <Text className="text-6xl mb-4">📄</Text>
-              <Text className="text-base md:text-lg text-text-secondary mb-6 text-center">
+              <Text className="text-base md:text-lg text-light-textSecondary dark:text-text-secondary mb-6 text-center">
                 {t("documents.noDocuments")}
               </Text>
               <Pressable
@@ -47,7 +50,7 @@ export function DocumentsScreen() {
                         params: { documentId: doc.id },
                       })
                     }
-                    className="bg-surface-card p-4 rounded-2xl flex-row items-center active:opacity-80"
+                    className="bg-light-card dark:bg-surface-card p-4 rounded-2xl flex-row items-center active:opacity-80"
                   >
                     <View className="w-12 h-12 md:w-14 md:h-14 bg-primary-main/10 rounded-xl items-center justify-center mr-4">
                       <Text className="text-2xl md:text-3xl">
@@ -55,14 +58,15 @@ export function DocumentsScreen() {
                       </Text>
                     </View>
                     <View className="flex-1">
-                      <Text className="text-base md:text-lg font-semibold text-text-primary mb-1">
-                        {doc.typeName ?? getDocumentLabel(doc.typeId, customDocumentTypes)}
+                      <Text className="text-base md:text-lg font-semibold text-light-text dark:text-text-primary mb-1">
+                        {doc.typeName ??
+                          getDocumentLabel(doc.typeId, customDocumentTypes)}
                       </Text>
-                      <Text className="text-sm md:text-base text-text-secondary">
+                      <Text className="text-sm md:text-base text-light-textSecondary dark:text-text-secondary">
                         {doc.fields.fullName ?? doc.fields.documentNumber ?? ""}
                       </Text>
                     </View>
-                    <Text className="text-text-secondary text-xl">›</Text>
+                    <Text className="text-light-textSecondary dark:text-text-secondary text-xl">›</Text>
                   </Pressable>
                 ))}
               </View>
