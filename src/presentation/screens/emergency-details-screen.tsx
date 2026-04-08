@@ -4,13 +4,19 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
+  Linking,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useEmergencyInfo } from "@presentation/hooks/use-emergency-info";
 import { useCallback } from "react";
 
-export function EmergencyDetailsScreen() {
+interface Props {
+  isAuthenticated?: boolean;
+}
+
+export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
   const router = useRouter();
   const { emergencyInfo, isLoading, refresh } = useEmergencyInfo();
 
@@ -22,6 +28,22 @@ export function EmergencyDetailsScreen() {
 
   const handleEditPress = () => {
     router.push("/emergency-setup");
+  };
+
+  const handleCallContact = (phoneNumber: string, contactName: string) => {
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    if (!cleaned) {
+      Alert.alert("Erro", "Número de telefone inválido");
+      return;
+    }
+    const url = `tel:${cleaned}`;
+    Linking.canOpenURL(url).then((supported) => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        Alert.alert("Erro", `Não foi possível ligar para ${contactName}`);
+      }
+    });
   };
 
   if (isLoading) {
@@ -44,14 +66,18 @@ export function EmergencyDetailsScreen() {
               <Text className="text-2xl text-text-primary">←</Text>
             </Pressable>
             <Text className="text-lg font-bold text-text-primary">
-              Emergency Profile
+              Emergency Details
             </Text>
-            <Pressable
-              className="w-10 h-10 items-center justify-center"
-              onPress={handleEditPress}
-            >
-              <Text className="text-xl text-primary-main">✏️</Text>
-            </Pressable>
+            {isAuthenticated ? (
+              <Pressable
+                className="w-10 h-10 items-center justify-center"
+                onPress={handleEditPress}
+              >
+                <Text className="text-xl text-primary-main">✏️</Text>
+              </Pressable>
+            ) : (
+              <View className="w-10" />
+            )}
           </View>
 
           <View className="flex-1 items-center justify-center px-6">
@@ -63,14 +89,16 @@ export function EmergencyDetailsScreen() {
               Set up your emergency profile to help first responders in case of
               emergency.
             </Text>
-            <Pressable
-              className="bg-primary-main rounded-xl py-3 px-6 active:bg-primary-dark"
-              onPress={handleEditPress}
-            >
-              <Text className="text-base font-bold text-text-primary">
-                Set Up Emergency Profile
-              </Text>
-            </Pressable>
+            {isAuthenticated && (
+              <Pressable
+                className="bg-primary-main rounded-xl py-3 px-6 active:bg-primary-dark"
+                onPress={handleEditPress}
+              >
+                <Text className="text-base font-bold text-text-primary">
+                  Set Up Emergency Profile
+                </Text>
+              </Pressable>
+            )}
           </View>
         </View>
       </SafeAreaView>
@@ -88,14 +116,18 @@ export function EmergencyDetailsScreen() {
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
           <Text className="text-lg font-bold text-text-primary">
-            Emergency Profile
+            Emergency Details
           </Text>
-          <Pressable
-            className="w-10 h-10 items-center justify-center"
-            onPress={handleEditPress}
-          >
-            <Text className="text-xl text-primary-main">✏️</Text>
-          </Pressable>
+          {isAuthenticated ? (
+            <Pressable
+              className="w-10 h-10 items-center justify-center"
+              onPress={handleEditPress}
+            >
+              <Text className="text-xl text-primary-main">✏️</Text>
+            </Pressable>
+          ) : (
+            <View className="w-10" />
+          )}
         </View>
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
@@ -224,9 +256,12 @@ export function EmergencyDetailsScreen() {
                     .substring(0, 2);
 
                   return (
-                    <View
+                    <Pressable
                       key={contact.id}
-                      className="bg-background-secondary rounded-xl p-4 mb-3"
+                      className="bg-background-secondary rounded-xl p-4 mb-3 active:opacity-80"
+                      onPress={() =>
+                        handleCallContact(contact.phoneNumber, contact.fullName)
+                      }
                     >
                       <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center flex-1">
@@ -250,13 +285,24 @@ export function EmergencyDetailsScreen() {
                             <Text className="text-sm text-text-secondary">
                               {contact.relationship}
                             </Text>
+                            <Text className="text-sm text-primary-main mt-1">
+                              {contact.phoneNumber}
+                            </Text>
                           </View>
                         </View>
-                        <Pressable className="w-12 h-12 bg-primary-main rounded-full items-center justify-center ml-3">
+                        <Pressable
+                          className="w-12 h-12 bg-accent-green rounded-full items-center justify-center ml-3"
+                          onPress={() =>
+                            handleCallContact(
+                              contact.phoneNumber,
+                              contact.fullName,
+                            )
+                          }
+                        >
                           <Text className="text-2xl">📞</Text>
                         </Pressable>
                       </View>
-                    </View>
+                    </Pressable>
                   );
                 })}
               </View>
