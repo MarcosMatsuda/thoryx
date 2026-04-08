@@ -39,6 +39,7 @@ jest.mock("expo-router", () => ({
 jest.mock("@stores/documents.store", () => ({
   useDocumentsStore: jest.fn(() => ({
     customDocumentTypes: [],
+    loadCustomTypes: jest.fn(),
   })),
 }));
 
