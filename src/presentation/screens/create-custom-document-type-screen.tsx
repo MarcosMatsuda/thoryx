@@ -236,14 +236,19 @@ export function CreateCustomDocumentTypeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary"
+      edges={["top"]}
+    >
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
+            <Text className="text-2xl text-light-text dark:text-text-primary">
+              ←
+            </Text>
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {isEditMode

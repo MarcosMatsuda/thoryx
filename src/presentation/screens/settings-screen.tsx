@@ -13,7 +13,19 @@ import { APP_CONFIG } from "@shared/constants/app";
 import { useTranslation } from "react-i18next";
 import { setStoredLanguage } from "@shared/i18n/language-detector";
 import { useThemeStore, ThemeMode } from "@stores/theme.store";
-import { ChevronRight, KeyRound, Pointer, Hourglass, Globe, Palette, Info, FileText, Lock, Trash2, LogOut } from "lucide-react-native";
+import {
+  ChevronRight,
+  KeyRound,
+  Pointer,
+  Hourglass,
+  Globe,
+  Palette,
+  Info,
+  FileText,
+  Lock,
+  Trash2,
+  LogOut,
+} from "lucide-react-native";
 
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
 const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
@@ -263,7 +275,10 @@ export function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary"
+      edges={["top"]}
+    >
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="pt-4 pb-8">
           <Text className="text-2xl md:text-3xl font-bold text-light-text dark:text-text-primary mb-6 px-6">

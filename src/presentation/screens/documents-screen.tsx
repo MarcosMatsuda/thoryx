@@ -17,7 +17,10 @@ export function DocumentsScreen() {
   const { customDocumentTypes } = useDocumentsStore();
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary"
+      edges={["top"]}
+    >
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pt-4">
           <Text className="text-2xl md:text-3xl font-bold text-light-text dark:text-text-primary mb-6">

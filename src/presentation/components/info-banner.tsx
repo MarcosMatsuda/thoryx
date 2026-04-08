@@ -7,7 +7,10 @@ interface InfoBannerProps {
   icon?: ReactNode;
 }
 
-export function InfoBanner({ message, icon = <Info size={18} color="#94A3B8" /> }: InfoBannerProps) {
+export function InfoBanner({
+  message,
+  icon = <Info size={18} color="#94A3B8" />,
+}: InfoBannerProps) {
   return (
     <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 flex-row">
       <View className="mr-3">{icon}</View>

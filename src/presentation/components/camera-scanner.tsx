@@ -139,7 +139,11 @@ export function CameraScanner({ onCardDataExtracted }: CameraScannerProps) {
               onPress={handleScan}
               disabled={isScanning}
             >
-              {isScanning ? <Hourglass size={18} color="#FFFFFF" className="mr-2" /> : <Camera size={18} color="#FFFFFF" className="mr-2" />}
+              {isScanning ? (
+                <Hourglass size={18} color="#FFFFFF" className="mr-2" />
+              ) : (
+                <Camera size={18} color="#FFFFFF" className="mr-2" />
+              )}
               <Text className="text-base font-bold text-text-primary">
                 {isScanning ? "Scanning..." : "Scan Card"}
               </Text>

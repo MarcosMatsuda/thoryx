@@ -88,7 +88,9 @@ export function AddContactBottomSheet({
                   className="absolute left-6 top-4 w-10 h-10 items-center justify-center"
                   onPress={handleClose}
                 >
-                  <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
+                  <Text className="text-2xl text-light-text dark:text-text-primary">
+                    ←
+                  </Text>
                 </Pressable>
                 <Text className="text-base text-light-textSecondary dark:text-text-secondary">
                   {isPrimary ? "Add Primary Contact" : "Add Emergency Contact"}

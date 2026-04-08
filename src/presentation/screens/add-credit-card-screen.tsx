@@ -18,7 +18,13 @@ import { UpdateCreditCardUseCase } from "@domain/use-cases/update-credit-card.us
 import { DeleteCreditCardUseCase } from "@domain/use-cases/delete-credit-card.use-case";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { InputMasks } from "@shared/utils/input-masks";
-import { ChevronLeft, Trash2, User, CreditCard, Lock } from "lucide-react-native";
+import {
+  ChevronLeft,
+  Trash2,
+  User,
+  CreditCard,
+  Lock,
+} from "lucide-react-native";
 
 export function AddCreditCardScreen() {
   const router = useRouter();
@@ -193,7 +199,10 @@ export function AddCreditCardScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary"
+      edges={["top"]}
+    >
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable

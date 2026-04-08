@@ -119,13 +119,17 @@ export function CalendarPickerBottomSheet({
                 className="w-10 h-10 items-center justify-center active:opacity-60"
                 onPress={handlePreviousYear}
               >
-                <Text className="text-xl font-bold text-light-text dark:text-text-primary">‹‹</Text>
+                <Text className="text-xl font-bold text-light-text dark:text-text-primary">
+                  ‹‹
+                </Text>
               </Pressable>
               <Pressable
                 className="w-10 h-10 items-center justify-center active:opacity-60"
                 onPress={handlePreviousMonth}
               >
-                <Text className="text-xl text-light-text dark:text-text-primary">‹</Text>
+                <Text className="text-xl text-light-text dark:text-text-primary">
+                  ‹
+                </Text>
               </Pressable>
               <Text className="text-xl md:text-2xl font-bold text-light-text dark:text-text-primary">
                 {monthNames[currentMonth.getMonth()]}{" "}
@@ -135,13 +139,17 @@ export function CalendarPickerBottomSheet({
                 className="w-10 h-10 items-center justify-center active:opacity-60"
                 onPress={handleNextMonth}
               >
-                <Text className="text-xl text-light-text dark:text-text-primary">›</Text>
+                <Text className="text-xl text-light-text dark:text-text-primary">
+                  ›
+                </Text>
               </Pressable>
               <Pressable
                 className="w-10 h-10 items-center justify-center active:opacity-60"
                 onPress={handleNextYear}
               >
-                <Text className="text-xl font-bold text-light-text dark:text-text-primary">››</Text>
+                <Text className="text-xl font-bold text-light-text dark:text-text-primary">
+                  ››
+                </Text>
               </Pressable>
             </View>
 
@@ -195,7 +203,9 @@ export function CalendarPickerBottomSheet({
             >
               <Text
                 className={`text-base font-bold ${
-                  selectedDay ? "text-light-text dark:text-text-primary" : "text-light-textSecondary dark:text-text-secondary"
+                  selectedDay
+                    ? "text-light-text dark:text-text-primary"
+                    : "text-light-textSecondary dark:text-text-secondary"
                 }`}
               >
                 Select Date

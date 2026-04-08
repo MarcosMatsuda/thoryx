@@ -37,7 +37,11 @@ export function PinAuthBottomSheet({
   const [error, setError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [biometryEnabled, setBiometryEnabled] = useState(false);
-  const { isAvailable: biometryAvailable, authenticate, getBiometryName } = useBiometry();
+  const {
+    isAvailable: biometryAvailable,
+    authenticate,
+    getBiometryName,
+  } = useBiometry();
 
   useEffect(() => {
     if (visible) {

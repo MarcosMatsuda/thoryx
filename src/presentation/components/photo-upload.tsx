@@ -17,7 +17,9 @@ export function PhotoUpload({
   return (
     <Pressable
       className={`bg-light-bgSecondary dark:bg-background-secondary rounded-2xl mb-4 overflow-hidden ${
-        imageUri ? "p-0" : "p-8 border-2 border-dashed border-light-border dark:border-ui-border"
+        imageUri
+          ? "p-0"
+          : "p-8 border-2 border-dashed border-light-border dark:border-ui-border"
       } items-center justify-center active:opacity-80`}
       onPress={onPress}
     >
@@ -29,10 +31,14 @@ export function PhotoUpload({
             resizeMode="cover"
           />
           <View className="absolute top-2 right-2 bg-primary-main rounded-full px-3 py-1">
-            <Text className="text-xs font-bold text-light-text dark:text-text-primary">{title}</Text>
+            <Text className="text-xs font-bold text-light-text dark:text-text-primary">
+              {title}
+            </Text>
           </View>
           <View className="absolute bottom-2 left-2 bg-black/60 rounded-lg px-2 py-1">
-            <Text className="text-xs text-light-text dark:text-text-primary">Tap to retake</Text>
+            <Text className="text-xs text-light-text dark:text-text-primary">
+              Tap to retake
+            </Text>
           </View>
         </View>
       ) : (

@@ -17,7 +17,9 @@ export function NumericKey({
       onPress={() => onPress(value)}
     >
       {isBackspace ? (
-        <Text className="text-3xl md:text-4xl text-light-text dark:text-text-primary">⌫</Text>
+        <Text className="text-3xl md:text-4xl text-light-text dark:text-text-primary">
+          ⌫
+        </Text>
       ) : (
         <Text className="text-4xl md:text-5xl font-semibold text-light-text dark:text-text-primary">
           {value}

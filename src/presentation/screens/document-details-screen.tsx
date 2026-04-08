@@ -101,7 +101,10 @@ export function DocumentDetailsScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+      <SafeAreaView
+        className="flex-1 bg-light-bg dark:bg-background-primary"
+        edges={["top"]}
+      >
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#3B82F6" />
         </View>
@@ -111,7 +114,10 @@ export function DocumentDetailsScreen() {
 
   if (!document) {
     return (
-      <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+      <SafeAreaView
+        className="flex-1 bg-light-bg dark:bg-background-primary"
+        edges={["top"]}
+      >
         <View className="flex-1 items-center justify-center">
           <Text className="text-lg text-light-textSecondary dark:text-text-secondary">
             {t("documentDetails.notFound")}
@@ -125,7 +131,10 @@ export function DocumentDetailsScreen() {
   const photoSlots = Object.keys(photoUris);
 
   return (
-    <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary" edges={["top"]}>
+    <SafeAreaView
+      className="flex-1 bg-light-bg dark:bg-background-primary"
+      edges={["top"]}
+    >
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable
