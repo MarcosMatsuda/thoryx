@@ -44,7 +44,7 @@ export function DocumentsScreen() {
                 No documents yet
               </Text>
               <Pressable
-                onPress={() => router.push("/select-documents")}
+                onPress={() => router.push("/add-document")}
                 className="bg-primary-main px-6 py-3 rounded-xl active:opacity-80"
               >
                 <Text className="text-white font-semibold text-base md:text-lg">
@@ -85,7 +85,7 @@ export function DocumentsScreen() {
               </View>
 
               <Pressable
-                onPress={() => router.push("/select-documents")}
+                onPress={() => router.push("/add-document")}
                 className="bg-primary-main/10 border-2 border-primary-main border-dashed p-4 rounded-2xl items-center active:opacity-80"
               >
                 <Text className="text-primary-main font-semibold text-base md:text-lg">
