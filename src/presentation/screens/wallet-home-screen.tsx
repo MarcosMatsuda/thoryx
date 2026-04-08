@@ -20,6 +20,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
+import { FileText, ClipboardList } from "lucide-react-native";
 
 export function WalletHomeScreen() {
   const { t } = useTranslation();
@@ -167,7 +168,7 @@ export function WalletHomeScreen() {
                 </View>
               ) : !documents || documents.length === 0 ? (
                 <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-6 items-center">
-                  <Text className="text-4xl mb-3">📄</Text>
+                  <FileText size={36} color="#94A3B8" className="mb-3" />
                   <Text className="text-light-textSecondary dark:text-text-secondary text-center">
                     {t("wallet.noDocuments")}
                   </Text>
@@ -219,7 +220,7 @@ export function WalletHomeScreen() {
                           </View>
                         </View>
                         <View className="w-8 h-8 bg-primary-main/10 rounded-lg items-center justify-center ml-2">
-                          <Text className="text-primary-main text-lg">📋</Text>
+                          <ClipboardList size={20} color="#135BEC" />
                         </View>
                       </View>
                     </Pressable>

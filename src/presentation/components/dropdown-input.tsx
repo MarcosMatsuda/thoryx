@@ -1,5 +1,6 @@
 import { View, Text, Pressable, Modal } from "react-native";
 import { useState } from "react";
+import { ChevronRight, Pencil } from "lucide-react-native";
 
 interface DropdownOption {
   label: string;
@@ -38,7 +39,7 @@ export function DropdownInput({
         <Text className={value ? "text-light-text dark:text-text-primary" : "text-light-textSecondary dark:text-text-secondary"}>
           {selectedLabel || placeholder}
         </Text>
-        <Text className="text-light-textSecondary dark:text-text-secondary text-xl">›</Text>
+        <ChevronRight size={20} color="#94A3B8" />
       </Pressable>
 
       <Modal visible={showOptions} transparent animationType="slide">
@@ -83,7 +84,7 @@ export function DropdownInput({
                       onEditOption(option.value);
                     }}
                   >
-                    <Text className="text-primary-main text-sm">✏️</Text>
+                    <Pencil size={14} color="#135BEC" />
                   </Pressable>
                 )}
               </View>

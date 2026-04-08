@@ -4,6 +4,7 @@ import { ActivityIndicator, View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { ChevronLeft, Siren } from "lucide-react-native";
 
 export default function EmergencyRoute() {
   const { t } = useTranslation();
@@ -28,14 +29,14 @@ export default function EmergencyRoute() {
               className="w-10 h-10 items-center justify-center"
               onPress={() => router.back()}
             >
-              <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
+              <ChevronLeft size={24} color="#94A3B8" />
             </Pressable>
             <Text className="text-lg font-bold text-light-text dark:text-text-primary ml-2">
               {t("emergency.title")}
             </Text>
           </View>
           <View className="flex-1 items-center justify-center px-6">
-            <Text className="text-2xl mb-2">🚨</Text>
+            <Siren size={24} color="#EF4444" className="mb-2" />
             <Text className="text-lg font-bold text-light-text dark:text-text-primary mb-2 text-center">
               {t("emergency.noInfo")}
             </Text>

@@ -1,4 +1,5 @@
 import { View, Text, Pressable } from "react-native";
+import { Check } from "lucide-react-native";
 
 interface CheckboxOptionProps {
   label: string;
@@ -20,9 +21,7 @@ export function CheckboxOption({
             : "bg-transparent border-2 border-ui-border"
         }`}
       >
-        {checked && (
-          <Text className="text-sm text-text-primary font-bold">✓</Text>
-        )}
+        {checked && <Check size={14} color="#FFFFFF" />}
       </View>
       <Text className="text-sm text-text-primary flex-1">{label}</Text>
     </Pressable>

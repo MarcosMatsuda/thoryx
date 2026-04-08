@@ -1,10 +1,11 @@
 import { View, Text } from "react-native";
 import { ToggleOption } from "./toggle-option";
+import { ReactNode } from "react";
 
 interface AlertBannerProps {
   title: string;
   message: string;
-  icon?: string;
+  icon?: ReactNode;
   toggleLabel?: string;
   toggleSubtitle?: string;
   toggleEnabled?: boolean;
@@ -14,7 +15,7 @@ interface AlertBannerProps {
 export function AlertBanner({
   title,
   message,
-  icon = "⚠️",
+  icon,
   toggleLabel,
   toggleSubtitle,
   toggleEnabled = false,
@@ -23,7 +24,7 @@ export function AlertBanner({
   return (
     <View className="bg-status-error/10 border border-status-error/30 rounded-xl p-4 mb-6">
       <View className="flex-row items-start mb-3">
-        <Text className="text-xl mr-2">{icon}</Text>
+        <View className="mr-2">{icon}</View>
         <View className="flex-1">
           <Text className="text-sm font-bold text-status-error mb-1 tracking-wide">
             {title}

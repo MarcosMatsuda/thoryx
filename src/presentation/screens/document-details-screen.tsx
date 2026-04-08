@@ -20,6 +20,7 @@ import { Document } from "@domain/entities/document.entity";
 import { getDocumentTypeById } from "@domain/entities/document-type-registry";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useTranslation } from "react-i18next";
+import { ChevronLeft, Pencil, X, Lock } from "lucide-react-native";
 
 export function DocumentDetailsScreen() {
   const { t } = useTranslation();
@@ -137,7 +138,7 @@ export function DocumentDetailsScreen() {
               }
             }}
           >
-            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
+            <ChevronLeft size={24} color="#94A3B8" />
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {document.typeName ?? typeDef?.label ?? "Documento"}
@@ -152,7 +153,7 @@ export function DocumentDetailsScreen() {
                 })
               }
             >
-              <Text className="text-xl text-primary-main">✏️</Text>
+              <Pencil size={20} color="#135BEC" />
             </Pressable>
           )}
         </View>
@@ -257,7 +258,7 @@ export function DocumentDetailsScreen() {
 
           <View className="px-6">
             <InfoBanner
-              icon="🔒"
+              icon={<Lock size={18} color="#94A3B8" />}
               message={t("documentDetails.encryptionNotice")}
             />
           </View>
@@ -298,7 +299,7 @@ export function DocumentDetailsScreen() {
             className="absolute top-14 right-6 w-10 h-10 bg-white/20 rounded-full items-center justify-center"
             onPress={() => setFullscreenPhoto(null)}
           >
-            <Text className="text-white text-xl font-bold">✕</Text>
+            <X size={20} color="#FFFFFF" />
           </Pressable>
         </Pressable>
       </Modal>

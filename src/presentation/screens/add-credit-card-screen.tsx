@@ -18,6 +18,7 @@ import { UpdateCreditCardUseCase } from "@domain/use-cases/update-credit-card.us
 import { DeleteCreditCardUseCase } from "@domain/use-cases/delete-credit-card.use-case";
 import { useCreditCards } from "@presentation/hooks/use-credit-cards";
 import { InputMasks } from "@shared/utils/input-masks";
+import { ChevronLeft, Trash2, User, CreditCard, Lock } from "lucide-react-native";
 
 export function AddCreditCardScreen() {
   const router = useRouter();
@@ -199,7 +200,7 @@ export function AddCreditCardScreen() {
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
+            <ChevronLeft size={24} color="#94A3B8" />
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {cards.length > 0 && isEditMode ? "Credit Card" : "New Credit Card"}
@@ -244,7 +245,7 @@ export function AddCreditCardScreen() {
                     onPress={handleDeleteCard}
                     disabled={isLoading}
                   >
-                    <Text className="text-xl text-status-error">🗑️</Text>
+                    <Trash2 size={20} color="#EF4444" />
                   </Pressable>
                 )}
               </View>
@@ -267,7 +268,7 @@ export function AddCreditCardScreen() {
                     onChangeText={handleCardholderNameChange}
                     autoCapitalize="characters"
                   />
-                  <Text className="text-xl text-primary-main ml-2">👤</Text>
+                  <User size={20} color="#135BEC" className="ml-2" />
                 </View>
               </View>
 
@@ -286,7 +287,7 @@ export function AddCreditCardScreen() {
                     onChangeText={handleCardNumberChange}
                     maxLength={19}
                   />
-                  <Text className="text-xl text-primary-main ml-2">💳</Text>
+                  <CreditCard size={20} color="#135BEC" className="ml-2" />
                 </View>
               </View>
 
@@ -322,7 +323,7 @@ export function AddCreditCardScreen() {
               onPress={handleSaveCard}
               disabled={isLoading || (isEditMode && !hasChanges())}
             >
-              <Text className="text-lg mr-2">🔒</Text>
+              <Lock size={18} color="#FFFFFF" className="mr-2" />
               <Text className="text-base font-bold text-light-text dark:text-text-primary">
                 {isLoading
                   ? "Saving..."

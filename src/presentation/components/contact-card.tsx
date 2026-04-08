@@ -1,4 +1,5 @@
 import { View, Text, Pressable } from "react-native";
+import { X, ChevronRight, Phone } from "lucide-react-native";
 
 interface ContactCardProps {
   fullName: string;
@@ -42,7 +43,7 @@ export function ContactCard({
             className="w-8 h-8 items-center justify-center"
             onPress={onRemove}
           >
-            <Text className="text-lg text-status-error">✕</Text>
+            <X size={18} color="#EF4444" />
           </Pressable>
         )}
       </View>
@@ -54,7 +55,7 @@ export function ContactCard({
           </Text>
           <View className="flex-row items-center">
             <Text className="text-sm text-light-text dark:text-text-primary">{relationship}</Text>
-            <Text className="text-light-textSecondary dark:text-text-secondary ml-1">›</Text>
+            <ChevronRight size={16} color="#94A3B8" className="ml-1" />
           </View>
         </View>
 
@@ -68,7 +69,7 @@ export function ContactCard({
               className="w-8 h-8 bg-status-success/20 rounded-full items-center justify-center"
               onPress={onCall}
             >
-              <Text className="text-sm">📞</Text>
+              <Phone size={14} color="#10B981" />
             </Pressable>
           </View>
         </View>
