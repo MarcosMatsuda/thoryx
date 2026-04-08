@@ -162,7 +162,9 @@ export function DocumentDetailsScreen() {
               photoUris[photoSlots[0]] &&
               photoUris[photoSlots[1]] && (
                 <View>
-                  <Pressable onPress={() => setFullscreenPhoto(photoUris[photoSlots[0]])}>
+                  <Pressable
+                    onPress={() => setFullscreenPhoto(photoUris[photoSlots[0]])}
+                  >
                     <DocumentPhotoCarousel
                       frontPhotoUri={photoUris[photoSlots[0]]}
                       backPhotoUri={photoUris[photoSlots[1]]}
@@ -260,7 +262,7 @@ export function DocumentDetailsScreen() {
         </ScrollView>
       </View>
 
-      {/* Fullscreen photo modal */}
+      {/* Fullscreen photo modal — rotated to fill screen */}
       <Modal
         visible={fullscreenPhoto !== null}
         transparent
@@ -272,14 +274,23 @@ export function DocumentDetailsScreen() {
           onPress={() => setFullscreenPhoto(null)}
         >
           {fullscreenPhoto && (
-            <Image
-              source={{ uri: fullscreenPhoto }}
+            <View
               style={{
-                width: Dimensions.get("window").width,
-                height: Dimensions.get("window").height * 0.85,
+                transform: [{ rotate: "90deg" }],
+                width: Dimensions.get("window").height,
+                height: Dimensions.get("window").width,
               }}
-              resizeMode="contain"
-            />
+              className="items-center justify-center"
+            >
+              <Image
+                source={{ uri: fullscreenPhoto }}
+                style={{
+                  width: Dimensions.get("window").height * 0.95,
+                  height: Dimensions.get("window").width * 0.95,
+                }}
+                resizeMode="contain"
+              />
+            </View>
           )}
           <Pressable
             className="absolute top-14 right-6 w-10 h-10 bg-white/20 rounded-full items-center justify-center"
