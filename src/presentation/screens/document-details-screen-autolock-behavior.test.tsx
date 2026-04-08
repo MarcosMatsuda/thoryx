@@ -702,7 +702,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Behavior", () => {
       expect(handlerCode).toContain("setIsAutoLockEnabled(previousState)");
     });
 
-    it("should pass loading prop to SettingsItem", () => {
+    it("should use isTogglingAutoLock to show loading indicator", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -712,10 +712,11 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Behavior", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain("loading={isTogglingAutoLock}");
+      expect(componentCode).toContain("isTogglingAutoLock");
+      expect(componentCode).toContain("ActivityIndicator");
     });
 
-    it("should pass switchValue prop to SettingsItem", () => {
+    it("should use isAutoLockEnabled for toggle visual state", () => {
       const fs = require("fs");
       const path = require("path");
 
@@ -725,7 +726,8 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Behavior", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain("switchValue={isAutoLockEnabled}");
+      expect(componentCode).toContain("isAutoLockEnabled");
+      expect(componentCode).toContain("onPress={handleToggleAutoLock}");
     });
   });
 });

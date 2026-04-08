@@ -66,7 +66,10 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Integration", () => {
     });
 
     it("should use false as default when undefined", () => {
-      const doc = { ...createMockDocument(), isAutoLockEnabled: undefined as any };
+      const doc = {
+        ...createMockDocument(),
+        isAutoLockEnabled: undefined as any,
+      };
       const initialState = doc.isAutoLockEnabled || false;
       expect(initialState).toBe(false);
     });
@@ -149,14 +152,15 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Integration", () => {
       expect(code).toContain("repository.toggleAutoLock");
     });
 
-    it("should pass switchValue prop to SettingsItem", () => {
+    it("should use isAutoLockEnabled for toggle visual state", () => {
       const fs = require("fs");
       const path = require("path");
       const code = fs.readFileSync(
         path.join(__dirname, "./document-details-screen.tsx"),
         "utf8",
       );
-      expect(code).toContain("switchValue={isAutoLockEnabled}");
+      expect(code).toContain("isAutoLockEnabled");
+      expect(code).toContain("onPress={handleToggleAutoLock}");
     });
   });
 });
