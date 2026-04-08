@@ -14,21 +14,31 @@ import { usePreventScreenCapture } from "expo-screen-capture";
 import "@shared/i18n";
 import { initLanguage } from "@shared/i18n";
 import { useEffect } from "react";
+import { useThemeStore } from "@stores/theme.store";
+import { useColorScheme as useNativeWindColorScheme } from "nativewind";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const { loadTheme } = useThemeStore();
+  const { setColorScheme } = useNativeWindColorScheme();
   usePreventScreenCapture();
 
   useEffect(() => {
     initLanguage();
+    loadTheme();
   }, []);
+
+  // Sync NativeWind color scheme with our theme store
+  useEffect(() => {
+    setColorScheme(colorScheme);
+  }, [colorScheme, setColorScheme]);
 
   return (
     <SafeAreaProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack
           screenOptions={{
-            headerShown: false, // Global setting: hide ALL headers by default
+            headerShown: false,
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -39,14 +49,14 @@ export default function RootLayout() {
             name="(tabs)"
             options={{
               headerShown: false,
-              gestureEnabled: false, // Disable swipe back
+              gestureEnabled: false,
             }}
           />
           <Stack.Screen
             name="home"
             options={{
               headerShown: false,
-              gestureEnabled: false, // Disable swipe back
+              gestureEnabled: false,
             }}
           />
           <Stack.Screen name="emergency" options={{ headerShown: false }} />
@@ -78,7 +88,7 @@ export default function RootLayout() {
             options={{ presentation: "modal", title: "Modal" }}
           />
         </Stack>
-        <StatusBar style="light" />
+        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       </ThemeProvider>
     </SafeAreaProvider>
   );

@@ -87,6 +87,16 @@ jest.mock("expo-localization", () => ({
   getLocales: () => [{ languageTag: "pt-BR", languageCode: "pt" }],
 }));
 
+// Mock theme store
+jest.mock("./src/stores/theme.store", () => ({
+  useThemeStore: jest.fn(() => ({
+    mode: "system",
+    setMode: jest.fn(),
+    loadTheme: jest.fn(),
+  })),
+  ThemeMode: {},
+}));
+
 // Mock console.log to suppress MMKV logs
 global.console.log = jest.fn();
 global.console.error = jest.fn();

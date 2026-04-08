@@ -12,6 +12,7 @@ import { AuthService } from "@infrastructure/services/auth.service";
 import { APP_CONFIG } from "@shared/constants/app";
 import { useTranslation } from "react-i18next";
 import { setStoredLanguage } from "@shared/i18n/language-detector";
+import { useThemeStore, ThemeMode } from "@stores/theme.store";
 
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
 const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
@@ -33,7 +34,22 @@ export function SettingsScreen() {
   const [autoLockTimeout, setAutoLockTimeout] = useState("5 minutes");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  const { mode: themeMode, setMode: setThemeMode } = useThemeStore();
   const currentLanguageName = i18n.language === "pt-BR" ? "Português (BR)" : "English (US)";
+  const themeLabels: Record<ThemeMode, string> = {
+    system: t("settings.themeSystem"),
+    dark: t("settings.themeDark"),
+    light: t("settings.themeLight"),
+  };
+
+  const handleThemeChange = () => {
+    Alert.alert(t("settings.theme"), "", [
+      { text: themeLabels.system, onPress: () => setThemeMode("system") },
+      { text: themeLabels.dark, onPress: () => setThemeMode("dark") },
+      { text: themeLabels.light, onPress: () => setThemeMode("light") },
+      { text: t("common.cancel"), style: "cancel" },
+    ]);
+  };
 
   const handleLanguageChange = () => {
     Alert.alert(t("settings.language"), "", [
@@ -314,6 +330,12 @@ export function SettingsScreen() {
               icon={<Text className="text-xl">🌐</Text>}
               value={currentLanguageName}
               isFirst
+            />
+            <SettingsItem
+              label={t("settings.theme")}
+              onPress={handleThemeChange}
+              icon={<Text className="text-xl">🎨</Text>}
+              value={themeLabels[themeMode]}
               isLast
             />
           </SettingsSection>

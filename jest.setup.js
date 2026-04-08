@@ -68,7 +68,17 @@ require("@testing-library/jest-native/extend-expect");
 
 // Mock NativeWind
 jest.mock("nativewind", () => ({
-  useColorScheme: () => "light",
+  useColorScheme: () => ({ colorScheme: "dark", setColorScheme: jest.fn() }),
+}));
+
+// Mock theme store
+jest.mock("@stores/theme.store", () => ({
+  useThemeStore: jest.fn(() => ({
+    mode: "system",
+    setMode: jest.fn(),
+    loadTheme: jest.fn(),
+  })),
+  ThemeMode: {},
 }));
 
 // Mock expo modules

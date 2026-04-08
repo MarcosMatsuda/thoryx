@@ -2,6 +2,7 @@
 module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -11,14 +12,18 @@ module.exports = {
           dark: "#0D47B8",
         },
         background: {
-          primary: "#0A1628",
-          secondary: "#0F1F38",
-          tertiary: "#152840",
+          primary: "var(--color-bg-primary)",
+          secondary: "var(--color-bg-secondary)",
+          tertiary: "var(--color-bg-tertiary)",
         },
         text: {
-          primary: "#FFFFFF",
-          secondary: "#94A3B8",
-          tertiary: "#64748B",
+          primary: "var(--color-text-primary)",
+          secondary: "var(--color-text-secondary)",
+          tertiary: "var(--color-text-tertiary)",
+        },
+        surface: {
+          card: "var(--color-surface-card)",
+          hover: "var(--color-surface-hover)",
         },
         status: {
           success: "#10B981",
@@ -27,9 +32,17 @@ module.exports = {
           info: "#3B82F6",
         },
         ui: {
-          border: "#1E293B",
-          divider: "#334155",
+          border: "var(--color-ui-border)",
+          divider: "var(--color-ui-divider)",
           overlay: "rgba(0, 0, 0, 0.5)",
+        },
+        accent: {
+          orange: "#F97316",
+          green: "#22C55E",
+        },
+        border: {
+          primary: "var(--color-ui-border)",
+          subtle: "var(--color-ui-border)",
         },
       },
       spacing: {
