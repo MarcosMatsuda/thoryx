@@ -1,4 +1,5 @@
 import { View, Text, Pressable, TextInput } from "react-native";
+import { Calendar } from "lucide-react-native";
 
 interface DateInputProps {
   label: string;
@@ -32,7 +33,7 @@ export function DateInput({
           className="ml-2 w-8 h-8 items-center justify-center active:opacity-60"
           onPress={onPress}
         >
-          <Text className="text-xl">📅</Text>
+          <Calendar size={20} color="#94A3B8" />
         </Pressable>
       </View>
     </View>

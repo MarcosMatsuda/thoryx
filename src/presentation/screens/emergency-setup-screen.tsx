@@ -21,6 +21,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
+import { ChevronLeft, Check, X, Users, AlertTriangle, Hospital, Siren } from "lucide-react-native";
 
 export function EmergencySetupScreen() {
   const { t } = useTranslation();
@@ -154,7 +155,7 @@ export function EmergencySetupScreen() {
             onPress={() => router.back()}
             disabled={isSaving}
           >
-            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
+            <ChevronLeft size={24} color="#94A3B8" />
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {t("emergencySetup.title")}
@@ -167,7 +168,7 @@ export function EmergencySetupScreen() {
             {isSaving ? (
               <ActivityIndicator size="small" color="#3B82F6" />
             ) : (
-              <Text className="text-xl text-primary-main">✓</Text>
+              <Check size={20} color="#135BEC" />
             )}
           </Pressable>
         </View>
@@ -180,7 +181,7 @@ export function EmergencySetupScreen() {
           <AlertBanner
             title={t("emergencySetup.criticalAccess")}
             message={t("emergencySetup.criticalAccessDesc")}
-            icon="⚠️"
+            icon={<AlertTriangle size={20} color="#EF4444" />}
             toggleLabel={t("emergencySetup.lockScreenVisible")}
             toggleEnabled={lockScreenVisible}
             onToggle={() => setLockScreenVisible(!lockScreenVisible)}
@@ -188,7 +189,7 @@ export function EmergencySetupScreen() {
 
           <View className="mb-6">
             <SectionHeader
-              icon="🏥"
+              icon={<Hospital size={18} color="#FFFFFF" />}
               title={t("emergency.vitalInfo")}
               iconBg="#3B82F6"
             />
@@ -267,7 +268,7 @@ export function EmergencySetupScreen() {
                       className="ml-2 w-10 h-10 items-center justify-center"
                       onPress={() => handleRemoveMedicationField(index)}
                     >
-                      <Text className="text-xl text-status-error">✕</Text>
+                      <X size={20} color="#EF4444" />
                     </Pressable>
                   )}
                 </View>
@@ -277,7 +278,7 @@ export function EmergencySetupScreen() {
 
           <View className="mb-6">
             <SectionHeader
-              icon="🚨"
+              icon={<Siren size={18} color="#FFFFFF" />}
               title={t("emergencySetup.contacts")}
               iconBg="#EF4444"
             />
@@ -298,7 +299,7 @@ export function EmergencySetupScreen() {
               className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 flex-row items-center justify-center border-2 border-dashed border-light-border dark:border-ui-border active:bg-light-bgTertiary dark:active:bg-background-tertiary"
               onPress={() => openAddContactSheet(contacts.length === 0)}
             >
-              <Text className="text-xl mr-2">👥</Text>
+              <Users size={20} color="#94A3B8" className="mr-2" />
               <Text className="text-sm font-medium text-light-textSecondary dark:text-text-secondary">
                 {contacts.length === 0
                   ? t("emergencySetup.addContact")

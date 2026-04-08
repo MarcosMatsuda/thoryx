@@ -1,4 +1,5 @@
 import { View, Text, Pressable, Image } from "react-native";
+import { Camera } from "lucide-react-native";
 
 interface PhotoUploadProps {
   title: string;
@@ -37,7 +38,7 @@ export function PhotoUpload({
       ) : (
         <>
           <View className="w-16 h-16 bg-primary-main/20 rounded-full items-center justify-center mb-3">
-            <Text className="text-3xl">📷</Text>
+            <Camera size={28} color="#135BEC" />
           </View>
           <Text className="text-base font-semibold text-light-text dark:text-text-primary mb-1">
             {title}

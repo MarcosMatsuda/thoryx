@@ -66,6 +66,18 @@ if (typeof global.TransformStream === "undefined") {
 // Now import the jest-native matchers
 require("@testing-library/jest-native/extend-expect");
 
+// Mock lucide-react-native (ESM module not compatible with Jest)
+jest.mock("lucide-react-native", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  const mockIcon = (name) => {
+    const MockComponent = (props) => React.createElement(View, { testID: `lucide-${name}`, ...props });
+    MockComponent.displayName = name;
+    return MockComponent;
+  };
+  return new Proxy({}, { get: (_, name) => mockIcon(name) });
+});
+
 // Mock NativeWind
 jest.mock("nativewind", () => ({
   useColorScheme: () => ({ colorScheme: "dark", setColorScheme: jest.fn() }),

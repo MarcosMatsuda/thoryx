@@ -10,6 +10,7 @@ import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.ada
 import { getDocumentIcon } from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useTranslation } from "react-i18next";
+import { ClipboardList } from "lucide-react-native";
 
 const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
 const storage = new SecureStorageAdapter(
@@ -159,7 +160,7 @@ export function GuestModeScreen() {
                   </View>
                 </View>
                 <View className="w-8 h-8 bg-primary-main/10 rounded-lg items-center justify-center ml-2">
-                  <Text className="text-primary-main text-lg">📋</Text>
+                  <ClipboardList size={20} color="#135BEC" />
                 </View>
               </View>
             </Pressable>

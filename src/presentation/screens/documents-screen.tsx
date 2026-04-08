@@ -8,6 +8,7 @@ import {
 } from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useTranslation } from "react-i18next";
+import { FileText, ChevronRight } from "lucide-react-native";
 
 export function DocumentsScreen() {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ export function DocumentsScreen() {
 
           {documents.length === 0 ? (
             <View className="items-center justify-center py-12">
-              <Text className="text-6xl mb-4">📄</Text>
+              <FileText size={48} color="#94A3B8" className="mb-4" />
               <Text className="text-base md:text-lg text-light-textSecondary dark:text-text-secondary mb-6 text-center">
                 {t("documents.noDocuments")}
               </Text>
@@ -66,7 +67,7 @@ export function DocumentsScreen() {
                         {doc.fields.fullName ?? doc.fields.documentNumber ?? ""}
                       </Text>
                     </View>
-                    <Text className="text-light-textSecondary dark:text-text-secondary text-xl">›</Text>
+                    <ChevronRight size={20} color="#94A3B8" />
                   </Pressable>
                 ))}
               </View>

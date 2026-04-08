@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
 import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
 import { useTranslation } from "react-i18next";
+import { Lock } from "lucide-react-native";
 
 const PIN_LENGTH = 6;
 
@@ -69,7 +70,7 @@ export function PinSetupScreen() {
               <View className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-full bg-primary-main/10 justify-center items-center">
                 <View className="w-[70px] h-[70px] md:w-[85px] md:h-[85px] rounded-full bg-primary-main/20 justify-center items-center">
                   <View className="w-[45px] h-[45px] md:w-[55px] md:h-[55px] rounded-full bg-primary-main justify-center items-center">
-                    <Text className="text-2xl md:text-3xl">🔒</Text>
+                    <Lock size={28} color="#FFFFFF" />
                   </View>
                 </View>
               </View>

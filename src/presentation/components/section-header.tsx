@@ -1,7 +1,8 @@
 import { View, Text } from "react-native";
+import { ReactNode } from "react";
 
 interface SectionHeaderProps {
-  icon: string;
+  icon: ReactNode;
   title: string;
   iconBg?: string;
 }
@@ -17,7 +18,7 @@ export function SectionHeader({
         className="w-8 h-8 rounded-lg items-center justify-center mr-3"
         style={{ backgroundColor: iconBg }}
       >
-        <Text className="text-lg">{icon}</Text>
+        {icon}
       </View>
       <Text className="text-lg font-bold text-text-primary">{title}</Text>
     </View>

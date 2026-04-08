@@ -15,6 +15,7 @@ import {
 import { DocumentTypeDefinition } from "@domain/entities/document-type-definition.entity";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useTranslation } from "react-i18next";
+import { ChevronLeft, Trash2, Lock } from "lucide-react-native";
 
 export function AddDocumentScreen() {
   const { t } = useTranslation();
@@ -188,7 +189,7 @@ export function AddDocumentScreen() {
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <Text className="text-2xl text-light-text dark:text-text-primary">←</Text>
+            <ChevronLeft size={24} color="#94A3B8" />
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {isEditMode ? t("addDocument.editTitle") : t("addDocument.title")}
@@ -199,7 +200,7 @@ export function AddDocumentScreen() {
               onPress={handleDeleteDocument}
               disabled={isLoading}
             >
-              <Text className="text-xl text-status-error">🗑️</Text>
+              <Trash2 size={20} color="#EF4444" />
             </Pressable>
           ) : (
             <View className="w-10" />
@@ -241,7 +242,7 @@ export function AddDocumentScreen() {
           <View className="flex-row bg-primary-main/10 rounded-xl p-4 mb-6">
             <View className="mr-3">
               <View className="w-6 h-6 bg-primary-main rounded-full items-center justify-center">
-                <Text className="text-xs text-light-text dark:text-text-primary">🔒</Text>
+                <Lock size={12} color="#FFFFFF" />
               </View>
             </View>
             <Text className="flex-1 text-sm text-light-textSecondary dark:text-text-secondary leading-5">

@@ -10,6 +10,7 @@ import {
 } from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useTranslation } from "react-i18next";
+import { X, FileText, Lock, ShieldCheck } from "lucide-react-native";
 
 export function SelectDocumentsScreen() {
   const { t } = useTranslation();
@@ -74,7 +75,7 @@ export function SelectDocumentsScreen() {
       <View className="flex-1">
         <View className="flex-row items-center justify-between px-6 py-4 border-b border-light-border dark:border-ui-border">
           <Pressable onPress={() => router.back()}>
-            <Text className="text-2xl text-light-text dark:text-text-primary">✕</Text>
+            <X size={24} color="#94A3B8" />
           </Pressable>
           <Text className="text-lg md:text-xl font-bold text-light-text dark:text-text-primary">
             {t("selectDocuments.title")}
@@ -102,7 +103,7 @@ export function SelectDocumentsScreen() {
                 </Text>
               ) : documents.length === 0 ? (
                 <View className="items-center justify-center py-12">
-                  <Text className="text-6xl mb-4">📄</Text>
+                  <FileText size={48} color="#94A3B8" className="mb-4" />
                   <Text className="text-base md:text-lg text-light-textSecondary dark:text-text-secondary mb-6 text-center">
                     {t("selectDocuments.noDocuments")}
                   </Text>
@@ -126,7 +127,7 @@ export function SelectDocumentsScreen() {
 
             <View className="bg-primary-main/10 rounded-2xl p-4 md:p-5 mb-6 border border-primary-main/20">
               <View className="flex-row items-start">
-                <Text className="text-2xl mr-3">🔒</Text>
+                <Lock size={24} color="#135BEC" className="mr-3" />
                 <View className="flex-1">
                   <Text className="text-sm md:text-base font-bold text-light-text dark:text-text-primary mb-2">
                     {t("selectDocuments.secureLockTitle")}
@@ -140,7 +141,7 @@ export function SelectDocumentsScreen() {
 
             <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-4 md:p-5 mb-6 flex-row items-center justify-between">
               <View className="flex-row items-center">
-                <Text className="text-xl md:text-2xl mr-2">🛡️</Text>
+                <ShieldCheck size={20} color="#135BEC" className="mr-2" />
                 <Text className="text-base md:text-lg font-semibold text-light-text dark:text-text-primary">
                   {t("selectDocuments.sharingCount")}{" "}
                   <Text className="text-primary-main">

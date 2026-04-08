@@ -13,6 +13,7 @@ import { APP_CONFIG } from "@shared/constants/app";
 import { useTranslation } from "react-i18next";
 import { setStoredLanguage } from "@shared/i18n/language-detector";
 import { useThemeStore, ThemeMode } from "@stores/theme.store";
+import { ChevronRight, KeyRound, Pointer, Hourglass, Globe, Palette, Info, FileText, Lock, Trash2, LogOut } from "lucide-react-native";
 
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
 const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
@@ -284,7 +285,7 @@ export function SettingsScreen() {
                   {t("profile.editProfile")}
                 </Text>
               </View>
-              <Text className="text-xl text-light-textTertiary dark:text-text-tertiary">›</Text>
+              <ChevronRight size={20} color="#94A3B8" />
             </Pressable>
           </SettingsSection>
 
@@ -293,7 +294,7 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.changePin")}
               onPress={handleChangePin}
-              icon={<Text className="text-xl">🔐</Text>}
+              icon={<KeyRound size={20} color="#94A3B8" />}
               isFirst
             />
             <SettingsItem
@@ -302,7 +303,7 @@ export function SettingsScreen() {
                   ? `${getBiometryName()}`
                   : t("settings.biometricLock")
               }
-              icon={<Text className="text-xl">👆</Text>}
+              icon={<Pointer size={20} color="#94A3B8" />}
               switchValue={biometricEnabled}
               onSwitchChange={handleBiometricToggle}
               disabled={!biometryAvailable}
@@ -310,7 +311,7 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.autoLockTimeout")}
               onPress={handleAutoLockTimeout}
-              icon={<Text className="text-xl">⏱️</Text>}
+              icon={<Hourglass size={20} color="#94A3B8" />}
               value={autoLockTimeout}
               isLast
             />
@@ -321,14 +322,14 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.language")}
               onPress={handleLanguageChange}
-              icon={<Text className="text-xl">🌐</Text>}
+              icon={<Globe size={20} color="#94A3B8" />}
               value={currentLanguageName}
               isFirst
             />
             <SettingsItem
               label={t("settings.theme")}
               onPress={handleThemeChange}
-              icon={<Text className="text-xl">🎨</Text>}
+              icon={<Palette size={20} color="#94A3B8" />}
               value={themeLabels[themeMode]}
               isLast
             />
@@ -340,18 +341,18 @@ export function SettingsScreen() {
               label={t("common.version")}
               value={APP_CONFIG.version}
               showChevron={false}
-              icon={<Text className="text-xl">ℹ️</Text>}
+              icon={<Info size={20} color="#94A3B8" />}
               isFirst
             />
             <SettingsItem
               label={t("settings.termsOfService")}
               onPress={handleTermsOfService}
-              icon={<Text className="text-xl">📄</Text>}
+              icon={<FileText size={20} color="#94A3B8" />}
             />
             <SettingsItem
               label={t("settings.privacyPolicy")}
               onPress={handlePrivacyPolicy}
-              icon={<Text className="text-xl">🔒</Text>}
+              icon={<Lock size={20} color="#94A3B8" />}
               isLast
             />
           </SettingsSection>
@@ -361,7 +362,7 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.clearAllData")}
               onPress={handleClearData}
-              icon={<Text className="text-xl">🗑️</Text>}
+              icon={<Trash2 size={20} color="#EF4444" />}
               destructive
               showChevron={false}
               isFirst
@@ -369,7 +370,7 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.logOut")}
               onPress={handleLogout}
-              icon={<Text className="text-xl">🚪</Text>}
+              icon={<LogOut size={20} color="#EF4444" />}
               destructive
               showChevron={false}
               loading={isLoggingOut}

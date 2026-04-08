@@ -1,4 +1,5 @@
 import { View, Text, Pressable } from "react-native";
+import { Check } from "lucide-react-native";
 
 interface SelectableDocumentItemProps {
   icon: string;
@@ -30,7 +31,7 @@ export function SelectableDocumentItem({
               : "border-light-border dark:border-ui-border"
           }`}
         >
-          {selected && <Text className="text-white text-xs font-bold">✓</Text>}
+          {selected && <Check size={14} color="#FFFFFF" />}
         </View>
 
         <View className="flex-1">

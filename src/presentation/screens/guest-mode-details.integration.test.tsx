@@ -129,7 +129,7 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     // Botão de editar DEVE estar visível no modo normal
-    expect(screen.getByText("✏️")).toBeTruthy();
+    expect(screen.getByTestId("lucide-Pencil")).toBeTruthy();
   });
 
   it("should hide auto-lock toggle when in guest mode", async () => {
@@ -185,7 +185,7 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     // Pressionar o botão de voltar
-    fireEvent.press(screen.getByText("←"));
+    fireEvent.press(screen.getByTestId("lucide-ChevronLeft"));
 
     // No guest mode: usa replace para /guest-mode sem poder voltar
     expect(mockReplace).toHaveBeenCalledWith("/guest-mode");
@@ -207,7 +207,7 @@ describe("DocumentDetailsScreen - Guest Mode Integration", () => {
     });
 
     // Pressionar o botão de voltar
-    fireEvent.press(screen.getByText("←"));
+    fireEvent.press(screen.getByTestId("lucide-ChevronLeft"));
 
     // No modo normal: usa router.back()
     expect(mockBack).toHaveBeenCalled();

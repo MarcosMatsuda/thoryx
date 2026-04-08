@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Image, Pressable, ActivityIndicator, Text } from "react-native";
+import { User } from "lucide-react-native";
 
 interface UserAvatarProps {
   photoUri?: string | null;
@@ -29,7 +30,7 @@ export function UserAvatar({
         />
       ) : (
         <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-          <Text className="text-3xl">👤</Text>
+          <User size={28} color="#135BEC" />
         </View>
       )}
 

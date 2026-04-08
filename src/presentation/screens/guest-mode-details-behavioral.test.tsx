@@ -168,7 +168,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       );
 
       // Press back button
-      fireEvent.press(screen.getByText("←"));
+      fireEvent.press(screen.getByTestId("lucide-ChevronLeft"));
 
       // Should use replace, not back (prevents going back to app)
       expect(mockReplace).toHaveBeenCalledWith("/guest-mode");
@@ -191,7 +191,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       });
 
       // Press back button
-      fireEvent.press(screen.getByText("←"));
+      fireEvent.press(screen.getByTestId("lucide-ChevronLeft"));
 
       // Should use back in normal mode
       expect(mockBack).toHaveBeenCalled();
@@ -214,7 +214,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       });
 
       // Press back button
-      fireEvent.press(screen.getByText("←"));
+      fireEvent.press(screen.getByTestId("lucide-ChevronLeft"));
 
       // Should use back because guestMode="false"
       expect(mockBack).toHaveBeenCalled();
@@ -239,7 +239,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       });
 
       // Edit button (pencil emoji) should NOT exist
-      expect(screen.queryByText("✏️")).toBeNull();
+      expect(screen.queryByTestId("lucide-Pencil")).toBeNull();
     });
 
     it("should show edit button when NOT in guest mode", async () => {
@@ -257,7 +257,7 @@ describe("DocumentDetailsScreen - Guest Mode Behavioral Tests", () => {
       });
 
       // Edit button should exist
-      expect(screen.getByText("✏️")).toBeTruthy();
+      expect(screen.getByTestId("lucide-Pencil")).toBeTruthy();
     });
 
     it("should NOT show auto-lock toggle for RG/CNH documents when in guest mode", async () => {

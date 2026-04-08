@@ -1,4 +1,5 @@
 import { View, Text } from "react-native";
+import { Wifi } from "lucide-react-native";
 
 interface CreditCardPreviewProps {
   cardNumber?: string;
@@ -14,7 +15,7 @@ export function CreditCardPreview({
   return (
     <View className="bg-gradient-to-br from-primary-main to-primary-dark rounded-2xl p-6 mb-6">
       <View className="mb-8">
-        <Text className="text-3xl mb-2">📡</Text>
+        <Wifi size={28} color="#FFFFFF" className="mb-2" />
       </View>
 
       <View className="mb-6">
