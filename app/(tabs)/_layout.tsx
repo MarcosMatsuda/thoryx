@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { HapticTab } from "@presentation/components/haptic-tab";
 import { IconSymbol } from "@presentation/components/ui/icon-symbol";
@@ -8,6 +9,7 @@ import { useColorScheme } from "@presentation/hooks/use-color-scheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -20,7 +22,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Wallet",
+          title: t("tabs.wallet"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="creditcard.fill" color={color} />
           ),
@@ -29,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="documents"
         options={{
-          title: "Documents",
+          title: t("tabs.documents"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="doc.text.fill" color={color} />
           ),
@@ -38,7 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="emergency"
         options={{
-          title: "Emergency",
+          title: t("tabs.emergency"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="cross.case.fill" color={color} />
           ),
@@ -47,7 +49,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
+          title: t("tabs.settings"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="gearshape.fill" color={color} />
           ),

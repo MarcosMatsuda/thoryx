@@ -9,8 +9,10 @@ import {
   getDocumentLabel,
 } from "@presentation/utils/document-display";
 import { useDocumentsStore } from "@stores/documents.store";
+import { useTranslation } from "react-i18next";
 
 export function SelectDocumentsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { documents, isLoading } = useDocuments();
   const { customDocumentTypes } = useDocumentsStore();
@@ -57,9 +59,9 @@ export function SelectDocumentsScreen() {
   const handleConfirm = () => {
     if (selectedDocIds.length === 0) {
       Alert.alert(
-        "Selecione pelo menos um documento",
-        "Você precisa selecionar pelo menos um documento para entrar no Modo Convidado.",
-        [{ text: "OK" }],
+        t("selectDocuments.selectAtLeastOne"),
+        t("selectDocuments.selectAtLeastOneMsg"),
+        [{ text: t("common.ok") }],
       );
       return;
     }
@@ -75,11 +77,11 @@ export function SelectDocumentsScreen() {
             <Text className="text-2xl text-text-primary">✕</Text>
           </Pressable>
           <Text className="text-lg md:text-xl font-bold text-text-primary">
-            Selecionar Documentos
+            {t("selectDocuments.title")}
           </Text>
           <Pressable>
             <Text className="text-base md:text-lg font-semibold text-primary-main">
-              Ajuda
+              {t("common.help")}
             </Text>
           </Pressable>
         </View>
@@ -87,23 +89,22 @@ export function SelectDocumentsScreen() {
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="px-6 py-6">
             <Text className="text-2xl md:text-3xl font-bold text-text-primary mb-3 leading-tight">
-              Quais documentos deseja compartilhar?
+              {t("selectDocuments.heading")}
             </Text>
             <Text className="text-sm md:text-base text-text-secondary mb-6 leading-5">
-              O app entrará em modo restrito mostrando apenas os documentos
-              selecionados para verificação.
+              {t("selectDocuments.description")}
             </Text>
 
             <View className="mb-6">
               {isLoading ? (
                 <Text className="text-text-secondary text-center py-8">
-                  Carregando documentos...
+                  {t("selectDocuments.loadingDocuments")}
                 </Text>
               ) : documents.length === 0 ? (
                 <View className="items-center justify-center py-12">
                   <Text className="text-6xl mb-4">📄</Text>
                   <Text className="text-base md:text-lg text-text-secondary mb-6 text-center">
-                    Nenhum documento cadastrado. Adicione documentos primeiro.
+                    {t("selectDocuments.noDocuments")}
                   </Text>
                 </View>
               ) : (
@@ -128,12 +129,10 @@ export function SelectDocumentsScreen() {
                 <Text className="text-2xl mr-3">🔒</Text>
                 <View className="flex-1">
                   <Text className="text-sm md:text-base font-bold text-text-primary mb-2">
-                    Modo de Bloqueio Seguro:
+                    {t("selectDocuments.secureLockTitle")}
                   </Text>
                   <Text className="text-xs md:text-sm text-text-secondary leading-5">
-                    Após confirmar, seu dispositivo ficará bloqueado nesta tela.
-                    Autenticação por PIN será necessária para sair e acessar o
-                    restante do app.
+                    {t("selectDocuments.secureLockDesc")}
                   </Text>
                 </View>
               </View>
@@ -143,11 +142,11 @@ export function SelectDocumentsScreen() {
               <View className="flex-row items-center">
                 <Text className="text-xl md:text-2xl mr-2">🛡️</Text>
                 <Text className="text-base md:text-lg font-semibold text-text-primary">
-                  Compartilhando{" "}
+                  {t("selectDocuments.sharingCount")}{" "}
                   <Text className="text-primary-main">
                     {selectedDocIds.length}
                   </Text>{" "}
-                  documento{selectedDocIds.length !== 1 ? "s" : ""}
+                  {selectedDocIds.length !== 1 ? t("selectDocuments.sharingDocumentsPlural") : t("selectDocuments.sharingDocuments")}
                 </Text>
               </View>
             </View>
@@ -160,7 +159,7 @@ export function SelectDocumentsScreen() {
             onPress={handleConfirm}
           >
             <Text className="text-base md:text-lg font-bold text-text-primary">
-              Confirmar e Bloquear App
+              {t("selectDocuments.confirmLock")}
             </Text>
           </Pressable>
         </View>

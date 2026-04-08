@@ -1,0 +1,297 @@
+{
+  "common": {
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "close": "Close",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "ok": "OK",
+    "help": "Help",
+    "remove": "Remove",
+    "add": "Add",
+    "continue": "Continue",
+    "version": "Version"
+  },
+  "tabs": {
+    "wallet": "Wallet",
+    "documents": "Documents",
+    "emergency": "Emergency",
+    "settings": "Settings"
+  },
+  "wallet": {
+    "welcome": "Welcome back,",
+    "guest": "Guest",
+    "quickActions": "QUICK ACTIONS",
+    "newCard": "New Card",
+    "card": "Card",
+    "cards": "Cards",
+    "emergency": "Emergency",
+    "addDoc": "Add Doc",
+    "secureSharingTitle": "Secure Sharing Mode",
+    "secureSharingDesc": "Select documents to share for check-ins or verification. Others will be locked and hidden from view.",
+    "startSharing": "Start Sharing",
+    "myDocuments": "MY DOCUMENTS",
+    "seeAll": "See All",
+    "noDocuments": "No documents yet. Add your first document!",
+    "loadingDocuments": "Loading documents...",
+    "documentNumber": "DOCUMENT NUMBER"
+  },
+  "documents": {
+    "title": "Documents",
+    "noDocuments": "No documents yet",
+    "addDocument": "Add Document",
+    "addAnother": "+ Add Another Document"
+  },
+  "addDocument": {
+    "title": "Add Document",
+    "editTitle": "Edit Document",
+    "documentType": "Document Type",
+    "selectType": "Select type",
+    "createCustomType": "+ Create custom type",
+    "documentPhotos": "DOCUMENT PHOTOS",
+    "tapToPhoto": "Tap to take a photo",
+    "encryptionNotice": "Your document is encrypted and stored locally on your device. Only you can access this information.",
+    "saveDocument": "Save Document",
+    "updateDocument": "Update Document",
+    "selectTypeError": "Select a document type",
+    "cameraPermission": "Permission Required",
+    "cameraPermissionMsg": "Camera permission is required to take photos",
+    "photoError": "Failed to take photo",
+    "loadError": "Failed to load document",
+    "saveError": "Failed to save document",
+    "deleteError": "Failed to delete document",
+    "savedSuccess": "Document saved securely"
+  },
+  "documentDetails": {
+    "title": "Document Details",
+    "notFound": "Document not found",
+    "autoLock": "Include in Auto-lock",
+    "autoLockDesc": "Document visible in Guest Mode",
+    "encryptionNotice": "This document is encrypted and stored locally on your device."
+  },
+  "emergency": {
+    "title": "Emergency Details",
+    "noInfo": "No Emergency Information",
+    "noInfoDesc": "Set up your emergency profile to help first responders in case of emergency.",
+    "noInfoUnauthDesc": "Emergency profile has not been set up yet. Log in to configure.",
+    "setupProfile": "Set Up Emergency Profile",
+    "lockScreenAccess": "Lock Screen Accessibility",
+    "lockScreenDesc": "This information will be accessible to first responders from the lock screen without a passcode in case of emergency.",
+    "vitalInfo": "VITAL MEDICAL INFO",
+    "bloodType": "BLOOD TYPE",
+    "healthPlan": "HEALTH PLAN",
+    "allergies": "Allergies",
+    "healthConditions": "Health Conditions",
+    "medications": "Continuous Meds",
+    "iceContacts": "IN CASE OF EMERGENCY (ICE)",
+    "callError": "Could not call {{name}}",
+    "invalidPhone": "Invalid phone number"
+  },
+  "emergencySetup": {
+    "title": "Emergency Profile",
+    "criticalAccess": "CRITICAL ACCESS",
+    "criticalAccessDesc": "This data will be visible on the lock screen for first responders.",
+    "lockScreenVisible": "Visible on lock screen",
+    "healthPlan": "Health Plan",
+    "bloodType": "Blood Type",
+    "allergies": "Serious Allergies",
+    "allergiesPlaceholder": "e.g. Penicillin, Peanuts",
+    "healthConditions": "Health Conditions",
+    "healthConditionsPlaceholder": "e.g. Diabetes, Hypertension",
+    "medications": "CONTINUOUS MEDICATIONS",
+    "addMedication": "+ Add Medication",
+    "medicationPlaceholder": "Medication name",
+    "contacts": "EMERGENCY CONTACTS (ICE)",
+    "addContact": "+ Add Contact",
+    "primaryContact": "PRIMARY CONTACT",
+    "contactRequired": "Add at least one emergency contact",
+    "saveProfile": "Save Emergency Profile",
+    "saveError": "Failed to save",
+    "savedSuccess": "Emergency profile saved!"
+  },
+  "guestMode": {
+    "title": "Shared Documents",
+    "expiresIn": "Access expires in",
+    "noDocuments": "No documents shared",
+    "noDocumentsDesc": "The timer will still expire and redirect to the lock screen.",
+    "exitSecureMode": "Exit Secure Mode",
+    "documentNumber": "DOCUMENT NUMBER"
+  },
+  "selectDocuments": {
+    "title": "Select Documents",
+    "heading": "Which documents do you want to share?",
+    "description": "The app will enter a restricted mode showing only your selected documents for verification.",
+    "loadingDocuments": "Loading documents...",
+    "noDocuments": "No documents registered. Add documents first.",
+    "secureLockTitle": "Secure Lock Mode:",
+    "secureLockDesc": "Once confirmed, your device will be locked to this screen. PIN authentication will be required to exit and access the rest of your app.",
+    "sharingCount": "Sharing",
+    "sharingDocuments": "document",
+    "sharingDocumentsPlural": "documents",
+    "confirmLock": "Confirm & Lock App",
+    "selectAtLeastOne": "Select at least one document",
+    "selectAtLeastOneMsg": "You need to select at least one document to enter Guest Mode."
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "PROFILE",
+    "security": "SECURITY",
+    "preferences": "PREFERENCES",
+    "about": "ABOUT",
+    "dataPrivacy": "DATA & PRIVACY",
+    "changePin": "Change PIN",
+    "biometricLock": "Biometric Lock",
+    "autoLockTimeout": "Auto-lock Timeout",
+    "language": "Language",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "clearAllData": "Clear All Data",
+    "logOut": "Log Out",
+    "minutes": "{{count}} minutes",
+    "never": "Never",
+    "confirmLogout": "Are you sure you want to log out?",
+    "confirmLogoutMsg": "You will need your PIN to sign back in.",
+    "confirmClearData": "Clear All Data?",
+    "confirmClearDataMsg": "This action cannot be undone. All documents, cards, and data will be permanently removed."
+  },
+  "auth": {
+    "createPin": "Create PIN",
+    "createPinDesc": "Create a 6-digit PIN to protect your documents.",
+    "enterPin": "Enter your PIN",
+    "confirmPin": "Confirm your PIN",
+    "wrongPin": "Wrong PIN",
+    "pinMismatch": "PINs do not match",
+    "enableBiometrics": "Enable biometric unlock?",
+    "currentPin": "Current PIN",
+    "newPin": "New PIN",
+    "changePin": "Change PIN",
+    "changePinSuccess": "PIN changed successfully",
+    "emergencyDetails": "Emergency Details",
+    "unlockWallet": "Unlock Wallet"
+  },
+  "profile": {
+    "welcomeTitle": "Welcome to Thoryx",
+    "welcomeDesc": "Let's set up your profile.",
+    "editProfile": "Edit Profile",
+    "changeImage": "Change Image",
+    "chooseImage": "Choose Image",
+    "yourName": "YOUR NAME",
+    "namePlaceholder": "Enter your name",
+    "nameRequired": "Name must be at least 2 characters",
+    "saveChanges": "Save Changes"
+  },
+  "customDocType": {
+    "createTitle": "Create Document Type",
+    "editTitle": "Edit Document Type",
+    "typeName": "Type Name",
+    "typeNamePlaceholder": "e.g. Medical License, Class Card",
+    "icon": "ICON",
+    "photos": "Photos",
+    "photoFrontOnly": "Front Only",
+    "photoFrontBack": "Front and Back",
+    "photoDataPage": "Data Page",
+    "fields": "DOCUMENT FIELDS",
+    "fieldName": "Field Name",
+    "fieldNamePlaceholder": "e.g. Registration Number",
+    "fieldType": "Type",
+    "fieldTypeText": "Text",
+    "fieldTypeDate": "Date",
+    "fieldTypeSelect": "Selection",
+    "fieldRequired": "Required",
+    "fieldOptional": "Optional",
+    "fieldOptions": "Options (comma-separated)",
+    "fieldOptionsPlaceholder": "e.g. A, B, AB, C, D",
+    "addField": "+ Add Field",
+    "createType": "Create Document Type",
+    "saveChanges": "Save Changes",
+    "typeNameRequired": "Please enter a type name",
+    "fieldsRequired": "Add at least one field",
+    "createdSuccess": "Document type created!",
+    "updatedSuccess": "Document type updated!",
+    "saveError": "Failed to save",
+    "deleteTitle": "Remove type",
+    "deleteConfirm": "Remove \"{{name}}\"?",
+    "deleteBlocked": "Cannot remove",
+    "deleteBlockedMsg": "There are {{count}} document(s) using this type. Remove the documents first.",
+    "deleteError": "Failed to remove",
+    "customTypes": "CUSTOM TYPES",
+    "createNew": "CREATE NEW TYPE",
+    "field": "Field",
+    "fields_count": "{{count}} field(s)"
+  },
+  "documentTypes": {
+    "CNH": {
+      "label": "CNH (Driver's License)",
+      "fields": {
+        "fullName": "Full Name",
+        "registrationNumber": "Registration Number",
+        "cpf": "CPF",
+        "dateOfBirth": "Date of Birth",
+        "expiryDate": "Expiry Date",
+        "category": "Category"
+      }
+    },
+    "RG": {
+      "label": "RG (National ID)",
+      "fields": {
+        "fullName": "Full Name",
+        "rgNumber": "RG Number",
+        "issuingAuthority": "Issuing Authority",
+        "issueDate": "Issue Date",
+        "dateOfBirth": "Date of Birth",
+        "filiation": "Parents",
+        "birthPlace": "Birth Place"
+      }
+    },
+    "CPF": {
+      "label": "CPF",
+      "fields": {
+        "fullName": "Full Name",
+        "cpfNumber": "CPF Number",
+        "dateOfBirth": "Date of Birth"
+      }
+    },
+    "PASSPORT": {
+      "label": "Passport",
+      "fields": {
+        "fullName": "Full Name",
+        "passportNumber": "Passport Number",
+        "nationality": "Nationality",
+        "dateOfBirth": "Date of Birth",
+        "expiryDate": "Expiry Date"
+      }
+    },
+    "VOTER_ID": {
+      "label": "Voter ID",
+      "fields": {
+        "fullName": "Full Name",
+        "voterNumber": "Voter Number",
+        "zone": "Zone",
+        "section": "Section",
+        "city": "City",
+        "uf": "State"
+      }
+    },
+    "MILITARY_CERT": {
+      "label": "Military Certificate",
+      "fields": {
+        "fullName": "Full Name",
+        "certificateNumber": "Certificate Number",
+        "ra": "RA",
+        "militaryCategory": "Category",
+        "situation": "Status"
+      }
+    }
+  },
+  "photoSlots": {
+    "front": "Front Photo",
+    "back": "Back Photo",
+    "dataPage": "Data Page"
+  }
+}

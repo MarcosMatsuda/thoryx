@@ -307,7 +307,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain("Incluir no Auto-lock");
+      expect(componentCode).toContain('t("documentDetails.autoLock")');
     });
 
     it("should render toggle description text", () => {
@@ -320,7 +320,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain("Documento visível no Modo Convidado");
+      expect(componentCode).toContain('t("documentDetails.autoLockDesc")');
     });
 
     it("should use isAutoLockEnabled state for toggle visual", () => {
@@ -420,7 +420,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
       // Look at a generous section before the label
       const sectionSlice = componentCode.substring(toggleStart - 500, toggleStart);
 
@@ -437,7 +437,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
       const sectionSlice = componentCode.substring(toggleStart - 500, toggleStart);
 
       expect(sectionSlice).toContain("mb-6");
@@ -453,7 +453,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
       const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
 
       expect(sectionSlice).toContain("bg-background-secondary");
@@ -469,7 +469,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
       const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
 
       expect(sectionSlice).toContain("rounded-2xl");
@@ -485,7 +485,7 @@ describe("DocumentDetailsScreen - Auto-lock Toggle Component Structure", () => {
       );
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      const toggleStart = componentCode.indexOf("Incluir no Auto-lock");
+      const toggleStart = componentCode.indexOf('t("documentDetails.autoLock")');
       const sectionSlice = componentCode.substring(toggleStart - 300, toggleStart);
 
       expect(sectionSlice).toContain("overflow-hidden");

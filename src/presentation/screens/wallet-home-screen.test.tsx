@@ -177,23 +177,23 @@ describe("WalletHomeScreen", () => {
   describe("Secure Sharing Mode Section", () => {
     it("should render Secure Sharing Mode title", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Secure Sharing Mode")).toBeTruthy();
+      expect(getByText("Modo Compartilhamento Seguro")).toBeTruthy();
     });
 
     it("should render Start Sharing button", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Start Sharing")).toBeTruthy();
+      expect(getByText("Iniciar Compartilhamento")).toBeTruthy();
     });
 
     it("should navigate to /select-documents when Start Sharing is pressed", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      fireEvent.press(getByText("Start Sharing"));
+      fireEvent.press(getByText("Iniciar Compartilhamento"));
       expect(mockRouter.push).toHaveBeenCalledWith("/select-documents");
     });
 
     it("should NOT navigate to /guest-mode from Secure Sharing button", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      fireEvent.press(getByText("Start Sharing"));
+      fireEvent.press(getByText("Iniciar Compartilhamento"));
       expect(mockRouter.replace).not.toHaveBeenCalledWith("/guest-mode");
       expect(mockRouter.push).not.toHaveBeenCalledWith("/guest-mode");
     });
@@ -202,14 +202,14 @@ describe("WalletHomeScreen", () => {
   describe("Quick Actions Section", () => {
     it("should render QUICK ACTIONS section header", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("QUICK ACTIONS")).toBeTruthy();
+      expect(getByText("AÇÕES RÁPIDAS")).toBeTruthy();
     });
   });
 
   describe("Profile Display", () => {
     it("should render welcome back text", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("Welcome back,")).toBeTruthy();
+      expect(getByText("Bem-vindo,")).toBeTruthy();
     });
 
     it("should render user name from profile", () => {
@@ -232,12 +232,12 @@ describe("WalletHomeScreen", () => {
   describe("Documents Section", () => {
     it("should render MY DOCUMENTS section header", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("MY DOCUMENTS")).toBeTruthy();
+      expect(getByText("MEUS DOCUMENTOS")).toBeTruthy();
     });
 
     it("should render See All link", () => {
       const { getByText } = render(<WalletHomeScreen />);
-      expect(getByText("See All")).toBeTruthy();
+      expect(getByText("Ver Todos")).toBeTruthy();
     });
 
     it("should render documents list", () => {
@@ -254,7 +254,7 @@ describe("WalletHomeScreen", () => {
 
       const { getByText } = render(<WalletHomeScreen />);
       expect(
-        getByText("No documents yet. Add your first document!"),
+        getByText("Nenhum documento ainda. Adicione seu primeiro!"),
       ).toBeTruthy();
     });
 
@@ -361,15 +361,15 @@ describe("WalletHomeScreen", () => {
       expect(queryByText("Iniciar Modo Convidado")).toBeNull();
 
       // 2. Secure Sharing section should be present
-      expect(getByText("Secure Sharing Mode")).toBeTruthy();
-      expect(getByText("Start Sharing")).toBeTruthy();
+      expect(getByText("Modo Compartilhamento Seguro")).toBeTruthy();
+      expect(getByText("Iniciar Compartilhamento")).toBeTruthy();
 
       // 3. Focus effect should reload both profile and documents
       expect(mockReloadProfile).toHaveBeenCalled();
       expect(mockLoadDocuments).toHaveBeenCalled();
 
       // 4. Start Sharing navigates to /select-documents
-      fireEvent.press(getByText("Start Sharing"));
+      fireEvent.press(getByText("Iniciar Compartilhamento"));
       expect(mockRouter.push).toHaveBeenCalledWith("/select-documents");
     });
   });

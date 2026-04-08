@@ -1,0 +1,297 @@
+{
+  "common": {
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "back": "Voltar",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "ok": "OK",
+    "help": "Ajuda",
+    "remove": "Remover",
+    "add": "Adicionar",
+    "continue": "Continuar",
+    "version": "Versão"
+  },
+  "tabs": {
+    "wallet": "Carteira",
+    "documents": "Documentos",
+    "emergency": "Emergência",
+    "settings": "Configurações"
+  },
+  "wallet": {
+    "welcome": "Bem-vindo,",
+    "guest": "Visitante",
+    "quickActions": "AÇÕES RÁPIDAS",
+    "newCard": "Novo Cartão",
+    "card": "Cartão",
+    "cards": "Cartões",
+    "emergency": "Emergência",
+    "addDoc": "Add Doc",
+    "secureSharingTitle": "Modo Compartilhamento Seguro",
+    "secureSharingDesc": "Selecione documentos para compartilhar em check-ins ou verificação. Os demais serão bloqueados e ocultos.",
+    "startSharing": "Iniciar Compartilhamento",
+    "myDocuments": "MEUS DOCUMENTOS",
+    "seeAll": "Ver Todos",
+    "noDocuments": "Nenhum documento ainda. Adicione seu primeiro!",
+    "loadingDocuments": "Carregando documentos...",
+    "documentNumber": "Nº DOCUMENTO"
+  },
+  "documents": {
+    "title": "Documentos",
+    "noDocuments": "Nenhum documento ainda",
+    "addDocument": "Adicionar Documento",
+    "addAnother": "+ Adicionar Outro Documento"
+  },
+  "addDocument": {
+    "title": "Adicionar Documento",
+    "editTitle": "Editar Documento",
+    "documentType": "Tipo de Documento",
+    "selectType": "Selecione o tipo",
+    "createCustomType": "+ Criar tipo personalizado",
+    "documentPhotos": "FOTOS DO DOCUMENTO",
+    "tapToPhoto": "Toque para tirar foto",
+    "encryptionNotice": "Seu documento é criptografado e armazenado localmente no dispositivo. Somente você pode acessar essas informações.",
+    "saveDocument": "Salvar Documento",
+    "updateDocument": "Atualizar Documento",
+    "selectTypeError": "Selecione um tipo de documento",
+    "cameraPermission": "Permissão necessária",
+    "cameraPermissionMsg": "Precisamos de acesso à câmera",
+    "photoError": "Não foi possível tirar a foto",
+    "loadError": "Não foi possível carregar o documento",
+    "saveError": "Não foi possível salvar o documento",
+    "deleteError": "Não foi possível excluir o documento",
+    "savedSuccess": "Documento salvo com segurança"
+  },
+  "documentDetails": {
+    "title": "Detalhes do Documento",
+    "notFound": "Documento não encontrado",
+    "autoLock": "Incluir no Auto-lock",
+    "autoLockDesc": "Documento visível no Modo Convidado",
+    "encryptionNotice": "Este documento é criptografado e armazenado localmente no seu dispositivo."
+  },
+  "emergency": {
+    "title": "Emergency Details",
+    "noInfo": "Sem Informações de Emergência",
+    "noInfoDesc": "Configure seu perfil de emergência para ajudar socorristas em caso de emergência.",
+    "noInfoUnauthDesc": "Perfil de emergência ainda não foi configurado. Faça login para configurar.",
+    "setupProfile": "Configurar Perfil de Emergência",
+    "lockScreenAccess": "Acessibilidade na Tela de Bloqueio",
+    "lockScreenDesc": "Esta informação será acessível a socorristas na tela de bloqueio sem senha em caso de emergência.",
+    "vitalInfo": "INFO MÉDICA VITAL",
+    "bloodType": "TIPO SANGUÍNEO",
+    "healthPlan": "PLANO DE SAÚDE",
+    "allergies": "Alergias",
+    "healthConditions": "Condições de Saúde",
+    "medications": "Medicamentos Contínuos",
+    "iceContacts": "EM CASO DE EMERGÊNCIA (ICE)",
+    "callError": "Não foi possível ligar para {{name}}",
+    "invalidPhone": "Número de telefone inválido"
+  },
+  "emergencySetup": {
+    "title": "Perfil de Emergência",
+    "criticalAccess": "ACESSO CRÍTICO",
+    "criticalAccessDesc": "Estes dados ficarão visíveis na tela de bloqueio para socorristas.",
+    "lockScreenVisible": "Visível na tela de bloqueio",
+    "healthPlan": "Plano de Saúde",
+    "bloodType": "Tipo Sanguíneo",
+    "allergies": "Alergias Graves",
+    "allergiesPlaceholder": "Ex: Penicilina, Amendoim",
+    "healthConditions": "Condições de Saúde",
+    "healthConditionsPlaceholder": "Ex: Diabetes, Hipertensão",
+    "medications": "MEDICAMENTOS CONTÍNUOS",
+    "addMedication": "+ Adicionar Medicamento",
+    "medicationPlaceholder": "Nome do medicamento",
+    "contacts": "CONTATOS DE EMERGÊNCIA (ICE)",
+    "addContact": "+ Adicionar Contato",
+    "primaryContact": "CONTATO PRINCIPAL",
+    "contactRequired": "Adicione pelo menos um contato de emergência",
+    "saveProfile": "Salvar Perfil de Emergência",
+    "saveError": "Não foi possível salvar",
+    "savedSuccess": "Perfil de emergência salvo!"
+  },
+  "guestMode": {
+    "title": "Documentos Compartilhados",
+    "expiresIn": "Acesso expira em",
+    "noDocuments": "Nenhum documento compartilhado",
+    "noDocumentsDesc": "O timer continuará e redirecionará para a tela de bloqueio.",
+    "exitSecureMode": "Sair do Modo Seguro",
+    "documentNumber": "Nº DOCUMENTO"
+  },
+  "selectDocuments": {
+    "title": "Selecionar Documentos",
+    "heading": "Quais documentos deseja compartilhar?",
+    "description": "O app entrará em modo restrito mostrando apenas os documentos selecionados para verificação.",
+    "loadingDocuments": "Carregando documentos...",
+    "noDocuments": "Nenhum documento cadastrado. Adicione documentos primeiro.",
+    "secureLockTitle": "Modo de Bloqueio Seguro:",
+    "secureLockDesc": "Após confirmar, seu dispositivo ficará bloqueado nesta tela. Autenticação por PIN será necessária para sair e acessar o restante do app.",
+    "sharingCount": "Compartilhando",
+    "sharingDocuments": "documento",
+    "sharingDocumentsPlural": "documentos",
+    "confirmLock": "Confirmar e Bloquear App",
+    "selectAtLeastOne": "Selecione pelo menos um documento",
+    "selectAtLeastOneMsg": "Você precisa selecionar pelo menos um documento para entrar no Modo Convidado."
+  },
+  "settings": {
+    "title": "Configurações",
+    "profile": "PERFIL",
+    "security": "SEGURANÇA",
+    "preferences": "PREFERÊNCIAS",
+    "about": "SOBRE",
+    "dataPrivacy": "DADOS E PRIVACIDADE",
+    "changePin": "Alterar PIN",
+    "biometricLock": "Bloqueio Biométrico",
+    "autoLockTimeout": "Tempo de Auto-lock",
+    "language": "Idioma",
+    "termsOfService": "Termos de Serviço",
+    "privacyPolicy": "Política de Privacidade",
+    "clearAllData": "Apagar Todos os Dados",
+    "logOut": "Sair",
+    "minutes": "{{count}} minutos",
+    "never": "Nunca",
+    "confirmLogout": "Tem certeza que deseja sair?",
+    "confirmLogoutMsg": "Você precisará do PIN para entrar novamente.",
+    "confirmClearData": "Apagar Todos os Dados?",
+    "confirmClearDataMsg": "Esta ação não pode ser desfeita. Todos os documentos, cartões e dados serão removidos permanentemente."
+  },
+  "auth": {
+    "createPin": "Criar PIN",
+    "createPinDesc": "Crie um PIN de 6 dígitos para proteger seus documentos.",
+    "enterPin": "Digite seu PIN",
+    "confirmPin": "Confirme seu PIN",
+    "wrongPin": "PIN incorreto",
+    "pinMismatch": "Os PINs não coincidem",
+    "enableBiometrics": "Habilitar desbloqueio biométrico?",
+    "currentPin": "PIN Atual",
+    "newPin": "Novo PIN",
+    "changePin": "Alterar PIN",
+    "changePinSuccess": "PIN alterado com sucesso",
+    "emergencyDetails": "Emergency Details",
+    "unlockWallet": "Desbloquear Carteira"
+  },
+  "profile": {
+    "welcomeTitle": "Bem-vindo ao Thoryx",
+    "welcomeDesc": "Vamos configurar seu perfil.",
+    "editProfile": "Editar Perfil",
+    "changeImage": "Alterar Imagem",
+    "chooseImage": "Escolher Imagem",
+    "yourName": "SEU NOME",
+    "namePlaceholder": "Digite seu nome",
+    "nameRequired": "Nome deve ter pelo menos 2 caracteres",
+    "saveChanges": "Salvar Alterações"
+  },
+  "customDocType": {
+    "createTitle": "Criar Tipo de Documento",
+    "editTitle": "Editar Tipo de Documento",
+    "typeName": "Nome do Tipo",
+    "typeNamePlaceholder": "Ex: CRM Médico, Carteira de Classe",
+    "icon": "ÍCONE",
+    "photos": "Fotos",
+    "photoFrontOnly": "Apenas Frente",
+    "photoFrontBack": "Frente e Verso",
+    "photoDataPage": "Página de Dados",
+    "fields": "CAMPOS DO DOCUMENTO",
+    "fieldName": "Nome do Campo",
+    "fieldNamePlaceholder": "Ex: Nº Registro",
+    "fieldType": "Tipo",
+    "fieldTypeText": "Texto",
+    "fieldTypeDate": "Data",
+    "fieldTypeSelect": "Seleção",
+    "fieldRequired": "Obrigatório",
+    "fieldOptional": "Opcional",
+    "fieldOptions": "Opções (separadas por vírgula)",
+    "fieldOptionsPlaceholder": "Ex: A, B, AB, C, D",
+    "addField": "+ Adicionar Campo",
+    "createType": "Criar Tipo de Documento",
+    "saveChanges": "Salvar Alterações",
+    "typeNameRequired": "Informe o nome do tipo de documento",
+    "fieldsRequired": "Adicione pelo menos um campo",
+    "createdSuccess": "Tipo de documento criado!",
+    "updatedSuccess": "Tipo de documento atualizado!",
+    "saveError": "Não foi possível salvar",
+    "deleteTitle": "Remover tipo",
+    "deleteConfirm": "Deseja remover \"{{name}}\"?",
+    "deleteBlocked": "Não é possível remover",
+    "deleteBlockedMsg": "Existem {{count}} documento(s) usando este tipo. Remova os documentos primeiro.",
+    "deleteError": "Não foi possível remover",
+    "customTypes": "TIPOS PERSONALIZADOS",
+    "createNew": "CRIAR NOVO TIPO",
+    "field": "Campo",
+    "fields_count": "{{count}} campo(s)"
+  },
+  "documentTypes": {
+    "CNH": {
+      "label": "CNH (Carteira Nacional de Habilitação)",
+      "fields": {
+        "fullName": "Nome Completo",
+        "registrationNumber": "Nº Registro",
+        "cpf": "CPF",
+        "dateOfBirth": "Data de Nascimento",
+        "expiryDate": "Validade",
+        "category": "Categoria"
+      }
+    },
+    "RG": {
+      "label": "RG (Registro Geral)",
+      "fields": {
+        "fullName": "Nome Completo",
+        "rgNumber": "Nº RG",
+        "issuingAuthority": "Órgão Emissor",
+        "issueDate": "Data de Emissão",
+        "dateOfBirth": "Data de Nascimento",
+        "filiation": "Filiação",
+        "birthPlace": "Naturalidade"
+      }
+    },
+    "CPF": {
+      "label": "CPF",
+      "fields": {
+        "fullName": "Nome Completo",
+        "cpfNumber": "Nº CPF",
+        "dateOfBirth": "Data de Nascimento"
+      }
+    },
+    "PASSPORT": {
+      "label": "Passaporte",
+      "fields": {
+        "fullName": "Nome Completo",
+        "passportNumber": "Nº Passaporte",
+        "nationality": "Nacionalidade",
+        "dateOfBirth": "Data de Nascimento",
+        "expiryDate": "Validade"
+      }
+    },
+    "VOTER_ID": {
+      "label": "Título de Eleitor",
+      "fields": {
+        "fullName": "Nome Completo",
+        "voterNumber": "Nº Título",
+        "zone": "Zona",
+        "section": "Seção",
+        "city": "Município",
+        "uf": "UF"
+      }
+    },
+    "MILITARY_CERT": {
+      "label": "Certificado Militar",
+      "fields": {
+        "fullName": "Nome Completo",
+        "certificateNumber": "Nº Certificado",
+        "ra": "RA",
+        "militaryCategory": "Categoria",
+        "situation": "Situação"
+      }
+    }
+  },
+  "photoSlots": {
+    "front": "Foto Frente",
+    "back": "Foto Verso",
+    "dataPage": "Página de Dados"
+  }
+}

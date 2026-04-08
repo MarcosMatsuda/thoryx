@@ -10,6 +10,8 @@ import { UserAvatar } from "@presentation/components/user-avatar";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 import { AuthService } from "@infrastructure/services/auth.service";
 import { APP_CONFIG } from "@shared/constants/app";
+import { useTranslation } from "react-i18next";
+import { setStoredLanguage } from "@shared/i18n/language-detector";
 
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
 const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
@@ -19,6 +21,7 @@ const storage = new SecureStorageAdapter(
 );
 
 export function SettingsScreen() {
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { profile, reloadProfile } = useUserProfile();
   const {
@@ -29,6 +32,28 @@ export function SettingsScreen() {
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [autoLockTimeout, setAutoLockTimeout] = useState("5 minutes");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const currentLanguageName = i18n.language === "pt-BR" ? "Português (BR)" : "English (US)";
+
+  const handleLanguageChange = () => {
+    Alert.alert(t("settings.language"), "", [
+      {
+        text: "Português (BR)",
+        onPress: async () => {
+          await setStoredLanguage("pt-BR");
+          await i18n.changeLanguage("pt-BR");
+        },
+      },
+      {
+        text: "English (US)",
+        onPress: async () => {
+          await setStoredLanguage("en-US");
+          await i18n.changeLanguage("en-US");
+        },
+      },
+      { text: t("common.cancel"), style: "cancel" },
+    ]);
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -56,15 +81,15 @@ export function SettingsScreen() {
     try {
       const saved = await storage.get(AUTO_LOCK_TIMEOUT_KEY);
       if (saved === "0") {
-        setAutoLockTimeout("Never");
+        setAutoLockTimeout(t("settings.never"));
       } else if (saved) {
-        setAutoLockTimeout(`${saved} minutes`);
+        setAutoLockTimeout(t("settings.minutes", { count: parseInt(saved, 10) }));
       } else {
-        setAutoLockTimeout("5 minutes");
+        setAutoLockTimeout(t("settings.minutes", { count: 5 }));
       }
     } catch (error) {
       console.error("Error loading auto-lock timeout:", error);
-      setAutoLockTimeout("5 minutes");
+      setAutoLockTimeout(t("settings.minutes", { count: 5 }));
     }
   };
 
@@ -110,51 +135,51 @@ export function SettingsScreen() {
   };
 
   const handleAutoLockTimeout = () => {
-    Alert.alert("Auto-lock Timeout", "Choose when to lock the app", [
+    Alert.alert(t("settings.autoLockTimeout"), "", [
       {
-        text: "1 minute",
+        text: t("settings.minutes", { count: 1 }),
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "1");
-          setAutoLockTimeout("1 minute");
+          setAutoLockTimeout(t("settings.minutes", { count: 1 }));
         },
       },
       {
-        text: "5 minutes",
+        text: t("settings.minutes", { count: 5 }),
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "5");
-          setAutoLockTimeout("5 minutes");
+          setAutoLockTimeout(t("settings.minutes", { count: 5 }));
         },
       },
       {
-        text: "15 minutes",
+        text: t("settings.minutes", { count: 15 }),
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "15");
-          setAutoLockTimeout("15 minutes");
+          setAutoLockTimeout(t("settings.minutes", { count: 15 }));
         },
       },
       {
-        text: "30 minutes",
+        text: t("settings.minutes", { count: 30 }),
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "30");
-          setAutoLockTimeout("30 minutes");
+          setAutoLockTimeout(t("settings.minutes", { count: 30 }));
         },
       },
       {
-        text: "Never",
+        text: t("settings.never"),
         onPress: async () => {
           await storage.set(AUTO_LOCK_TIMEOUT_KEY, "0");
-          setAutoLockTimeout("Never");
+          setAutoLockTimeout(t("settings.never"));
         },
       },
-      { text: "Cancel", style: "cancel" },
+      { text: t("common.cancel"), style: "cancel" },
     ]);
   };
 
   const handleLogout = async () => {
-    Alert.alert("Log Out", "Are you sure you want to log out?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("settings.logOut"), t("settings.confirmLogout"), [
+      { text: t("common.cancel"), style: "cancel" },
       {
-        text: "Log Out",
+        text: t("settings.logOut"),
         style: "destructive",
         onPress: async () => {
           setIsLoggingOut(true);
@@ -167,13 +192,13 @@ export function SettingsScreen() {
               router.replace("/unlock");
             } else {
               Alert.alert(
-                "Error",
-                result.error || "Failed to log out. Please try again.",
+                t("common.error"),
+                result.error || t("common.error"),
               );
             }
           } catch (error) {
             console.error("Error during logout:", error);
-            Alert.alert("Error", "Failed to log out. Please try again.");
+            Alert.alert(t("common.error"), t("common.error"));
           } finally {
             setIsLoggingOut(false);
           }
@@ -184,12 +209,12 @@ export function SettingsScreen() {
 
   const handleClearData = () => {
     Alert.alert(
-      "Clear All Data",
-      "This will remove all your documents, cards, and settings. This action cannot be undone.",
+      t("settings.confirmClearData"),
+      t("settings.confirmClearDataMsg"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("common.cancel"), style: "cancel" },
         {
-          text: "Clear",
+          text: t("common.delete"),
           style: "destructive",
           onPress: async () => {
             try {
@@ -202,14 +227,14 @@ export function SettingsScreen() {
 
               router.replace("/pin-setup");
               Alert.alert(
-                "Success",
-                "All data has been cleared. Please restart the app.",
+                t("common.success"),
+                t("common.success"),
               );
             } catch (error) {
               console.error("Error clearing data:", error);
               Alert.alert(
-                "Error",
-                "Failed to clear all data. Please try again.",
+                t("common.error"),
+                t("common.error"),
               );
             }
           },
@@ -231,11 +256,11 @@ export function SettingsScreen() {
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="pt-4 pb-8">
           <Text className="text-2xl md:text-3xl font-bold text-text-primary mb-6 px-6">
-            Settings
+            {t("settings.title")}
           </Text>
 
           {/* Profile Section */}
-          <SettingsSection title="PROFILE">
+          <SettingsSection title={t("settings.profile")}>
             <Pressable
               className="flex-row items-center px-4 py-4 border-b border-border-subtle"
               onPress={() => router.push("/profile-setup")}
@@ -243,10 +268,10 @@ export function SettingsScreen() {
               <UserAvatar photoUri={profile?.photoUri} size={48} />
               <View className="flex-1 ml-4">
                 <Text className="text-base md:text-lg font-semibold text-text-primary">
-                  {profile?.name || "Guest"}
+                  {profile?.name || t("wallet.guest")}
                 </Text>
                 <Text className="text-sm text-text-secondary mt-1">
-                  Tap to edit profile
+                  {t("profile.editProfile")}
                 </Text>
               </View>
               <Text className="text-xl text-text-tertiary">›</Text>
@@ -254,9 +279,9 @@ export function SettingsScreen() {
           </SettingsSection>
 
           {/* Security Section */}
-          <SettingsSection title="SECURITY">
+          <SettingsSection title={t("settings.security")}>
             <SettingsItem
-              label="Change PIN"
+              label={t("settings.changePin")}
               onPress={handleChangePin}
               icon={<Text className="text-xl">🔐</Text>}
               isFirst
@@ -265,7 +290,7 @@ export function SettingsScreen() {
               label={
                 biometryAvailable
                   ? `${getBiometryName()}`
-                  : "Biometric Lock (Not Available)"
+                  : t("settings.biometricLock")
               }
               icon={<Text className="text-xl">👆</Text>}
               switchValue={biometricEnabled}
@@ -273,7 +298,7 @@ export function SettingsScreen() {
               disabled={!biometryAvailable}
             />
             <SettingsItem
-              label="Auto-lock Timeout"
+              label={t("settings.autoLockTimeout")}
               onPress={handleAutoLockTimeout}
               icon={<Text className="text-xl">⏱️</Text>}
               value={autoLockTimeout}
@@ -281,22 +306,34 @@ export function SettingsScreen() {
             />
           </SettingsSection>
 
-          {/* About Section */}
-          <SettingsSection title="ABOUT">
+          {/* Preferences Section */}
+          <SettingsSection title={t("settings.preferences")}>
             <SettingsItem
-              label="Version"
+              label={t("settings.language")}
+              onPress={handleLanguageChange}
+              icon={<Text className="text-xl">🌐</Text>}
+              value={currentLanguageName}
+              isFirst
+              isLast
+            />
+          </SettingsSection>
+
+          {/* About Section */}
+          <SettingsSection title={t("settings.about")}>
+            <SettingsItem
+              label={t("common.version")}
               value={APP_CONFIG.version}
               showChevron={false}
               icon={<Text className="text-xl">ℹ️</Text>}
               isFirst
             />
             <SettingsItem
-              label="Terms of Service"
+              label={t("settings.termsOfService")}
               onPress={handleTermsOfService}
               icon={<Text className="text-xl">📄</Text>}
             />
             <SettingsItem
-              label="Privacy Policy"
+              label={t("settings.privacyPolicy")}
               onPress={handlePrivacyPolicy}
               icon={<Text className="text-xl">🔒</Text>}
               isLast
@@ -304,9 +341,9 @@ export function SettingsScreen() {
           </SettingsSection>
 
           {/* Data & Privacy Section */}
-          <SettingsSection title="DATA & PRIVACY">
+          <SettingsSection title={t("settings.dataPrivacy")}>
             <SettingsItem
-              label="Clear All Data"
+              label={t("settings.clearAllData")}
               onPress={handleClearData}
               icon={<Text className="text-xl">🗑️</Text>}
               destructive
@@ -314,7 +351,7 @@ export function SettingsScreen() {
               isFirst
             />
             <SettingsItem
-              label="Log Out"
+              label={t("settings.logOut")}
               onPress={handleLogout}
               icon={<Text className="text-xl">🚪</Text>}
               destructive

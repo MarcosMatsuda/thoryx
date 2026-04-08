@@ -106,7 +106,7 @@ describe("WalletHomeScreen - Auto-lock Button Removal Integration Tests", () => 
     });
 
     it("should have secure sharing button text", () => {
-      expect(componentCode).toContain("Start Sharing");
+      expect(componentCode).toContain('t("wallet.startSharing")');
     });
 
     it("should navigate to select-documents from secure sharing button", () => {
@@ -120,7 +120,7 @@ describe("WalletHomeScreen - Auto-lock Button Removal Integration Tests", () => 
     });
 
     it("✓ Secure sharing flow remains accessible via 'Start Sharing' button", () => {
-      expect(componentCode).toContain("Start Sharing");
+      expect(componentCode).toContain('t("wallet.startSharing")');
       expect(componentCode).toContain('router.push("/select-documents")');
     });
 

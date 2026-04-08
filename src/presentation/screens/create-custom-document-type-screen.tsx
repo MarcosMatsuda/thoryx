@@ -12,23 +12,16 @@ import {
   DocumentTypeDefinition,
 } from "@domain/entities/document-type-definition.entity";
 import { useDocumentsStore } from "@stores/documents.store";
+import { useTranslation } from "react-i18next";
 
 const ICON_OPTIONS = [
   "📄", "📋", "🏥", "🎖️", "⚖️", "🎓", "🏢", "🚗", "✈️", "💼",
   "🆔", "📜", "🛡️", "⭐", "🔑", "📝", "🏠", "💳", "🎫", "📌",
 ];
 
-const FIELD_TYPE_OPTIONS = [
-  { label: "Texto", value: "text" as FieldType },
-  { label: "Data", value: "date" as FieldType },
-  { label: "Seleção", value: "select" as FieldType },
-];
-
-const PHOTO_SLOT_OPTIONS = [
-  { label: "Apenas Frente", value: "front-only" },
-  { label: "Frente e Verso", value: "front-back" },
-  { label: "Página de Dados", value: "data-page" },
-];
+// These will be populated with t() inside the component
+let FIELD_TYPE_OPTIONS: { label: string; value: FieldType }[] = [];
+let PHOTO_SLOT_OPTIONS: { label: string; value: string }[] = [];
 
 interface FieldDraft {
   label: string;
@@ -53,10 +46,23 @@ function fieldDefToDraft(f: FieldDefinition): FieldDraft {
 }
 
 export function CreateCustomDocumentTypeScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
   const { typeId } = params as { typeId?: string };
   const { customDocumentTypes, documents, loadCustomTypes } = useDocumentsStore();
+
+  FIELD_TYPE_OPTIONS = [
+    { label: t("customDocType.fieldTypeText"), value: "text" as FieldType },
+    { label: t("customDocType.fieldTypeDate"), value: "date" as FieldType },
+    { label: t("customDocType.fieldTypeSelect"), value: "select" as FieldType },
+  ];
+
+  PHOTO_SLOT_OPTIONS = [
+    { label: t("customDocType.photoFrontOnly"), value: "front-only" },
+    { label: t("customDocType.photoFrontBack"), value: "front-back" },
+    { label: t("customDocType.photoDataPage"), value: "data-page" },
+  ];
 
   const isEditMode = !!typeId;
   const existingType = useMemo(
@@ -119,13 +125,13 @@ export function CreateCustomDocumentTypeScreen() {
 
   const handleSave = async () => {
     if (!typeName.trim()) {
-      Alert.alert("Erro", "Informe o nome do tipo de documento");
+      Alert.alert(t("common.error"), t("customDocType.typeNameRequired"));
       return;
     }
 
     const validFields = fields.filter((f) => f.label.trim());
     if (validFields.length === 0) {
-      Alert.alert("Erro", "Adicione pelo menos um campo");
+      Alert.alert(t("common.error"), t("customDocType.fieldsRequired"));
       return;
     }
 
@@ -159,12 +165,12 @@ export function CreateCustomDocumentTypeScreen() {
       await loadCustomTypes();
 
       Alert.alert(
-        "Sucesso",
-        isEditMode ? "Tipo de documento atualizado!" : "Tipo de documento criado!",
-        [{ text: "OK", onPress: () => router.back() }],
+        t("common.success"),
+        isEditMode ? t("customDocType.updatedSuccess") : t("customDocType.createdSuccess"),
+        [{ text: t("common.ok"), onPress: () => router.back() }],
       );
     } catch {
-      Alert.alert("Erro", "Não foi possível salvar");
+      Alert.alert(t("common.error"), t("customDocType.saveError"));
     } finally {
       setIsSaving(false);
     }
@@ -175,19 +181,19 @@ export function CreateCustomDocumentTypeScreen() {
 
     if (documentsUsingType > 0) {
       Alert.alert(
-        "Não é possível remover",
-        `Existem ${documentsUsingType} documento${documentsUsingType > 1 ? "s" : ""} usando este tipo. Remova os documentos primeiro.`,
+        t("customDocType.deleteBlocked"),
+        t("customDocType.deleteBlockedMsg", { count: documentsUsingType }),
       );
       return;
     }
 
     Alert.alert(
-      "Remover tipo",
-      `Deseja remover "${existingType?.label}"?`,
+      t("customDocType.deleteTitle"),
+      t("customDocType.deleteConfirm", { name: existingType?.label }),
       [
-        { text: "Cancelar", style: "cancel" },
+        { text: t("common.cancel"), style: "cancel" },
         {
-          text: "Remover",
+          text: t("common.remove"),
           style: "destructive",
           onPress: async () => {
             try {
@@ -196,7 +202,7 @@ export function CreateCustomDocumentTypeScreen() {
               await loadCustomTypes();
               router.back();
             } catch {
-              Alert.alert("Erro", "Não foi possível remover");
+              Alert.alert(t("common.error"), t("customDocType.deleteError"));
             }
           },
         },
@@ -215,7 +221,7 @@ export function CreateCustomDocumentTypeScreen() {
             <Text className="text-2xl text-text-primary">←</Text>
           </Pressable>
           <Text className="text-lg font-bold text-text-primary">
-            {isEditMode ? "Editar Tipo de Documento" : "Criar Tipo de Documento"}
+            {isEditMode ? t("customDocType.editTitle") : t("customDocType.createTitle")}
           </Text>
           {isEditMode ? (
             <Pressable
@@ -236,15 +242,15 @@ export function CreateCustomDocumentTypeScreen() {
         >
           {/* Type name */}
           <TextInputField
-            label="Nome do Tipo"
-            placeholder="Ex: CRM Médico, Carteira de Classe"
+            label={t("customDocType.typeName")}
+            placeholder={t("customDocType.typeNamePlaceholder")}
             value={typeName}
             onChangeText={setTypeName}
           />
 
           {/* Icon selector */}
           <Text className="text-xs font-semibold text-text-secondary tracking-wider mb-2">
-            ÍCONE
+            {t("customDocType.icon")}
           </Text>
           <View className="flex-row flex-wrap gap-2 mb-6">
             {ICON_OPTIONS.map((icon) => (
@@ -264,7 +270,7 @@ export function CreateCustomDocumentTypeScreen() {
 
           {/* Photo slots */}
           <DropdownInput
-            label="Fotos"
+            label={t("customDocType.photos")}
             placeholder="Selecione"
             value={photoMode}
             options={PHOTO_SLOT_OPTIONS}
@@ -273,7 +279,7 @@ export function CreateCustomDocumentTypeScreen() {
 
           {/* Fields */}
           <Text className="text-xs font-semibold text-text-secondary tracking-wider mb-3">
-            CAMPOS DO DOCUMENTO
+            {t("customDocType.fields")}
           </Text>
 
           {fields.map((field, index) => (
@@ -283,18 +289,18 @@ export function CreateCustomDocumentTypeScreen() {
             >
               <View className="flex-row items-center justify-between mb-2">
                 <Text className="text-sm font-semibold text-text-primary">
-                  Campo {index + 1}
+                  {t("customDocType.field")} {index + 1}
                 </Text>
                 {fields.length > 1 && (
                   <Pressable onPress={() => removeField(index)}>
-                    <Text className="text-status-error text-sm">Remover</Text>
+                    <Text className="text-status-error text-sm">{t("common.remove")}</Text>
                   </Pressable>
                 )}
               </View>
 
               <TextInputField
-                label="Nome do Campo"
-                placeholder="Ex: Nº Registro"
+                label={t("customDocType.fieldName")}
+                placeholder={t("customDocType.fieldNamePlaceholder")}
                 value={field.label}
                 onChangeText={(text) => updateField(index, { label: text })}
               />
@@ -302,8 +308,8 @@ export function CreateCustomDocumentTypeScreen() {
               <View className="flex-row gap-3">
                 <View className="flex-1">
                   <DropdownInput
-                    label="Tipo"
-                    placeholder="Tipo"
+                    label={t("customDocType.fieldType")}
+                    placeholder={t("customDocType.fieldType")}
                     value={field.type}
                     options={FIELD_TYPE_OPTIONS}
                     onSelect={(v) =>
@@ -329,7 +335,7 @@ export function CreateCustomDocumentTypeScreen() {
                           : "text-text-secondary"
                       }`}
                     >
-                      {field.required ? "Obrigatório" : "Opcional"}
+                      {field.required ? t("customDocType.fieldRequired") : t("customDocType.fieldOptional")}
                     </Text>
                   </Pressable>
                 </View>
@@ -337,8 +343,8 @@ export function CreateCustomDocumentTypeScreen() {
 
               {field.type === "select" && (
                 <TextInputField
-                  label="Opções (separadas por vírgula)"
-                  placeholder="Ex: A, B, AB, C, D"
+                  label={t("customDocType.fieldOptions")}
+                  placeholder={t("customDocType.fieldOptionsPlaceholder")}
                   value={field.options}
                   onChangeText={(text) => updateField(index, { options: text })}
                 />
@@ -351,7 +357,7 @@ export function CreateCustomDocumentTypeScreen() {
             className="bg-primary-main/10 border-2 border-primary-main border-dashed rounded-xl py-3 items-center mb-6"
           >
             <Text className="text-primary-main font-semibold">
-              + Adicionar Campo
+              {t("customDocType.addField")}
             </Text>
           </Pressable>
 
@@ -367,10 +373,10 @@ export function CreateCustomDocumentTypeScreen() {
           >
             <Text className="text-base font-bold text-text-primary">
               {isSaving
-                ? "Salvando..."
+                ? t("common.saving")
                 : isEditMode
-                  ? "Salvar Alterações"
-                  : "Criar Tipo de Documento"}
+                  ? t("customDocType.saveChanges")
+                  : t("customDocType.createType")}
             </Text>
           </Pressable>
         </ScrollView>

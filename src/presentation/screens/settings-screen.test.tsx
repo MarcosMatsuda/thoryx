@@ -93,7 +93,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       expect(componentCode).toContain('if (saved === "0")');
-      expect(componentCode).toContain('setAutoLockTimeout("Never")');
+      expect(componentCode).toContain('setAutoLockTimeout(t("settings.never"))');
     });
 
     it("should fallback to '5 minutes' when no value is stored", () => {
@@ -103,7 +103,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('setAutoLockTimeout("5 minutes")');
+      expect(componentCode).toContain('setAutoLockTimeout(t("settings.minutes", { count: 5 }))');
     });
 
     it("should handle errors gracefully with console.error", () => {
@@ -137,7 +137,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('Alert.alert("Auto-lock Timeout"');
+      expect(componentCode).toContain('Alert.alert(t("settings.autoLockTimeout")');
     });
 
     it("should persist 1 minute selection to storage", () => {
@@ -147,7 +147,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('text: "1 minute"');
+      expect(componentCode).toContain('text: t("settings.minutes", { count: 1 })');
       expect(componentCode).toContain(
         'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "1")',
       );
@@ -160,7 +160,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('text: "5 minutes"');
+      expect(componentCode).toContain('text: t("settings.minutes", { count: 5 })');
       expect(componentCode).toContain(
         'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "5")',
       );
@@ -173,7 +173,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('text: "15 minutes"');
+      expect(componentCode).toContain('text: t("settings.minutes", { count: 15 })');
       expect(componentCode).toContain(
         'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "15")',
       );
@@ -186,7 +186,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('text: "30 minutes"');
+      expect(componentCode).toContain('text: t("settings.minutes", { count: 30 })');
       expect(componentCode).toContain(
         'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "30")',
       );
@@ -199,7 +199,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('text: "Never"');
+      expect(componentCode).toContain('text: t("settings.never")');
       expect(componentCode).toContain(
         'await storage.set(AUTO_LOCK_TIMEOUT_KEY, "0")',
       );
@@ -227,7 +227,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentPath = path.join(__dirname, "./settings-screen.tsx");
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
-      expect(componentCode).toContain('label="Auto-lock Timeout"');
+      expect(componentCode).toContain('label={t("settings.autoLockTimeout")}');
     });
 
     it("should pass value prop to SettingsItem for timeout display", () => {
@@ -258,9 +258,9 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
       const componentCode = fs.readFileSync(componentPath, "utf8");
 
       // Check that Auto-lock Timeout is in SECURITY section
-      const securityIndex = componentCode.indexOf("SECURITY");
+      const securityIndex = componentCode.indexOf('"settings.security"');
       // Find Auto-lock Timeout after the last SECURITY occurrence
-      const autoLockIndex = componentCode.lastIndexOf("Auto-lock Timeout");
+      const autoLockIndex = componentCode.lastIndexOf('"settings.autoLockTimeout"');
 
       expect(securityIndex).toBeGreaterThan(-1);
       expect(autoLockIndex).toBeGreaterThan(-1);
@@ -270,7 +270,7 @@ describe("SettingsScreen - Auto-lock Timeout Persistence - Component Structure",
         securityIndex,
         autoLockIndex,
       );
-      expect(contentBetween).toContain("Change PIN");
+      expect(contentBetween).toContain('"settings.changePin"');
     });
   });
 
