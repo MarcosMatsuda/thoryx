@@ -25,6 +25,7 @@ import {
   CreditCard,
   Lock,
 } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 export function AddCreditCardScreen() {
   const router = useRouter();
@@ -209,7 +210,7 @@ export function AddCreditCardScreen() {
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <ChevronLeft size={24} color="#94A3B8" />
+            <ChevronLeft size={24} color={tokens.colors.text.secondary} />
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {cards.length > 0 && isEditMode ? "Credit Card" : "New Credit Card"}
@@ -254,7 +255,7 @@ export function AddCreditCardScreen() {
                     onPress={handleDeleteCard}
                     disabled={isLoading}
                   >
-                    <Trash2 size={20} color="#EF4444" />
+                    <Trash2 size={20} color={tokens.colors.status.error} />
                   </Pressable>
                 )}
               </View>
@@ -272,12 +273,16 @@ export function AddCreditCardScreen() {
                   <TextInput
                     className="flex-1 text-light-text dark:text-text-primary"
                     placeholder="e.g. JONATHAN DOE"
-                    placeholderTextColor="#64748B"
+                    placeholderTextColor={tokens.colors.text.tertiary}
                     value={cardholderName}
                     onChangeText={handleCardholderNameChange}
                     autoCapitalize="characters"
                   />
-                  <User size={20} color="#135BEC" className="ml-2" />
+                  <User
+                    size={20}
+                    color={tokens.colors.primary.main}
+                    className="ml-2"
+                  />
                 </View>
               </View>
 
@@ -289,14 +294,18 @@ export function AddCreditCardScreen() {
                   <TextInput
                     className="flex-1 text-light-text dark:text-text-primary"
                     placeholder="0000 0000 0000 0000"
-                    placeholderTextColor="#64748B"
+                    placeholderTextColor={tokens.colors.text.tertiary}
                     keyboardType="number-pad"
                     inputMode="numeric"
                     value={cardNumber}
                     onChangeText={handleCardNumberChange}
                     maxLength={19}
                   />
-                  <CreditCard size={20} color="#135BEC" className="ml-2" />
+                  <CreditCard
+                    size={20}
+                    color={tokens.colors.primary.main}
+                    className="ml-2"
+                  />
                 </View>
               </View>
 
@@ -307,7 +316,7 @@ export function AddCreditCardScreen() {
                 <TextInput
                   className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 text-light-text dark:text-text-primary"
                   placeholder="MM/YY"
-                  placeholderTextColor="#64748B"
+                  placeholderTextColor={tokens.colors.text.tertiary}
                   keyboardType="number-pad"
                   inputMode="numeric"
                   value={expiryDate}
@@ -332,7 +341,11 @@ export function AddCreditCardScreen() {
               onPress={handleSaveCard}
               disabled={isLoading || (isEditMode && !hasChanges())}
             >
-              <Lock size={18} color="#FFFFFF" className="mr-2" />
+              <Lock
+                size={18}
+                color={tokens.colors.text.primary}
+                className="mr-2"
+              />
               <Text className="text-base font-bold text-light-text dark:text-text-primary">
                 {isLoading
                   ? "Saving..."

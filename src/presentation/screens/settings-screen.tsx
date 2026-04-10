@@ -26,6 +26,7 @@ import {
   Trash2,
   LogOut,
 } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
 const AUTO_LOCK_TIMEOUT_KEY = "auto_lock_timeout_minutes";
@@ -300,7 +301,7 @@ export function SettingsScreen() {
                   {t("profile.editProfile")}
                 </Text>
               </View>
-              <ChevronRight size={20} color="#94A3B8" />
+              <ChevronRight size={20} color={tokens.colors.text.secondary} />
             </Pressable>
           </SettingsSection>
 
@@ -309,7 +310,7 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.changePin")}
               onPress={handleChangePin}
-              icon={<KeyRound size={20} color="#94A3B8" />}
+              icon={<KeyRound size={20} color={tokens.colors.text.secondary} />}
               isFirst
             />
             <SettingsItem
@@ -318,7 +319,7 @@ export function SettingsScreen() {
                   ? `${getBiometryName()}`
                   : t("settings.biometricLock")
               }
-              icon={<Pointer size={20} color="#94A3B8" />}
+              icon={<Pointer size={20} color={tokens.colors.text.secondary} />}
               switchValue={biometricEnabled}
               onSwitchChange={handleBiometricToggle}
               disabled={!biometryAvailable}
@@ -326,7 +327,9 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.autoLockTimeout")}
               onPress={handleAutoLockTimeout}
-              icon={<Hourglass size={20} color="#94A3B8" />}
+              icon={
+                <Hourglass size={20} color={tokens.colors.text.secondary} />
+              }
               value={autoLockTimeout}
               isLast
             />
@@ -337,14 +340,14 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.language")}
               onPress={handleLanguageChange}
-              icon={<Globe size={20} color="#94A3B8" />}
+              icon={<Globe size={20} color={tokens.colors.text.secondary} />}
               value={currentLanguageName}
               isFirst
             />
             <SettingsItem
               label={t("settings.theme")}
               onPress={handleThemeChange}
-              icon={<Palette size={20} color="#94A3B8" />}
+              icon={<Palette size={20} color={tokens.colors.text.secondary} />}
               value={themeLabels[themeMode]}
               isLast
             />
@@ -356,18 +359,18 @@ export function SettingsScreen() {
               label={t("common.version")}
               value={APP_CONFIG.version}
               showChevron={false}
-              icon={<Info size={20} color="#94A3B8" />}
+              icon={<Info size={20} color={tokens.colors.text.secondary} />}
               isFirst
             />
             <SettingsItem
               label={t("settings.termsOfService")}
               onPress={handleTermsOfService}
-              icon={<FileText size={20} color="#94A3B8" />}
+              icon={<FileText size={20} color={tokens.colors.text.secondary} />}
             />
             <SettingsItem
               label={t("settings.privacyPolicy")}
               onPress={handlePrivacyPolicy}
-              icon={<Lock size={20} color="#94A3B8" />}
+              icon={<Lock size={20} color={tokens.colors.text.secondary} />}
               isLast
             />
           </SettingsSection>
@@ -377,7 +380,7 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.clearAllData")}
               onPress={handleClearData}
-              icon={<Trash2 size={20} color="#EF4444" />}
+              icon={<Trash2 size={20} color={tokens.colors.status.error} />}
               destructive
               showChevron={false}
               isFirst
@@ -385,7 +388,7 @@ export function SettingsScreen() {
             <SettingsItem
               label={t("settings.logOut")}
               onPress={handleLogout}
-              icon={<LogOut size={20} color="#EF4444" />}
+              icon={<LogOut size={20} color={tokens.colors.status.error} />}
               destructive
               showChevron={false}
               loading={isLoggingOut}

@@ -26,6 +26,7 @@ import {
   User,
   Phone,
 } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface Props {
   isAuthenticated?: boolean;
@@ -68,7 +69,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary items-center justify-center">
-        <ActivityIndicator size="large" color="#3B82F6" />
+        <ActivityIndicator size="large" color={tokens.colors.status.info} />
       </SafeAreaView>
     );
   }
@@ -85,7 +86,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
               className="w-10 h-10 items-center justify-center"
               onPress={() => router.back()}
             >
-              <ChevronLeft size={24} color="#94A3B8" />
+              <ChevronLeft size={24} color={tokens.colors.text.secondary} />
             </Pressable>
             <Text className="text-lg font-bold text-light-text dark:text-text-primary">
               {t("emergency.title")}
@@ -95,7 +96,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                 className="w-10 h-10 items-center justify-center"
                 onPress={handleEditPress}
               >
-                <Pencil size={20} color="#135BEC" />
+                <Pencil size={20} color={tokens.colors.primary.main} />
               </Pressable>
             ) : (
               <View className="w-10" />
@@ -103,7 +104,11 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
           </View>
 
           <View className="flex-1 items-center justify-center px-6">
-            <Siren size={24} color="#EF4444" className="mb-2" />
+            <Siren
+              size={24}
+              color={tokens.colors.status.error}
+              className="mb-2"
+            />
             <Text className="text-lg font-bold text-light-text dark:text-text-primary mb-2 text-center">
               {t("emergency.noInfo")}
             </Text>
@@ -137,7 +142,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
             className="w-10 h-10 items-center justify-center"
             onPress={() => router.back()}
           >
-            <ChevronLeft size={24} color="#94A3B8" />
+            <ChevronLeft size={24} color={tokens.colors.text.secondary} />
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {t("emergency.title")}
@@ -147,7 +152,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
               className="w-10 h-10 items-center justify-center"
               onPress={handleEditPress}
             >
-              <Pencil size={20} color="#135BEC" />
+              <Pencil size={20} color={tokens.colors.primary.main} />
             </Pressable>
           ) : (
             <View className="w-10" />
@@ -159,7 +164,11 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
             {emergencyInfo.lockScreenVisible && (
               <View className="bg-primary-main/10 rounded-2xl p-4 mb-6 border border-primary-main/30">
                 <View className="flex-row items-start">
-                  <Info size={20} color="#135BEC" className="mr-2" />
+                  <Info
+                    size={20}
+                    color={tokens.colors.primary.main}
+                    className="mr-2"
+                  />
                   <View className="flex-1">
                     <Text className="text-sm font-bold text-primary-main mb-1">
                       {t("emergency.lockScreenAccess")}
@@ -175,7 +184,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
             <View className="mb-6">
               <View className="flex-row items-center mb-4">
                 <View className="w-8 h-8 bg-status-error/20 rounded-lg items-center justify-center mr-2">
-                  <Asterisk size={18} color="#EF4444" />
+                  <Asterisk size={18} color={tokens.colors.status.error} />
                 </View>
                 <Text className="text-xs font-bold text-status-error tracking-wider">
                   {t("emergency.vitalInfo")}
@@ -186,7 +195,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                 {emergencyInfo.bloodType && (
                   <View className="flex-1 bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4">
                     <View className="w-10 h-10 bg-status-error/20 rounded-lg items-center justify-center mb-3">
-                      <Droplet size={24} color="#EF4444" />
+                      <Droplet size={24} color={tokens.colors.status.error} />
                     </View>
                     <Text className="text-xs font-semibold text-light-textSecondary dark:text-text-secondary mb-1 tracking-wide">
                       {t("emergency.bloodType")}
@@ -200,7 +209,10 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                 {emergencyInfo.healthPlan && (
                   <View className="flex-1 bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4">
                     <View className="w-10 h-10 bg-primary-main/20 rounded-lg items-center justify-center mb-3">
-                      <ShieldCheck size={24} color="#135BEC" />
+                      <ShieldCheck
+                        size={24}
+                        color={tokens.colors.primary.main}
+                      />
                     </View>
                     <Text className="text-xs font-semibold text-light-textSecondary dark:text-text-secondary mb-1 tracking-wide">
                       {t("emergency.healthPlan")}
@@ -216,7 +228,10 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                 <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 mb-3">
                   <View className="flex-row items-center mb-3">
                     <View className="w-10 h-10 bg-accent-orange/20 rounded-lg items-center justify-center mr-3">
-                      <AlertTriangle size={24} color="#F59E0B" />
+                      <AlertTriangle
+                        size={24}
+                        color={tokens.colors.status.warning}
+                      />
                     </View>
                     <Text className="text-base font-bold text-light-text dark:text-text-primary">
                       {t("emergency.allergies")}
@@ -232,7 +247,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                 <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 mb-3">
                   <View className="flex-row items-center mb-3">
                     <View className="w-10 h-10 bg-primary-main/20 rounded-lg items-center justify-center mr-3">
-                      <Hospital size={24} color="#135BEC" />
+                      <Hospital size={24} color={tokens.colors.primary.main} />
                     </View>
                     <Text className="text-base font-bold text-light-text dark:text-text-primary">
                       {t("emergency.healthConditions")}
@@ -248,7 +263,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                 <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4">
                   <View className="flex-row items-center mb-3">
                     <View className="w-10 h-10 bg-accent-green/20 rounded-lg items-center justify-center mr-3">
-                      <Pill size={24} color="#10B981" />
+                      <Pill size={24} color={tokens.colors.status.success} />
                     </View>
                     <Text className="text-base font-bold text-light-text dark:text-text-primary">
                       {t("emergency.medications")}
@@ -290,7 +305,10 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                           {index === 0 ? (
                             <View className="w-12 h-12 rounded-full overflow-hidden mr-3">
                               <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-                                <User size={20} color="#135BEC" />
+                                <User
+                                  size={20}
+                                  color={tokens.colors.primary.main}
+                                />
                               </View>
                             </View>
                           ) : (
@@ -321,7 +339,7 @@ export function EmergencyDetailsScreen({ isAuthenticated = true }: Props) {
                             )
                           }
                         >
-                          <Phone size={24} color="#FFFFFF" />
+                          <Phone size={24} color={tokens.colors.text.primary} />
                         </Pressable>
                       </View>
                     </Pressable>

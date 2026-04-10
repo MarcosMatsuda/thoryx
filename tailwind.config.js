@@ -1,4 +1,15 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * Tailwind / NativeWind theme configuration.
+ *
+ * IMPORTANT: Colors, spacing, borderRadius, and fontSize MUST match
+ * src/presentation/theme/design-tokens.ts exactly. A sync test
+ * (src/presentation/theme/__tests__/design-tokens-sync.test.ts)
+ * verifies this on every CI run — drift is blocked at PR time.
+ *
+ * When you change a value here, also change it in design-tokens.ts.
+ *
+ * @type {import('tailwindcss').Config}
+ */
 module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
@@ -11,7 +22,6 @@ module.exports = {
           light: "#4A7EF0",
           dark: "#0D47B8",
         },
-        // Dark mode colors (original)
         background: {
           primary: "#0A1628",
           secondary: "#0F1F38",
@@ -31,17 +41,9 @@ module.exports = {
           divider: "#334155",
           overlay: "rgba(0, 0, 0, 0.5)",
         },
-        // Light mode colors
-        light: {
-          bg: "#FFFFFF",
-          bgSecondary: "#F1F5F9",
-          bgTertiary: "#E2E8F0",
-          text: "#0F172A",
-          textSecondary: "#64748B",
-          textTertiary: "#94A3B8",
-          card: "#FFFFFF",
-          border: "#E2E8F0",
-          divider: "#CBD5E1",
+        border: {
+          primary: "#1E293B",
+          subtle: "#1E293B",
         },
         status: {
           success: "#10B981",
@@ -53,9 +55,16 @@ module.exports = {
           orange: "#F97316",
           green: "#22C55E",
         },
-        border: {
-          primary: "#1E293B",
-          subtle: "#1E293B",
+        light: {
+          bg: "#FFFFFF",
+          bgSecondary: "#F1F5F9",
+          bgTertiary: "#E2E8F0",
+          text: "#0F172A",
+          textSecondary: "#64748B",
+          textTertiary: "#94A3B8",
+          card: "#FFFFFF",
+          border: "#E2E8F0",
+          divider: "#CBD5E1",
         },
       },
       spacing: {

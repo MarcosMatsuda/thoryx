@@ -2,6 +2,7 @@ import { Pressable, Text, View, StyleSheet } from "react-native";
 import { Hourglass, Camera } from "lucide-react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
+import { tokens } from "@presentation/theme/design-tokens";
 
 let TextRecognition: any = null;
 try {
@@ -140,9 +141,17 @@ export function CameraScanner({ onCardDataExtracted }: CameraScannerProps) {
               disabled={isScanning}
             >
               {isScanning ? (
-                <Hourglass size={18} color="#FFFFFF" className="mr-2" />
+                <Hourglass
+                  size={18}
+                  color={tokens.colors.text.primary}
+                  className="mr-2"
+                />
               ) : (
-                <Camera size={18} color="#FFFFFF" className="mr-2" />
+                <Camera
+                  size={18}
+                  color={tokens.colors.text.primary}
+                  className="mr-2"
+                />
               )}
               <Text className="text-base font-bold text-text-primary">
                 {isScanning ? "Scanning..." : "Scan Card"}

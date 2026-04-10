@@ -11,6 +11,7 @@ import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 import { useTranslation } from "react-i18next";
 import { Lock } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
 const settingsStorage = new SecureStorageAdapter(
@@ -82,7 +83,7 @@ export function PinSetupScreen() {
               <View className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-full bg-primary-main/10 justify-center items-center">
                 <View className="w-[70px] h-[70px] md:w-[85px] md:h-[85px] rounded-full bg-primary-main/20 justify-center items-center">
                   <View className="w-[45px] h-[45px] md:w-[55px] md:h-[55px] rounded-full bg-primary-main justify-center items-center">
-                    <Lock size={28} color="#FFFFFF" />
+                    <Lock size={28} color={tokens.colors.text.primary} />
                   </View>
                 </View>
               </View>

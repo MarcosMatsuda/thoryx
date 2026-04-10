@@ -1,4 +1,5 @@
 import { View, Text, TextInput } from "react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface TextInputFieldProps {
   label: string;
@@ -23,7 +24,7 @@ export function TextInputField({
       <TextInput
         className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 text-light-text dark:text-text-primary"
         placeholder={placeholder}
-        placeholderTextColor="#64748B"
+        placeholderTextColor={tokens.colors.text.tertiary}
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}

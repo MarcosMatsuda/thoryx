@@ -1,5 +1,6 @@
 import { View, Text } from "react-native";
 import { Wifi } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface CreditCardPreviewProps {
   cardNumber?: string;
@@ -15,7 +16,7 @@ export function CreditCardPreview({
   return (
     <View className="bg-gradient-to-br from-primary-main to-primary-dark rounded-2xl p-6 mb-6">
       <View className="mb-8">
-        <Wifi size={28} color="#FFFFFF" className="mb-2" />
+        <Wifi size={28} color={tokens.colors.text.primary} className="mb-2" />
       </View>
 
       <View className="mb-6">

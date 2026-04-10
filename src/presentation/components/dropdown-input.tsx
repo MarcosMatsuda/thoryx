@@ -1,6 +1,7 @@
 import { View, Text, Pressable, Modal } from "react-native";
 import { useState } from "react";
 import { ChevronRight, Pencil } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface DropdownOption {
   label: string;
@@ -47,7 +48,7 @@ export function DropdownInput({
         >
           {selectedLabel || placeholder}
         </Text>
-        <ChevronRight size={20} color="#94A3B8" />
+        <ChevronRight size={20} color={tokens.colors.text.secondary} />
       </Pressable>
 
       <Modal visible={showOptions} transparent animationType="slide">
@@ -92,7 +93,7 @@ export function DropdownInput({
                       onEditOption(option.value);
                     }}
                   >
-                    <Pencil size={14} color="#135BEC" />
+                    <Pencil size={14} color={tokens.colors.primary.main} />
                   </Pressable>
                 )}
               </View>

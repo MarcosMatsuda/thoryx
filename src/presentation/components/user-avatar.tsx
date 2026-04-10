@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Image, Pressable, ActivityIndicator, Text } from "react-native";
 import { User } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface UserAvatarProps {
   photoUri?: string | null;
@@ -30,7 +31,7 @@ export function UserAvatar({
         />
       ) : (
         <View className="w-full h-full bg-primary-main/20 items-center justify-center">
-          <User size={28} color="#135BEC" />
+          <User size={28} color={tokens.colors.primary.main} />
         </View>
       )}
 

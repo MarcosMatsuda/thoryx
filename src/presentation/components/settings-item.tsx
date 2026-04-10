@@ -1,5 +1,6 @@
 import { View, Text, Pressable, Switch, ActivityIndicator } from "react-native";
 import { ReactNode } from "react";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface SettingsItemProps {
   label: string;
@@ -61,14 +62,25 @@ export function SettingsItem({
               value={switchValue}
               onValueChange={onSwitchChange}
               disabled={disabled || loading}
-              trackColor={{ false: "#767577", true: "#3B82F6" }}
-              thumbColor={switchValue ? "#FFFFFF" : "#f4f3f4"}
+              trackColor={{
+                false: tokens.colors.text.tertiary,
+                true: tokens.colors.status.info,
+              }}
+              thumbColor={
+                switchValue
+                  ? tokens.colors.text.primary
+                  : tokens.colors.background.tertiary
+              }
             />
             {loading && (
               <View className="absolute inset-0 items-center justify-center bg-black/10 rounded-full">
                 <ActivityIndicator
                   size="small"
-                  color={destructive ? "#EF4444" : "#3B82F6"}
+                  color={
+                    destructive
+                      ? tokens.colors.status.error
+                      : tokens.colors.status.info
+                  }
                 />
               </View>
             )}
