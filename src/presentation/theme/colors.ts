@@ -1,41 +1,38 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Legacy shim — re-exports from design-tokens.ts in the shape expected by
+ * the Expo-template helpers (`useThemeColor`, `ThemedText`, `ThemedView`,
+ * `Collapsible`). New code should import `tokens` from design-tokens.ts
+ * directly instead of using `Colors`.
  */
 
 import { Platform } from "react-native";
 
-const tintColorLight = "#0a7ea4";
-const tintColorDark = "#fff";
+import { tokens, lightTokens } from "@presentation/theme/design-tokens";
 
 export const Colors = {
   light: {
-    text: "#11181C",
-    background: "#fff",
-    tint: tintColorLight,
-    icon: "#687076",
-    tabIconDefault: "#687076",
-    tabIconSelected: tintColorLight,
+    text: lightTokens.colors.text.primary,
+    background: lightTokens.colors.background.primary,
+    tint: tokens.colors.primary.main,
+    icon: lightTokens.colors.text.secondary,
+    tabIconDefault: lightTokens.colors.text.secondary,
+    tabIconSelected: tokens.colors.primary.main,
   },
   dark: {
-    text: "#ECEDEE",
-    background: "#151718",
-    tint: tintColorDark,
-    icon: "#9BA1A6",
-    tabIconDefault: "#9BA1A6",
-    tabIconSelected: tintColorDark,
+    text: tokens.colors.text.primary,
+    background: tokens.colors.background.primary,
+    tint: tokens.colors.primary.main,
+    icon: tokens.colors.text.secondary,
+    tabIconDefault: tokens.colors.text.secondary,
+    tabIconSelected: tokens.colors.primary.main,
   },
 };
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: "system-ui",
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: "ui-serif",
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: "ui-rounded",
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: "ui-monospace",
   },
   default: {
