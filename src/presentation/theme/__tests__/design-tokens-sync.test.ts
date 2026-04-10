@@ -19,7 +19,9 @@ const tailwindExtended = tailwindConfig.theme.extend;
 describe("design-tokens sync with tailwind.config.js", () => {
   describe("colors", () => {
     it("primary colors match", () => {
-      expect(tailwindExtended.colors.primary).toEqual(tailwindTheme.colors.primary);
+      expect(tailwindExtended.colors.primary).toEqual(
+        tailwindTheme.colors.primary,
+      );
     });
 
     it("background colors match", () => {
@@ -33,7 +35,9 @@ describe("design-tokens sync with tailwind.config.js", () => {
     });
 
     it("surface colors match", () => {
-      expect(tailwindExtended.colors.surface).toEqual(tailwindTheme.colors.surface);
+      expect(tailwindExtended.colors.surface).toEqual(
+        tailwindTheme.colors.surface,
+      );
     });
 
     it("ui colors match", () => {
@@ -41,15 +45,21 @@ describe("design-tokens sync with tailwind.config.js", () => {
     });
 
     it("border colors match", () => {
-      expect(tailwindExtended.colors.border).toEqual(tailwindTheme.colors.border);
+      expect(tailwindExtended.colors.border).toEqual(
+        tailwindTheme.colors.border,
+      );
     });
 
     it("status colors match", () => {
-      expect(tailwindExtended.colors.status).toEqual(tailwindTheme.colors.status);
+      expect(tailwindExtended.colors.status).toEqual(
+        tailwindTheme.colors.status,
+      );
     });
 
     it("accent colors match", () => {
-      expect(tailwindExtended.colors.accent).toEqual(tailwindTheme.colors.accent);
+      expect(tailwindExtended.colors.accent).toEqual(
+        tailwindTheme.colors.accent,
+      );
     });
 
     it("light-mode colors match", () => {

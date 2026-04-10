@@ -1,4 +1,5 @@
 import { View, TextInput } from "react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface SearchBarProps {
   placeholder?: string;
@@ -22,7 +23,7 @@ export function SearchBar({
       <TextInput
         className="flex-1 text-base text-text-secondary"
         placeholder={placeholder}
-        placeholderTextColor="#64748B"
+        placeholderTextColor={tokens.colors.text.tertiary}
         value={value}
         onChangeText={onChangeText}
       />

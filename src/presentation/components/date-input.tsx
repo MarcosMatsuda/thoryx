@@ -1,5 +1,6 @@
 import { View, Text, Pressable, TextInput } from "react-native";
 import { Calendar } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface DateInputProps {
   label: string;
@@ -25,7 +26,7 @@ export function DateInput({
         <TextInput
           className="flex-1 text-light-text dark:text-text-primary"
           placeholder={placeholder}
-          placeholderTextColor="#64748B"
+          placeholderTextColor={tokens.colors.text.tertiary}
           value={value}
           onChangeText={onChangeText}
           keyboardType="number-pad"
@@ -35,7 +36,7 @@ export function DateInput({
           className="ml-2 w-8 h-8 items-center justify-center active:opacity-60"
           onPress={onPress}
         >
-          <Calendar size={20} color="#94A3B8" />
+          <Calendar size={20} color={tokens.colors.text.secondary} />
         </Pressable>
       </View>
     </View>

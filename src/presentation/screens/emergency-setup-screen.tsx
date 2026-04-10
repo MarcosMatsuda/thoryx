@@ -30,6 +30,7 @@ import {
   Hospital,
   Siren,
 } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 export function EmergencySetupScreen() {
   const { t } = useTranslation();
@@ -149,7 +150,7 @@ export function EmergencySetupScreen() {
   if (isLoadingInfo) {
     return (
       <SafeAreaView className="flex-1 bg-light-bg dark:bg-background-primary items-center justify-center">
-        <ActivityIndicator size="large" color="#3B82F6" />
+        <ActivityIndicator size="large" color={tokens.colors.status.info} />
       </SafeAreaView>
     );
   }
@@ -166,7 +167,7 @@ export function EmergencySetupScreen() {
             onPress={() => router.back()}
             disabled={isSaving}
           >
-            <ChevronLeft size={24} color="#94A3B8" />
+            <ChevronLeft size={24} color={tokens.colors.text.secondary} />
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {t("emergencySetup.title")}
@@ -177,9 +178,12 @@ export function EmergencySetupScreen() {
             disabled={isSaving}
           >
             {isSaving ? (
-              <ActivityIndicator size="small" color="#3B82F6" />
+              <ActivityIndicator
+                size="small"
+                color={tokens.colors.status.info}
+              />
             ) : (
-              <Check size={20} color="#135BEC" />
+              <Check size={20} color={tokens.colors.primary.main} />
             )}
           </Pressable>
         </View>
@@ -192,7 +196,9 @@ export function EmergencySetupScreen() {
           <AlertBanner
             title={t("emergencySetup.criticalAccess")}
             message={t("emergencySetup.criticalAccessDesc")}
-            icon={<AlertTriangle size={20} color="#EF4444" />}
+            icon={
+              <AlertTriangle size={20} color={tokens.colors.status.error} />
+            }
             toggleLabel={t("emergencySetup.lockScreenVisible")}
             toggleEnabled={lockScreenVisible}
             onToggle={() => setLockScreenVisible(!lockScreenVisible)}
@@ -200,9 +206,9 @@ export function EmergencySetupScreen() {
 
           <View className="mb-6">
             <SectionHeader
-              icon={<Hospital size={18} color="#FFFFFF" />}
+              icon={<Hospital size={18} color={tokens.colors.text.primary} />}
               title={t("emergency.vitalInfo")}
-              iconBg="#3B82F6"
+              iconBg={tokens.colors.status.info}
             />
 
             <TextInputField
@@ -229,7 +235,7 @@ export function EmergencySetupScreen() {
               <TextInput
                 className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary min-h-[80px]"
                 placeholder={t("emergencySetup.allergiesPlaceholder")}
-                placeholderTextColor="#64748B"
+                placeholderTextColor={tokens.colors.text.tertiary}
                 multiline
                 textAlignVertical="top"
                 value={allergies}
@@ -244,7 +250,7 @@ export function EmergencySetupScreen() {
               <TextInput
                 className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary min-h-[80px]"
                 placeholder={t("emergencySetup.healthConditionsPlaceholder")}
-                placeholderTextColor="#64748B"
+                placeholderTextColor={tokens.colors.text.tertiary}
                 multiline
                 textAlignVertical="top"
                 value={healthConditions}
@@ -272,7 +278,7 @@ export function EmergencySetupScreen() {
                   <TextInput
                     className="flex-1 bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary"
                     placeholder={t("emergencySetup.medicationPlaceholder")}
-                    placeholderTextColor="#64748B"
+                    placeholderTextColor={tokens.colors.text.tertiary}
                     value={medication}
                     onChangeText={(text) => handleMedicationChange(index, text)}
                   />
@@ -281,7 +287,7 @@ export function EmergencySetupScreen() {
                       className="ml-2 w-10 h-10 items-center justify-center"
                       onPress={() => handleRemoveMedicationField(index)}
                     >
-                      <X size={20} color="#EF4444" />
+                      <X size={20} color={tokens.colors.status.error} />
                     </Pressable>
                   )}
                 </View>
@@ -291,9 +297,9 @@ export function EmergencySetupScreen() {
 
           <View className="mb-6">
             <SectionHeader
-              icon={<Siren size={18} color="#FFFFFF" />}
+              icon={<Siren size={18} color={tokens.colors.text.primary} />}
               title={t("emergencySetup.contacts")}
-              iconBg="#EF4444"
+              iconBg={tokens.colors.status.error}
             />
 
             {contacts.map((contact) => (
@@ -312,7 +318,11 @@ export function EmergencySetupScreen() {
               className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl p-4 flex-row items-center justify-center border-2 border-dashed border-light-border dark:border-ui-border active:bg-light-bgTertiary dark:active:bg-background-tertiary"
               onPress={() => openAddContactSheet(contacts.length === 0)}
             >
-              <Users size={20} color="#94A3B8" className="mr-2" />
+              <Users
+                size={20}
+                color={tokens.colors.text.secondary}
+                className="mr-2"
+              />
               <Text className="text-sm font-medium text-light-textSecondary dark:text-text-secondary">
                 {contacts.length === 0
                   ? t("emergencySetup.addContact")
@@ -333,7 +343,10 @@ export function EmergencySetupScreen() {
             onPress={handleSave}
           >
             {isSaving ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
+              <ActivityIndicator
+                size="small"
+                color={tokens.colors.text.primary}
+              />
             ) : (
               <Text
                 className={`text-base font-bold ${

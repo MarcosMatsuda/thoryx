@@ -21,6 +21,7 @@ import { getDocumentTypeById } from "@domain/entities/document-type-registry";
 import { useDocumentsStore } from "@stores/documents.store";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, Pencil, X, Lock } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 export function DocumentDetailsScreen() {
   const { t } = useTranslation();
@@ -106,7 +107,7 @@ export function DocumentDetailsScreen() {
         edges={["top"]}
       >
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#3B82F6" />
+          <ActivityIndicator size="large" color={tokens.colors.status.info} />
         </View>
       </SafeAreaView>
     );
@@ -147,7 +148,7 @@ export function DocumentDetailsScreen() {
               }
             }}
           >
-            <ChevronLeft size={24} color="#94A3B8" />
+            <ChevronLeft size={24} color={tokens.colors.text.secondary} />
           </Pressable>
           <Text className="text-lg font-bold text-light-text dark:text-text-primary">
             {document.typeName ?? typeDef?.label ?? "Documento"}
@@ -162,7 +163,7 @@ export function DocumentDetailsScreen() {
                 })
               }
             >
-              <Pencil size={20} color="#135BEC" />
+              <Pencil size={20} color={tokens.colors.primary.main} />
             </Pressable>
           )}
         </View>
@@ -242,7 +243,10 @@ export function DocumentDetailsScreen() {
                   </View>
                   <View>
                     {isTogglingAutoLock ? (
-                      <ActivityIndicator size="small" color="#3B82F6" />
+                      <ActivityIndicator
+                        size="small"
+                        color={tokens.colors.status.info}
+                      />
                     ) : (
                       <Pressable
                         onPress={handleToggleAutoLock}
@@ -267,7 +271,7 @@ export function DocumentDetailsScreen() {
 
           <View className="px-6">
             <InfoBanner
-              icon={<Lock size={18} color="#94A3B8" />}
+              icon={<Lock size={18} color={tokens.colors.text.secondary} />}
               message={t("documentDetails.encryptionNotice")}
             />
           </View>
@@ -308,7 +312,7 @@ export function DocumentDetailsScreen() {
             className="absolute top-14 right-6 w-10 h-10 bg-white/20 rounded-full items-center justify-center"
             onPress={() => setFullscreenPhoto(null)}
           >
-            <X size={20} color="#FFFFFF" />
+            <X size={20} color={tokens.colors.text.primary} />
           </Pressable>
         </Pressable>
       </Modal>

@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import { Check } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface SelectableDocumentItemProps {
   icon: string;
@@ -31,7 +32,7 @@ export function SelectableDocumentItem({
               : "border-light-border dark:border-ui-border"
           }`}
         >
-          {selected && <Check size={14} color="#FFFFFF" />}
+          {selected && <Check size={14} color={tokens.colors.text.primary} />}
         </View>
 
         <View className="flex-1">

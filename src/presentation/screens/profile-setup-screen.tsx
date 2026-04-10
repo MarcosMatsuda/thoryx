@@ -13,6 +13,7 @@ import { useUserProfile } from "@presentation/hooks/use-user-profile";
 import { useProfilePhoto } from "@presentation/hooks/use-profile-photo";
 import { UserAvatar } from "@presentation/components/user-avatar";
 import { useTranslation } from "react-i18next";
+import { tokens } from "@presentation/theme/design-tokens";
 
 export function ProfileSetupScreen() {
   const { t } = useTranslation();
@@ -110,7 +111,7 @@ export function ProfileSetupScreen() {
           <TextInput
             className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-4 text-light-text dark:text-text-primary text-base"
             placeholder={t("profile.namePlaceholder")}
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor={tokens.colors.text.secondary}
             value={name}
             onChangeText={setName}
             autoFocus={!profile?.name}
@@ -124,7 +125,7 @@ export function ProfileSetupScreen() {
           disabled={isSaving || isPhotoLoading}
         >
           {isSaving ? (
-            <ActivityIndicator color="#FFFFFF" />
+            <ActivityIndicator color={tokens.colors.text.primary} />
           ) : (
             <Text className="text-white font-bold text-base">
               {profile ? t("profile.saveChanges") : t("common.continue")}

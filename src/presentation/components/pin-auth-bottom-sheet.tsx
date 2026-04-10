@@ -8,6 +8,7 @@ import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.ada
 import { useBiometry } from "@presentation/hooks/use-biometry";
 import { useTranslation } from "react-i18next";
 import { Fingerprint } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
 const settingsStorage = new SecureStorageAdapter(
@@ -205,7 +206,7 @@ export function PinAuthBottomSheet({
                   className="bg-primary-main rounded-xl py-4 flex-row items-center justify-center active:bg-primary-dark"
                   onPress={handleBiometryAuth}
                 >
-                  <Fingerprint size={20} color="#FFFFFF" />
+                  <Fingerprint size={20} color={tokens.colors.text.primary} />
                   <Text className="text-base font-semibold text-white ml-2">
                     {getBiometryName()}
                   </Text>

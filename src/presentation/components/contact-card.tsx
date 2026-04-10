@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import { X, ChevronRight, Phone } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface ContactCardProps {
   fullName: string;
@@ -43,7 +44,7 @@ export function ContactCard({
             className="w-8 h-8 items-center justify-center"
             onPress={onRemove}
           >
-            <X size={18} color="#EF4444" />
+            <X size={18} color={tokens.colors.status.error} />
           </Pressable>
         )}
       </View>
@@ -57,7 +58,11 @@ export function ContactCard({
             <Text className="text-sm text-light-text dark:text-text-primary">
               {relationship}
             </Text>
-            <ChevronRight size={16} color="#94A3B8" className="ml-1" />
+            <ChevronRight
+              size={16}
+              color={tokens.colors.text.secondary}
+              className="ml-1"
+            />
           </View>
         </View>
 
@@ -73,7 +78,7 @@ export function ContactCard({
               className="w-8 h-8 bg-status-success/20 rounded-full items-center justify-center"
               onPress={onCall}
             >
-              <Phone size={14} color="#10B981" />
+              <Phone size={14} color={tokens.colors.status.success} />
             </Pressable>
           </View>
         </View>

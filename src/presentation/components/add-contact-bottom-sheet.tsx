@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { EmergencyContact } from "@domain/entities/emergency-info.entity";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface AddContactBottomSheetProps {
   visible: boolean;
@@ -109,7 +110,7 @@ export function AddContactBottomSheet({
                   <TextInput
                     className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary"
                     placeholder="Enter full name"
-                    placeholderTextColor="#64748B"
+                    placeholderTextColor={tokens.colors.text.tertiary}
                     value={fullName}
                     onChangeText={setFullName}
                   />
@@ -122,7 +123,7 @@ export function AddContactBottomSheet({
                   <TextInput
                     className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary"
                     placeholder="e.g. Spouse, Parent, Sibling"
-                    placeholderTextColor="#64748B"
+                    placeholderTextColor={tokens.colors.text.tertiary}
                     value={relationship}
                     onChangeText={setRelationship}
                   />
@@ -135,7 +136,7 @@ export function AddContactBottomSheet({
                   <TextInput
                     className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary"
                     placeholder="+1 (555) 0123"
-                    placeholderTextColor="#64748B"
+                    placeholderTextColor={tokens.colors.text.tertiary}
                     keyboardType="phone-pad"
                     value={phoneNumber}
                     onChangeText={setPhoneNumber}

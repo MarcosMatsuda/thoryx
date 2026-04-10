@@ -21,6 +21,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { FileText, ClipboardList } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 export function WalletHomeScreen() {
   const { t } = useTranslation();
@@ -95,7 +96,10 @@ export function WalletHomeScreen() {
                   {t("wallet.welcome")}
                 </Text>
                 {profileLoading ? (
-                  <ActivityIndicator size="small" color="#3B82F6" />
+                  <ActivityIndicator
+                    size="small"
+                    color={tokens.colors.status.info}
+                  />
                 ) : (
                   <Text className="text-lg md:text-xl font-bold text-light-text dark:text-text-primary">
                     {profile?.name || t("wallet.guest")}
@@ -170,14 +174,21 @@ export function WalletHomeScreen() {
             <View className="gap-3">
               {documentsLoading ? (
                 <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-6 items-center justify-center">
-                  <ActivityIndicator size="large" color="#3B82F6" />
+                  <ActivityIndicator
+                    size="large"
+                    color={tokens.colors.status.info}
+                  />
                   <Text className="text-light-textSecondary dark:text-text-secondary mt-3">
                     {t("wallet.loadingDocuments")}
                   </Text>
                 </View>
               ) : !documents || documents.length === 0 ? (
                 <View className="bg-light-bgSecondary dark:bg-background-secondary rounded-2xl p-6 items-center">
-                  <FileText size={36} color="#94A3B8" className="mb-3" />
+                  <FileText
+                    size={36}
+                    color={tokens.colors.text.secondary}
+                    className="mb-3"
+                  />
                   <Text className="text-light-textSecondary dark:text-text-secondary text-center">
                     {t("wallet.noDocuments")}
                   </Text>
@@ -229,7 +240,10 @@ export function WalletHomeScreen() {
                           </View>
                         </View>
                         <View className="w-8 h-8 bg-primary-main/10 rounded-lg items-center justify-center ml-2">
-                          <ClipboardList size={20} color="#135BEC" />
+                          <ClipboardList
+                            size={20}
+                            color={tokens.colors.primary.main}
+                          />
                         </View>
                       </View>
                     </Pressable>

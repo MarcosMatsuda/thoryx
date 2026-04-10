@@ -1,6 +1,8 @@
 import { View, Text } from "react-native";
 import { ReactNode } from "react";
 
+import { tokens } from "@presentation/theme/design-tokens";
+
 interface SectionHeaderProps {
   icon: ReactNode;
   title: string;
@@ -10,7 +12,7 @@ interface SectionHeaderProps {
 export function SectionHeader({
   icon,
   title,
-  iconBg = "#3B82F6",
+  iconBg = tokens.colors.status.info,
 }: SectionHeaderProps) {
   return (
     <View className="flex-row items-center mb-4">

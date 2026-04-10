@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import { Check } from "lucide-react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 
 interface CheckboxOptionProps {
   label: string;
@@ -21,7 +22,7 @@ export function CheckboxOption({
             : "bg-transparent border-2 border-ui-border"
         }`}
       >
-        {checked && <Check size={14} color="#FFFFFF" />}
+        {checked && <Check size={14} color={tokens.colors.text.primary} />}
       </View>
       <Text className="text-sm text-text-primary flex-1">{label}</Text>
     </Pressable>

@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useBiometry } from "@presentation/hooks/use-biometry";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
 import { useTranslation } from "react-i18next";
+import { tokens } from "@presentation/theme/design-tokens";
 
 const PIN_LENGTH = 6;
 const BIOMETRY_ENABLED_KEY = "biometry_enabled";
@@ -165,7 +166,10 @@ export function UnlockWalletScreen() {
 
             {isAuthenticating && (
               <View className="mt-2 mb-2 px-6 py-3">
-                <ActivityIndicator size="small" color="#3B82F6" />
+                <ActivityIndicator
+                  size="small"
+                  color={tokens.colors.status.info}
+                />
               </View>
             )}
 
