@@ -8,7 +8,10 @@ describe("SavePinUseCase", () => {
 
   const mockPin: Pin = {
     id: "test-id",
-    encryptedPin: "encrypted-value",
+    version: 2,
+    salt: "deadbeef",
+    iterations: 210000,
+    hash: "cafebabe",
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -18,6 +21,8 @@ describe("SavePinUseCase", () => {
 
     mockRepository = {
       verify: jest.fn(),
+      verifyLegacy: jest.fn(),
+      readStored: jest.fn(),
       save: jest.fn(),
       exists: jest.fn(),
       delete: jest.fn(),

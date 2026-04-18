@@ -10,8 +10,11 @@ describe("VerifyPinUseCase", () => {
 
     mockRepository = {
       verify: jest.fn(),
+      verifyLegacy: jest.fn(),
+      readStored: jest.fn(),
       save: jest.fn(),
-      get: jest.fn(),
+      exists: jest.fn(),
+      delete: jest.fn(),
     } as any;
 
     useCase = new VerifyPinUseCase(mockRepository);
