@@ -1,6 +1,8 @@
 import { HttpClient } from "@infrastructure/http/HttpClient";
 import { API_ENDPOINTS, STORAGE_KEYS } from "@shared/constants/app";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
+import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
+import { PinResponsibilityRepositoryImpl } from "@data/repositories/pin-responsibility.repository.impl";
 
 export class AuthService {
   private httpClient: HttpClient;
@@ -109,22 +111,24 @@ export class AuthService {
     // Clear auth data
     await this.clearAuthData();
 
-    // Clear all other storage instances
+    // Storage scopes/keys below MUST match the corresponding repository
+    // constructors exactly — MMKV partitions data by both the scope id and
+    // the encryption key, so a mismatch here silently clears nothing.
     const creditCardStorage = new SecureStorageAdapter(
       "credit-cards-storage",
       "thoryx-mmkv-encryption-key-2026",
     );
     const documentStorage = new SecureStorageAdapter(
       "documents-storage",
-      "thoryx-mmkv-encryption-key-2026",
+      "thoryx-documents-encryption-key-2026",
+    );
+    const documentTypesStorage = new SecureStorageAdapter(
+      "document-types-storage",
+      "thoryx-doc-types-key-2026",
     );
     const emergencyStorage = new SecureStorageAdapter(
-      "emergency-info-storage",
-      "thoryx-mmkv-encryption-key-2026",
-    );
-    const pinStorage = new SecureStorageAdapter(
-      "pin-storage",
-      "thoryx-mmkv-encryption-key-2026",
+      "emergency-storage",
+      "thoryx-emergency-encryption-key-2026-v1",
     );
     const profileStorage = new SecureStorageAdapter(
       "user-profile-storage",
@@ -135,11 +139,16 @@ export class AuthService {
       "thoryx-mmkv-encryption-key-2026",
     );
 
-    await creditCardStorage.clear();
-    await documentStorage.clear();
-    await emergencyStorage.clear();
-    await pinStorage.clear();
-    await profileStorage.clear();
-    await settingsStorage.clear();
+    await Promise.all([
+      creditCardStorage.clear(),
+      documentStorage.clear(),
+      documentTypesStorage.clear(),
+      emergencyStorage.clear(),
+      profileStorage.clear(),
+      settingsStorage.clear(),
+      // Owns its own SecureStore keys (pin, attempts, legacy MMKV).
+      new PinRepositoryImpl().delete(),
+      new PinResponsibilityRepositoryImpl().clear(),
+    ]);
   }
 }
