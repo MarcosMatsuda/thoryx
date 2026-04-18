@@ -1,33 +1,45 @@
-import { pbkdf2 } from "pbkdf2";
-import { Buffer } from "buffer";
+import { pbkdf2Async } from "@noble/hashes/pbkdf2";
+import { sha256 } from "@noble/hashes/sha256";
 import * as Crypto from "expo-crypto";
 
 export const PBKDF2_ITERATIONS = 210_000;
 const SALT_BYTES = 16;
 const KEY_BYTES = 32;
-const DIGEST = "sha256";
+
+function toHex(bytes: Uint8Array): string {
+  let out = "";
+  for (let i = 0; i < bytes.length; i += 1) {
+    out += bytes[i].toString(16).padStart(2, "0");
+  }
+  return out;
+}
+
+function fromHex(hex: string): Uint8Array {
+  const clean = hex.length % 2 === 0 ? hex : `0${hex}`;
+  const out = new Uint8Array(clean.length / 2);
+  for (let i = 0; i < out.length; i += 1) {
+    out[i] = parseInt(clean.slice(i * 2, i * 2 + 2), 16);
+  }
+  return out;
+}
 
 export class Pbkdf2Service {
   static async generateSalt(): Promise<string> {
     const bytes = await Crypto.getRandomBytesAsync(SALT_BYTES);
-    return Buffer.from(bytes).toString("hex");
+    return toHex(bytes);
   }
 
-  static derivePinHash(
+  static async derivePinHash(
     pin: string,
     saltHex: string,
     iterations: number = PBKDF2_ITERATIONS,
   ): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const saltBuffer = Buffer.from(saltHex, "hex");
-      pbkdf2(pin, saltBuffer, iterations, KEY_BYTES, DIGEST, (err, derived) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(derived.toString("hex"));
-      });
+    const salt = fromHex(saltHex);
+    const derived = await pbkdf2Async(sha256, pin, salt, {
+      c: iterations,
+      dkLen: KEY_BYTES,
     });
+    return toHex(derived);
   }
 
   static timingSafeEqual(a: string, b: string): boolean {
