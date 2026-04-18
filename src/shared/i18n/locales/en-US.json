@@ -68,7 +68,8 @@
     "deleteError": "Failed to delete document",
     "savedSuccess": "Document saved securely",
     "capturePhoto": "Take Photo",
-    "documentPhotoGuide": "Align the document inside the rectangle"
+    "documentPhotoGuide": "Align the document inside the rectangle",
+    "documentPhotoHint": "Fill the frame, good lighting, hold the phone steady"
   },
   "documentDetails": {
     "title": "Document Details",

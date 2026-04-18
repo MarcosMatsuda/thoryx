@@ -68,7 +68,8 @@
     "deleteError": "Não foi possível excluir o documento",
     "savedSuccess": "Documento salvo com segurança",
     "capturePhoto": "Tirar Foto",
-    "documentPhotoGuide": "Alinhe o documento dentro do retângulo"
+    "documentPhotoGuide": "Alinhe o documento dentro do retângulo",
+    "documentPhotoHint": "Preencha o quadro, boa iluminação e celular firme"
   },
   "documentDetails": {
     "title": "Detalhes do Documento",

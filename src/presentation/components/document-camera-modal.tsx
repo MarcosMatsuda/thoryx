@@ -26,8 +26,11 @@ interface DocumentCameraModalProps {
 // same frame. Passport is a separate, taller format and intentionally
 // not targeted here.
 const DOCUMENT_ASPECT_RATIO = 85.6 / 54;
-const GUIDE_WIDTH = 360;
-const GUIDE_HEIGHT = Math.round(GUIDE_WIDTH / DOCUMENT_ASPECT_RATIO);
+// Side margin so the dashed outline isn't flush against the edges.
+const GUIDE_HORIZONTAL_MARGIN = 16;
+// Cap for tablets — above ~480 the guide dominates the viewfinder and
+// hurts framing on large portrait screens.
+const GUIDE_MAX_WIDTH = 480;
 
 export function DocumentCameraModal({
   visible,
@@ -40,6 +43,12 @@ export function DocumentCameraModal({
   const cameraRef = useRef<CameraView>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const [facing, setFacing] = useState<"front" | "back">("back");
+
+  const guideWidth = Math.min(
+    screenWidth - GUIDE_HORIZONTAL_MARGIN * 2,
+    GUIDE_MAX_WIDTH,
+  );
+  const guideHeight = Math.round(guideWidth / DOCUMENT_ASPECT_RATIO);
 
   useEffect(() => {
     if (
@@ -59,7 +68,10 @@ export function DocumentCameraModal({
     setIsCapturing(true);
     try {
       const photo = await cameraRef.current.takePictureAsync({
-        quality: 0.85,
+        // Max-fidelity capture. The ImageManipulator pass below still
+        // re-encodes at 0.9 JPEG so storage stays bounded, but the crop
+        // is taken from the highest-resolution source the sensor gives.
+        quality: 1,
         skipProcessing: false,
       });
       if (!photo) {
@@ -79,8 +91,8 @@ export function DocumentCameraModal({
       const screenAspect = screenWidth / screenHeight;
       const photoPxPerScreenPx =
         photoAspect > screenAspect ? h / screenHeight : w / screenWidth;
-      const guidePhotoWidth = Math.round(GUIDE_WIDTH * photoPxPerScreenPx);
-      const guidePhotoHeight = Math.round(GUIDE_HEIGHT * photoPxPerScreenPx);
+      const guidePhotoWidth = Math.round(guideWidth * photoPxPerScreenPx);
+      const guidePhotoHeight = Math.round(guideHeight * photoPxPerScreenPx);
       const originX = Math.max(0, Math.round((w - guidePhotoWidth) / 2));
       const originY = Math.max(0, Math.round((h - guidePhotoHeight) / 2));
       const cropWidth = Math.min(w - originX, guidePhotoWidth);
@@ -98,7 +110,7 @@ export function DocumentCameraModal({
             },
           },
         ],
-        { compress: 0.85, format: ImageManipulator.SaveFormat.JPEG },
+        { compress: 0.9, format: ImageManipulator.SaveFormat.JPEG },
       );
       onCapture(cropped.uri);
       onClose();
@@ -129,6 +141,7 @@ export function DocumentCameraModal({
             ref={cameraRef}
             style={StyleSheet.absoluteFill}
             facing={facing}
+            autofocus="on"
           >
             <View
               pointerEvents="none"
@@ -136,8 +149,8 @@ export function DocumentCameraModal({
             >
               <View
                 style={{
-                  width: GUIDE_WIDTH,
-                  height: GUIDE_HEIGHT,
+                  width: guideWidth,
+                  height: guideHeight,
                   borderRadius: 12,
                   borderWidth: 3,
                   borderColor: "rgba(255,255,255,0.9)",
@@ -146,6 +159,9 @@ export function DocumentCameraModal({
               />
               <Text className="text-white text-base font-semibold mt-6 mx-8 text-center">
                 {t("addDocument.documentPhotoGuide")}
+              </Text>
+              <Text className="text-white/80 text-sm mt-2 mx-8 text-center">
+                {t("addDocument.documentPhotoHint")}
               </Text>
             </View>
           </CameraView>
