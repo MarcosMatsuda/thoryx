@@ -3,7 +3,6 @@ import {
   Text,
   Pressable,
   Modal,
-  TextInput,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -12,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft } from "lucide-react-native";
 import { EmergencyContact } from "@domain/entities/emergency-info.entity";
+import { TextInputField } from "@presentation/components/text-input-field";
 import { tokens } from "@presentation/theme/design-tokens";
 
 interface AddContactBottomSheetProps {
@@ -130,88 +130,66 @@ export function AddContactBottomSheet({
             </View>
 
             <ScrollView
-              className="w-full"
+              className="flex-1"
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
-              contentContainerStyle={{ paddingBottom: 24 }}
+              contentContainerClassName="px-6 py-6"
             >
-              <View className="w-full max-w-[500px] self-center px-6 py-6">
-                <Text className="text-2xl font-bold text-light-text dark:text-text-primary mb-6">
-                  {t("emergencySetup.contactSheetTitle")}
-                </Text>
+              <Text className="text-2xl font-bold text-light-text dark:text-text-primary mb-6">
+                {t("emergencySetup.contactSheetTitle")}
+              </Text>
 
-                <View className="mb-4">
-                  <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
-                    {t("emergencySetup.contactFullName")}
-                  </Text>
-                  <TextInput
-                    className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary"
-                    placeholder={t("emergencySetup.contactFullNamePlaceholder")}
-                    placeholderTextColor={tokens.colors.text.tertiary}
-                    value={fullName}
-                    onChangeText={setFullName}
-                    autoCapitalize="words"
-                    returnKeyType="next"
-                  />
-                </View>
+              <TextInputField
+                label={t("emergencySetup.contactFullName")}
+                placeholder={t("emergencySetup.contactFullNamePlaceholder")}
+                value={fullName}
+                onChangeText={setFullName}
+                autoCapitalize="words"
+                returnKeyType="next"
+              />
 
-                <View className="mb-4">
-                  <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
-                    {t("emergencySetup.contactRelationship")}
-                  </Text>
-                  <TextInput
-                    className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary"
-                    placeholder={t(
-                      "emergencySetup.contactRelationshipPlaceholder",
-                    )}
-                    placeholderTextColor={tokens.colors.text.tertiary}
-                    value={relationship}
-                    onChangeText={setRelationship}
-                    autoCapitalize="words"
-                    returnKeyType="next"
-                  />
-                </View>
+              <TextInputField
+                label={t("emergencySetup.contactRelationship")}
+                placeholder={t(
+                  "emergencySetup.contactRelationshipPlaceholder",
+                )}
+                value={relationship}
+                onChangeText={setRelationship}
+                autoCapitalize="words"
+                returnKeyType="next"
+              />
 
-                <View className="mb-6">
-                  <Text className="text-sm text-light-textSecondary dark:text-text-secondary mb-2">
-                    {t("emergencySetup.contactPhoneNumber")}
-                  </Text>
-                  <TextInput
-                    className="bg-light-bgSecondary dark:bg-background-secondary rounded-xl px-4 py-3 text-light-text dark:text-text-primary"
-                    placeholder={t(
-                      "emergencySetup.contactPhoneNumberPlaceholder",
-                    )}
-                    placeholderTextColor={tokens.colors.text.tertiary}
-                    keyboardType="phone-pad"
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber}
-                    returnKeyType="done"
-                    onSubmitEditing={canSubmit ? handleSave : undefined}
-                  />
-                </View>
+              <TextInputField
+                label={t("emergencySetup.contactPhoneNumber")}
+                placeholder={t("emergencySetup.contactPhoneNumberPlaceholder")}
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                keyboardType="phone-pad"
+                returnKeyType="done"
+                onSubmitEditing={canSubmit ? handleSave : undefined}
+              />
 
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityState={{ disabled: !canSubmit }}
-                  className={`rounded-xl py-4 items-center ${
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ disabled: !canSubmit }}
+                className={`rounded-xl py-4 items-center mt-2 ${
+                  canSubmit
+                    ? "bg-primary-main active:bg-primary-dark"
+                    : "bg-light-border dark:bg-ui-border"
+                }`}
+                disabled={!canSubmit}
+                onPress={handleSave}
+              >
+                <Text
+                  className={`text-base font-bold ${
                     canSubmit
-                      ? "bg-primary-main active:bg-primary-dark"
-                      : "bg-light-border dark:bg-ui-border"
+                      ? "text-light-text dark:text-text-primary"
+                      : "text-light-textSecondary dark:text-text-secondary"
                   }`}
-                  disabled={!canSubmit}
-                  onPress={handleSave}
                 >
-                  <Text
-                    className={`text-base font-bold ${
-                      canSubmit
-                        ? "text-light-text dark:text-text-primary"
-                        : "text-light-textSecondary dark:text-text-secondary"
-                    }`}
-                  >
-                    {t("emergencySetup.saveContact")}
-                  </Text>
-                </Pressable>
-              </View>
+                  {t("emergencySetup.saveContact")}
+                </Text>
+              </Pressable>
             </ScrollView>
           </View>
         </Pressable>
