@@ -23,8 +23,8 @@ interface ProfilePhotoCameraModalProps {
 // Stadium-shaped face guide (vertically oriented). Height > width keeps it
 // matching the natural face aspect, and the capped corners read as an oval
 // without needing SVG to draw a true ellipse.
-const GUIDE_WIDTH = 260;
-const GUIDE_HEIGHT = 340;
+const GUIDE_WIDTH = 320;
+const GUIDE_HEIGHT = 420;
 
 export function ProfilePhotoCameraModal({
   visible,
