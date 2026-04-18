@@ -142,6 +142,7 @@ export function AddDocumentScreen() {
 
       const result = await useCase.execute(
         {
+          id: isEditMode ? documentId : undefined,
           typeId: selectedTypeId,
           typeName: typeDefinition.label,
           fields,
