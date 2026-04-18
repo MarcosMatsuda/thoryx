@@ -27,9 +27,7 @@ describe("PinResponsibilityScreen", () => {
   it("renders the warning and checkbox label", () => {
     const { getByText } = render(<PinResponsibilityScreen />);
     expect(getByText(/Antes de criar seu PIN/i)).toBeTruthy();
-    expect(
-      getByText(/Entendi e assumo a responsabilidade/i),
-    ).toBeTruthy();
+    expect(getByText(/Entendi e assumo a responsabilidade/i)).toBeTruthy();
   });
 
   it("disables the continue button until the checkbox is marked", async () => {

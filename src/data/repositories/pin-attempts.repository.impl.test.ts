@@ -36,9 +36,7 @@ describe("PinAttemptsRepositoryImpl", () => {
     });
 
     it("falls back to initial state when stored value is corrupted", async () => {
-      (SecureStore.getItemAsync as jest.Mock).mockResolvedValueOnce(
-        "not-json",
-      );
+      (SecureStore.getItemAsync as jest.Mock).mockResolvedValueOnce("not-json");
       const result = await repository.get();
       expect(result.count).toBe(0);
       expect(result.lockedUntil).toBeNull();

@@ -20,7 +20,9 @@ const LEGACY_PIN: LegacyPin = {
   updatedAt: new Date(),
 };
 
-function mockPinRepository(stored: StoredPin | null): jest.Mocked<PinRepository> {
+function mockPinRepository(
+  stored: StoredPin | null,
+): jest.Mocked<PinRepository> {
   return {
     save: jest.fn().mockResolvedValue(V2_PIN),
     verify: jest.fn().mockResolvedValue(false),

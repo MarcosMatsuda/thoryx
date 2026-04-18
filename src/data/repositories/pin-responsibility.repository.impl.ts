@@ -3,9 +3,7 @@ import { PinResponsibilityRepository } from "@domain/repositories/pin-responsibi
 
 const RESPONSIBILITY_KEY = "thoryx_pin_responsibility_accepted_at";
 
-export class PinResponsibilityRepositoryImpl
-  implements PinResponsibilityRepository
-{
+export class PinResponsibilityRepositoryImpl implements PinResponsibilityRepository {
   async accept(timestamp: number): Promise<void> {
     await SecureStore.setItemAsync(RESPONSIBILITY_KEY, String(timestamp));
   }
