@@ -90,18 +90,24 @@ export function AddContactBottomSheet({
       visible={visible}
       transparent
       animationType="slide"
+      // iPad defaults Modal to `pageSheet` (a floating centered card) unless
+      // `overFullScreen` is set explicitly — that's what was making the sheet
+      // look detached from the bottom and centered on iPad. `statusBarTranslucent`
+      // mirrors the same full-screen behavior on Android.
+      presentationStyle="overFullScreen"
+      statusBarTranslucent
       onRequestClose={handleClose}
     >
-      <Pressable
-        className="flex-1 bg-black/70 justify-end"
-        onPress={handleClose}
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+        <Pressable
+          className="flex-1 bg-black/70 justify-end"
+          onPress={handleClose}
         >
           <View
-            className="bg-light-bg dark:bg-background-primary rounded-t-3xl max-h-[92%]"
+            className="w-full bg-light-bg dark:bg-background-primary rounded-t-3xl max-h-[92%]"
             onStartShouldSetResponder={() => true}
           >
             <View className="items-center pt-3 pb-2">
@@ -124,12 +130,12 @@ export function AddContactBottomSheet({
             </View>
 
             <ScrollView
-              className="w-full max-w-[500px] self-center"
+              className="w-full"
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
               contentContainerStyle={{ paddingBottom: 24 }}
             >
-              <View className="px-6 py-6">
+              <View className="w-full max-w-[500px] self-center px-6 py-6">
                 <Text className="text-2xl font-bold text-light-text dark:text-text-primary mb-6">
                   {t("emergencySetup.contactSheetTitle")}
                 </Text>
@@ -208,8 +214,8 @@ export function AddContactBottomSheet({
               </View>
             </ScrollView>
           </View>
-        </KeyboardAvoidingView>
-      </Pressable>
+        </Pressable>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
