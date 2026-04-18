@@ -38,6 +38,9 @@ export class Pbkdf2Service {
     const derived = await pbkdf2Async(sha256, pin, salt, {
       c: iterations,
       dkLen: KEY_BYTES,
+      // Yield to the JS event loop every 10ms so UI re-renders and touch
+      // events stay responsive during the ~1-2s key derivation.
+      asyncTick: 10,
     });
     return toHex(derived);
   }

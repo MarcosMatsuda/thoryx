@@ -38,6 +38,7 @@ export function UnlockWalletScreen() {
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [isVerifyingPin, setIsVerifyingPin] = useState(false);
   const [biometryEnabled, setBiometryEnabled] = useState(false);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [attemptCount, setAttemptCount] = useState(0);
@@ -85,6 +86,7 @@ export function UnlockWalletScreen() {
 
   const verifyPin = useCallback(
     async (value: string) => {
+      setIsVerifyingPin(true);
       try {
         const useCase = new VerifyPinWithLockoutUseCase(
           pinRepository,
@@ -109,16 +111,18 @@ export function UnlockWalletScreen() {
           setPin("");
           setError(false);
         }, 1000);
+      } finally {
+        setIsVerifyingPin(false);
       }
     },
     [pinRepository, attemptsRepository, router],
   );
 
   useEffect(() => {
-    if (pin.length === PIN_LENGTH && !isLocked) {
+    if (pin.length === PIN_LENGTH && !isLocked && !isVerifyingPin) {
       verifyPin(pin);
     }
-  }, [pin, isLocked, verifyPin]);
+  }, [pin, isLocked, isVerifyingPin, verifyPin]);
 
   const handleBiometricAuth = async () => {
     if (isLocked) {
@@ -142,7 +146,7 @@ export function UnlockWalletScreen() {
   };
 
   const handleKeyPress = (value: string) => {
-    if (isLocked) return;
+    if (isLocked || isVerifyingPin) return;
     if (pin.length < PIN_LENGTH) {
       setPin(pin + value);
       setError(false);
@@ -150,7 +154,7 @@ export function UnlockWalletScreen() {
   };
 
   const handleBackspace = () => {
-    if (isLocked) return;
+    if (isLocked || isVerifyingPin) return;
     setPin(pin.slice(0, -1));
     setError(false);
   };
@@ -233,7 +237,22 @@ export function UnlockWalletScreen() {
               </View>
             )}
 
-            {!isLocked && error && (
+            {!isLocked && isVerifyingPin && (
+              <View
+                accessibilityRole="progressbar"
+                className="flex-row items-center mt-2 mb-2 gap-2"
+              >
+                <ActivityIndicator
+                  size="small"
+                  color={tokens.colors.primary.main}
+                />
+                <Text className="text-sm font-semibold text-primary-main">
+                  {t("auth.verifying")}
+                </Text>
+              </View>
+            )}
+
+            {!isLocked && !isVerifyingPin && error && (
               <View className="items-center mt-2 mb-2">
                 <Text className="text-sm font-semibold text-status-error">
                   {t("auth.wrongPin")}
