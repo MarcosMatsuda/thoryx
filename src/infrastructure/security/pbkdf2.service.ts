@@ -2,12 +2,14 @@ import { pbkdf2Async } from "@noble/hashes/pbkdf2";
 import { sha256 } from "@noble/hashes/sha256";
 import * as Crypto from "expo-crypto";
 
-// 100k iterations is the practical sweet spot for a 6-digit PIN on JS-only
-// mobile runtimes: above the legacy Apple/1Password threshold, and combined
-// with our lockout schedule + hardware-bound salt it's well above what a
-// realistic attacker can brute force. 210k was painful in Hermes debug
-// builds (several seconds per verify) and delivered no extra security margin.
-export const PBKDF2_ITERATIONS = 100_000;
+// 50k iterations on a pure-JS PBKDF2 implementation is the pragmatic ceiling
+// for Hermes debug builds where every verify runs interpreted. Combined with
+// our persistent lockout schedule (capped at 24h) and hardware-bound salt in
+// the Keychain/Keystore, the iteration count is not the limiting defense
+// against a realistic attacker — the lockout is. Higher values (100k–210k)
+// made the unlock overlay sit for seconds in dev builds without adding a
+// meaningful security margin for a 6-digit PIN.
+export const PBKDF2_ITERATIONS = 50_000;
 const SALT_BYTES = 16;
 const KEY_BYTES = 32;
 

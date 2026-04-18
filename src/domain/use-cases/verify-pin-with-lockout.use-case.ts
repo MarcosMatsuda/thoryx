@@ -65,8 +65,8 @@ export class VerifyPinWithLockoutUseCase {
       }
 
       const isValid = isLegacyPin(stored)
-        ? await this.pinRepository.verifyLegacy(pin)
-        : await this.pinRepository.verify(pin);
+        ? await this.pinRepository.verifyLegacy(pin, stored)
+        : await this.pinRepository.verify(pin, stored);
 
       if (isValid) {
         let migrated = false;

@@ -14,12 +14,13 @@ interface DocumentsState {
   reset: () => void;
 }
 
-export const useDocumentsStore = create<DocumentsState>((set) => ({
+export const useDocumentsStore = create<DocumentsState>((set, get) => ({
   documents: [],
   customDocumentTypes: [],
   isLoading: false,
 
   loadDocuments: async () => {
+    if (get().isLoading) return;
     try {
       set({ isLoading: true });
       const repository = new DocumentRepositoryImpl();

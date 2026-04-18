@@ -18,12 +18,13 @@ interface ProfileState {
   reset: () => void;
 }
 
-export const useProfileStore = create<ProfileState>((set) => ({
+export const useProfileStore = create<ProfileState>((set, get) => ({
   profile: null,
-  isLoading: true,
+  isLoading: false,
   error: null,
 
   loadProfile: async () => {
+    if (get().isLoading) return;
     try {
       set({ isLoading: true, error: null });
       const repository = new UserProfileRepositoryImpl();

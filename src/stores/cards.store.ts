@@ -10,11 +10,12 @@ interface CardsState {
   reset: () => void;
 }
 
-export const useCardsStore = create<CardsState>((set) => ({
+export const useCardsStore = create<CardsState>((set, get) => ({
   cards: [],
   isLoading: false,
 
   loadCards: async () => {
+    if (get().isLoading) return;
     try {
       set({ isLoading: true });
       const repository = new CreditCardRepositoryImpl();
