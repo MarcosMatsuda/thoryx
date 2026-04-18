@@ -12,6 +12,7 @@ import { useRouter, useFocusEffect } from "expo-router";
 import { useUserProfile } from "@presentation/hooks/use-user-profile";
 import { useProfilePhoto } from "@presentation/hooks/use-profile-photo";
 import { UserAvatar } from "@presentation/components/user-avatar";
+import { ProfilePhotoCameraModal } from "@presentation/components/profile-photo-camera-modal";
 import { useTranslation } from "react-i18next";
 import { tokens } from "@presentation/theme/design-tokens";
 
@@ -20,13 +21,10 @@ export function ProfileSetupScreen() {
   const router = useRouter();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const { profile, saveProfile, reloadProfile } = useUserProfile();
-  const {
-    pickImage,
-    showImagePickerOptions,
-    isLoading: isPhotoLoading,
-  } = useProfilePhoto();
+  const { pickFromGallery, isLoading: isPhotoLoading } = useProfilePhoto();
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -71,11 +69,27 @@ export function ProfileSetupScreen() {
     }
   };
 
-  const handleSelectPhoto = async () => {
-    const newUri = await showImagePickerOptions();
-    if (newUri) {
-      setPhotoUri(newUri); // ← Apenas atualiza estado local
-    }
+  const handleSelectPhoto = () => {
+    Alert.alert(t("profile.photoSheetTitle"), "", [
+      {
+        text: t("profile.takePhoto"),
+        onPress: () => setIsCameraOpen(true),
+      },
+      {
+        text: t("profile.chooseFromGallery"),
+        onPress: async () => {
+          const newUri = await pickFromGallery();
+          if (newUri) {
+            setPhotoUri(newUri);
+          }
+        },
+      },
+      { text: t("common.cancel"), style: "cancel" },
+    ]);
+  };
+
+  const handlePhotoCaptured = (uri: string) => {
+    setPhotoUri(uri);
   };
 
   return (
@@ -133,6 +147,12 @@ export function ProfileSetupScreen() {
           )}
         </Pressable>
       </View>
+
+      <ProfilePhotoCameraModal
+        visible={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handlePhotoCaptured}
+      />
     </SafeAreaView>
   );
 }

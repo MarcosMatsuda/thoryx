@@ -220,7 +220,12 @@
     "yourName": "SEU NOME",
     "namePlaceholder": "Digite seu nome",
     "nameRequired": "Nome deve ter pelo menos 2 caracteres",
-    "saveChanges": "Salvar Alterações"
+    "saveChanges": "Salvar Alterações",
+    "photoSheetTitle": "Foto de Perfil",
+    "takePhoto": "Tirar Foto",
+    "chooseFromGallery": "Escolher da Galeria",
+    "flipCamera": "Inverter câmera",
+    "facePhotoGuide": "Posicione seu rosto dentro do círculo"
   },
   "customDocType": {
     "createTitle": "Criar Tipo de Documento",
