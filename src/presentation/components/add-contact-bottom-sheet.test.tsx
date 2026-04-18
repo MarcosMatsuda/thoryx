@@ -34,7 +34,10 @@ describe("AddContactBottomSheet", () => {
     fireEvent.press(saveButton!);
     expect(onSave).not.toHaveBeenCalled();
 
-    fireEvent.changeText(getByPlaceholderText(/Digite o nome completo/i), "Ana");
+    fireEvent.changeText(
+      getByPlaceholderText(/Digite o nome completo/i),
+      "Ana",
+    );
     fireEvent.changeText(
       getByPlaceholderText(/Ex: Cônjuge, Pai, Irmã/i),
       "Mãe",
@@ -95,10 +98,7 @@ describe("AddContactBottomSheet", () => {
       isPrimary: false,
     };
     const { getByText } = render(
-      <AddContactBottomSheet
-        {...baseProps}
-        initialContact={initialContact}
-      />,
+      <AddContactBottomSheet {...baseProps} initialContact={initialContact} />,
     );
 
     expect(getByText(/Editar Contato/i)).toBeTruthy();

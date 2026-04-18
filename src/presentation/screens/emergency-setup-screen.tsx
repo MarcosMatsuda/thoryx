@@ -51,8 +51,9 @@ export function EmergencySetupScreen() {
   const [isSaving, setIsSaving] = useState(false);
   const [showContactSheet, setShowContactSheet] = useState(false);
   const [isAddingPrimaryContact, setIsAddingPrimaryContact] = useState(false);
-  const [editingContact, setEditingContact] =
-    useState<EmergencyContact | null>(null);
+  const [editingContact, setEditingContact] = useState<EmergencyContact | null>(
+    null,
+  );
 
   useEffect(() => {
     if (emergencyInfo) {
