@@ -170,20 +170,15 @@ export function DocumentDetailsScreen() {
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View className="py-6">
-            {/* Photos — tap to view fullscreen */}
+            {/* Photos — tap on a specific slide opens that photo fullscreen */}
             {photoSlots.length >= 2 &&
               photoUris[photoSlots[0]] &&
               photoUris[photoSlots[1]] && (
-                <View>
-                  <Pressable
-                    onPress={() => setFullscreenPhoto(photoUris[photoSlots[0]])}
-                  >
-                    <DocumentPhotoCarousel
-                      frontPhotoUri={photoUris[photoSlots[0]]}
-                      backPhotoUri={photoUris[photoSlots[1]]}
-                    />
-                  </Pressable>
-                </View>
+                <DocumentPhotoCarousel
+                  frontPhotoUri={photoUris[photoSlots[0]]}
+                  backPhotoUri={photoUris[photoSlots[1]]}
+                  onPhotoPress={(uri) => setFullscreenPhoto(uri)}
+                />
               )}
             {photoSlots.length === 1 && photoUris[photoSlots[0]] && (
               <Pressable

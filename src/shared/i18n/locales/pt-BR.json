@@ -66,7 +66,10 @@
     "loadError": "Não foi possível carregar o documento",
     "saveError": "Não foi possível salvar o documento",
     "deleteError": "Não foi possível excluir o documento",
-    "savedSuccess": "Documento salvo com segurança"
+    "savedSuccess": "Documento salvo com segurança",
+    "capturePhoto": "Tirar Foto",
+    "documentPhotoGuide": "Alinhe o documento dentro do retângulo",
+    "documentPhotoHint": "Pince para ajustar o quadro ao tamanho do documento"
   },
   "documentDetails": {
     "title": "Detalhes do Documento",

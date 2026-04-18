@@ -66,7 +66,10 @@
     "loadError": "Failed to load document",
     "saveError": "Failed to save document",
     "deleteError": "Failed to delete document",
-    "savedSuccess": "Document saved securely"
+    "savedSuccess": "Document saved securely",
+    "capturePhoto": "Take Photo",
+    "documentPhotoGuide": "Align the document inside the rectangle",
+    "documentPhotoHint": "Pinch to resize the frame to your document"
   },
   "documentDetails": {
     "title": "Document Details",
