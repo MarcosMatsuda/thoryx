@@ -220,7 +220,12 @@
     "yourName": "YOUR NAME",
     "namePlaceholder": "Enter your name",
     "nameRequired": "Name must be at least 2 characters",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "photoSheetTitle": "Profile Photo",
+    "takePhoto": "Take Photo",
+    "chooseFromGallery": "Choose from Gallery",
+    "flipCamera": "Flip camera",
+    "facePhotoGuide": "Position your face inside the circle"
   },
   "customDocType": {
     "createTitle": "Create Document Type",
