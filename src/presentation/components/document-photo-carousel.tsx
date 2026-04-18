@@ -2,6 +2,7 @@ import {
   View,
   ScrollView,
   Image,
+  Pressable,
   Dimensions,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -11,11 +12,13 @@ import { useState } from "react";
 interface DocumentPhotoCarouselProps {
   frontPhotoUri: string;
   backPhotoUri: string;
+  onPhotoPress?: (uri: string) => void;
 }
 
 export function DocumentPhotoCarousel({
   frontPhotoUri,
   backPhotoUri,
+  onPhotoPress,
 }: DocumentPhotoCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const screenWidth = Dimensions.get("window").width;
@@ -40,22 +43,34 @@ export function DocumentPhotoCarousel({
           paddingHorizontal: 24,
         }}
       >
-        <View style={{ width: photoWidth, marginRight: 16 }}>
+        <Pressable
+          style={{ width: photoWidth, marginRight: 16 }}
+          onPress={
+            onPhotoPress ? () => onPhotoPress(frontPhotoUri) : undefined
+          }
+          accessibilityRole={onPhotoPress ? "button" : undefined}
+        >
           <Image
             source={{ uri: frontPhotoUri }}
             className="w-full rounded-2xl bg-light-bgSecondary dark:bg-background-secondary"
             style={{ aspectRatio: 4 / 3 }}
             resizeMode="cover"
           />
-        </View>
-        <View style={{ width: photoWidth }}>
+        </Pressable>
+        <Pressable
+          style={{ width: photoWidth }}
+          onPress={
+            onPhotoPress ? () => onPhotoPress(backPhotoUri) : undefined
+          }
+          accessibilityRole={onPhotoPress ? "button" : undefined}
+        >
           <Image
             source={{ uri: backPhotoUri }}
             className="w-full rounded-2xl bg-light-bgSecondary dark:bg-background-secondary"
             style={{ aspectRatio: 4 / 3 }}
             resizeMode="cover"
           />
-        </View>
+        </Pressable>
       </ScrollView>
 
       <View className="flex-row justify-center gap-2 mt-4">

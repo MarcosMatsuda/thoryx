@@ -43,6 +43,11 @@ const GUIDE_MAX_WIDTH = 480;
 // Absolute pinch bounds so the user can't shrink the guide into
 // invisibility or blow it past the edge of the camera preview.
 const GUIDE_MIN_PT = 200;
+// Extra padding in photo pixels on each side of the crop. Compensates
+// for the dashed border width, sub-pixel rounding, and the preview's
+// small layout differences between devices — without it, users were
+// losing a sliver of content at the edges of the framed area.
+const CROP_BUFFER_RATIO = 0.03;
 
 export function DocumentCameraModal({
   visible,
@@ -135,14 +140,16 @@ export function DocumentCameraModal({
       const screenAspect = screenWidth / screenHeight;
       const photoPxPerScreenPx =
         photoAspect > screenAspect ? h / screenHeight : w / screenWidth;
-      const guidePhotoWidth = Math.round(currentGuideWidth * photoPxPerScreenPx);
-      const guidePhotoHeight = Math.round(
-        currentGuideHeight * photoPxPerScreenPx,
-      );
-      const originX = Math.max(0, Math.round((w - guidePhotoWidth) / 2));
-      const originY = Math.max(0, Math.round((h - guidePhotoHeight) / 2));
-      const cropWidth = Math.min(w - originX, guidePhotoWidth);
-      const cropHeight = Math.min(h - originY, guidePhotoHeight);
+      const guidePhotoWidth = currentGuideWidth * photoPxPerScreenPx;
+      const guidePhotoHeight = currentGuideHeight * photoPxPerScreenPx;
+      // Grow the crop proportionally on both axes so the aspect ratio
+      // stays 1.585:1 and the dashed border area is fully included.
+      const bufferedWidth = guidePhotoWidth * (1 + CROP_BUFFER_RATIO * 2);
+      const bufferedHeight = guidePhotoHeight * (1 + CROP_BUFFER_RATIO * 2);
+      const originX = Math.max(0, Math.round((w - bufferedWidth) / 2));
+      const originY = Math.max(0, Math.round((h - bufferedHeight) / 2));
+      const cropWidth = Math.min(w - originX, Math.round(bufferedWidth));
+      const cropHeight = Math.min(h - originY, Math.round(bufferedHeight));
 
       const cropped = await ImageManipulator.manipulateAsync(
         photo.uri,
