@@ -113,7 +113,18 @@
     "contactRequired": "Adicione pelo menos um contato de emergência",
     "saveProfile": "Salvar Perfil de Emergência",
     "saveError": "Não foi possível salvar",
-    "savedSuccess": "Perfil de emergência salvo!"
+    "savedSuccess": "Perfil de emergência salvo!",
+    "contactSheetTitle": "Informações do Contato",
+    "addContactHeader": "Adicionar Contato",
+    "addPrimaryContactHeader": "Adicionar Contato Principal",
+    "editContactHeader": "Editar Contato",
+    "contactFullName": "Nome Completo",
+    "contactFullNamePlaceholder": "Digite o nome completo",
+    "contactRelationship": "Relacionamento",
+    "contactRelationshipPlaceholder": "Ex: Cônjuge, Pai, Irmã",
+    "contactPhoneNumber": "Telefone",
+    "contactPhoneNumberPlaceholder": "+55 (11) 9XXXX-XXXX",
+    "saveContact": "Salvar Contato"
   },
   "guestMode": {
     "title": "Documentos Compartilhados",

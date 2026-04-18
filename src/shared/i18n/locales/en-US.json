@@ -113,7 +113,18 @@
     "contactRequired": "Add at least one emergency contact",
     "saveProfile": "Save Emergency Profile",
     "saveError": "Failed to save",
-    "savedSuccess": "Emergency profile saved!"
+    "savedSuccess": "Emergency profile saved!",
+    "contactSheetTitle": "Contact Information",
+    "addContactHeader": "Add Emergency Contact",
+    "addPrimaryContactHeader": "Add Primary Contact",
+    "editContactHeader": "Edit Contact",
+    "contactFullName": "Full Name",
+    "contactFullNamePlaceholder": "Enter full name",
+    "contactRelationship": "Relationship",
+    "contactRelationshipPlaceholder": "e.g. Spouse, Parent, Sibling",
+    "contactPhoneNumber": "Phone Number",
+    "contactPhoneNumberPlaceholder": "+1 (555) 0123",
+    "saveContact": "Save Contact"
   },
   "guestMode": {
     "title": "Shared Documents",
