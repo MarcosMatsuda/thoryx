@@ -26,12 +26,12 @@ describe("AddContactBottomSheet", () => {
 
   it("keeps the save button disabled until every field has a value", () => {
     const onSave = jest.fn();
-    const { getByPlaceholderText, getByText } = render(
+    const { getByPlaceholderText, getByLabelText } = render(
       <AddContactBottomSheet {...baseProps} onSave={onSave} />,
     );
 
-    const saveButton = getByText(/Salvar Contato/i).parent;
-    fireEvent.press(saveButton!);
+    const saveButton = getByLabelText(/Salvar Contato/i);
+    fireEvent.press(saveButton);
     expect(onSave).not.toHaveBeenCalled();
 
     fireEvent.changeText(
@@ -44,7 +44,7 @@ describe("AddContactBottomSheet", () => {
     );
     fireEvent.changeText(getByPlaceholderText(/\+55/), "11999999999");
 
-    fireEvent.press(saveButton!);
+    fireEvent.press(saveButton);
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
         fullName: "Ana",
@@ -65,7 +65,7 @@ describe("AddContactBottomSheet", () => {
       isPrimary: true,
     };
 
-    const { getByDisplayValue, getByText } = render(
+    const { getByDisplayValue, getByLabelText } = render(
       <AddContactBottomSheet
         {...baseProps}
         initialContact={initialContact}
@@ -78,7 +78,7 @@ describe("AddContactBottomSheet", () => {
     expect(getByDisplayValue("11988887777")).toBeTruthy();
 
     fireEvent.changeText(getByDisplayValue("Marcos"), "Marcos Matsuda");
-    fireEvent.press(getByText(/Salvar Contato/i).parent!);
+    fireEvent.press(getByLabelText(/Salvar Contato/i));
 
     expect(onSave).toHaveBeenCalledWith({
       id: "contact_123",

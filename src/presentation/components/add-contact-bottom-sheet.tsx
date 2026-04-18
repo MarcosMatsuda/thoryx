@@ -5,7 +5,6 @@ import {
   Modal,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -90,25 +89,22 @@ export function AddContactBottomSheet({
       visible={visible}
       transparent
       animationType="slide"
-      // iPad defaults Modal to `pageSheet` (a floating centered card) unless
-      // `overFullScreen` is set explicitly — that's what was making the sheet
-      // look detached from the bottom and centered on iPad. `statusBarTranslucent`
-      // mirrors the same full-screen behavior on Android.
+      // Without overFullScreen, Modal on iPad defaults to `pageSheet` —
+      // a centered floating card instead of a true bottom sheet.
       presentationStyle="overFullScreen"
       statusBarTranslucent
       onRequestClose={handleClose}
     >
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <Pressable
+        className="flex-1 bg-black/70 justify-end"
+        onPress={handleClose}
       >
-        <Pressable
-          className="flex-1 bg-black/70 justify-end"
-          onPress={handleClose}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-          <View
-            className="w-full bg-light-bg dark:bg-background-primary rounded-t-3xl max-h-[92%]"
-            onStartShouldSetResponder={() => true}
+          <Pressable
+            className="w-full bg-light-bg dark:bg-background-primary rounded-t-3xl"
+            onPress={(e) => e?.stopPropagation?.()}
           >
             <View className="items-center pt-3 pb-2">
               <View className="w-12 h-1 bg-light-border dark:bg-ui-border rounded-full" />
@@ -129,12 +125,7 @@ export function AddContactBottomSheet({
               <View className="w-10" />
             </View>
 
-            <ScrollView
-              className="flex-1"
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-              contentContainerClassName="px-6 py-6"
-            >
+            <View className="px-6 py-6">
               <Text className="text-2xl font-bold text-light-text dark:text-text-primary mb-6">
                 {t("emergencySetup.contactSheetTitle")}
               </Text>
@@ -150,9 +141,7 @@ export function AddContactBottomSheet({
 
               <TextInputField
                 label={t("emergencySetup.contactRelationship")}
-                placeholder={t(
-                  "emergencySetup.contactRelationshipPlaceholder",
-                )}
+                placeholder={t("emergencySetup.contactRelationshipPlaceholder")}
                 value={relationship}
                 onChangeText={setRelationship}
                 autoCapitalize="words"
@@ -171,6 +160,7 @@ export function AddContactBottomSheet({
 
               <Pressable
                 accessibilityRole="button"
+                accessibilityLabel={t("emergencySetup.saveContact")}
                 accessibilityState={{ disabled: !canSubmit }}
                 className={`rounded-xl py-4 items-center mt-2 ${
                   canSubmit
@@ -190,10 +180,10 @@ export function AddContactBottomSheet({
                   {t("emergencySetup.saveContact")}
                 </Text>
               </Pressable>
-            </ScrollView>
-          </View>
-        </Pressable>
-      </KeyboardAvoidingView>
+            </View>
+          </Pressable>
+        </KeyboardAvoidingView>
+      </Pressable>
     </Modal>
   );
 }
