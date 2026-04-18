@@ -2,15 +2,21 @@ import { VerifyPinWithLockoutUseCase } from "./verify-pin-with-lockout.use-case"
 import { PinRepository } from "@domain/repositories/pin.repository";
 import { PinAttemptsRepository } from "@domain/repositories/pin-attempts.repository";
 import { StoredPin, Pin, LegacyPin } from "@domain/entities/pin.entity";
+import { PBKDF2_ITERATIONS } from "@infrastructure/security/pbkdf2.service";
 
 const V2_PIN: Pin = {
   id: "user_pin",
   version: 2,
   salt: "deadbeef",
-  iterations: 210_000,
+  iterations: PBKDF2_ITERATIONS,
   hash: "cafebabe",
   createdAt: new Date(),
   updatedAt: new Date(),
+};
+
+const V2_PIN_OLD: Pin = {
+  ...V2_PIN,
+  iterations: 999_999,
 };
 
 const LEGACY_PIN: LegacyPin = {
@@ -172,5 +178,29 @@ describe("VerifyPinWithLockoutUseCase", () => {
 
     expect(result.success).toBe(false);
     expect(result.reason).toBe("no-pin");
+  });
+
+  it("does not re-hash when stored iterations match the current default", async () => {
+    const pinRepo = mockPinRepository(V2_PIN);
+    pinRepo.verify.mockResolvedValue(true);
+    const attemptsRepo = mockAttemptsRepository();
+
+    const useCase = new VerifyPinWithLockoutUseCase(pinRepo, attemptsRepo, now);
+    await useCase.execute("123456");
+
+    expect(pinRepo.save).not.toHaveBeenCalled();
+  });
+
+  it("fires a background re-hash when stored iterations differ from current default", async () => {
+    const pinRepo = mockPinRepository(V2_PIN_OLD);
+    pinRepo.verify.mockResolvedValue(true);
+    const attemptsRepo = mockAttemptsRepository();
+
+    const useCase = new VerifyPinWithLockoutUseCase(pinRepo, attemptsRepo, now);
+    const result = await useCase.execute("123456");
+
+    expect(result.success).toBe(true);
+    expect(result.migrated).toBe(false);
+    expect(pinRepo.save).toHaveBeenCalledWith({ pin: "123456" });
   });
 });

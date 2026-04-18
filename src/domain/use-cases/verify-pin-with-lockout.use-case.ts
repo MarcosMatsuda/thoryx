@@ -1,6 +1,7 @@
 import { PinRepository } from "@domain/repositories/pin.repository";
 import { PinAttemptsRepository } from "@domain/repositories/pin-attempts.repository";
 import { isLegacyPin } from "@domain/entities/pin.entity";
+import { PBKDF2_ITERATIONS } from "@infrastructure/security/pbkdf2.service";
 import { computeLockoutDelay } from "./compute-lockout-delay.use-case";
 
 export interface VerifyPinWithLockoutResult {
@@ -64,14 +65,19 @@ export class VerifyPinWithLockoutUseCase {
       }
 
       const isValid = isLegacyPin(stored)
-        ? await this.pinRepository.verifyLegacy(pin)
-        : await this.pinRepository.verify(pin);
+        ? await this.pinRepository.verifyLegacy(pin, stored)
+        : await this.pinRepository.verify(pin, stored);
 
       if (isValid) {
         let migrated = false;
         if (isLegacyPin(stored)) {
           await this.pinRepository.save({ pin });
           migrated = true;
+        } else if (stored.iterations !== PBKDF2_ITERATIONS) {
+          // Opportunistically re-hash with the current iteration count so
+          // future unlocks are faster. Fire-and-forget: don't block unlock
+          // UX on this. If the save fails, the next login just retries.
+          void this.pinRepository.save({ pin }).catch(() => undefined);
         }
         await this.attemptsRepository.reset();
         return {

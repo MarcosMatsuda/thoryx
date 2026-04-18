@@ -101,26 +101,26 @@ export class PinRepositoryImpl implements PinRepository {
     return pin;
   }
 
-  async verify(pin: string): Promise<boolean> {
-    const stored = await this.readStored();
-    if (!stored || isLegacyPin(stored)) {
+  async verify(pin: string, stored?: StoredPin | null): Promise<boolean> {
+    const resolved = stored ?? (await this.readStored());
+    if (!resolved || isLegacyPin(resolved)) {
       return false;
     }
     const derived = await Pbkdf2Service.derivePinHash(
       pin,
-      stored.salt,
-      stored.iterations,
+      resolved.salt,
+      resolved.iterations,
     );
-    return Pbkdf2Service.timingSafeEqual(derived, stored.hash);
+    return Pbkdf2Service.timingSafeEqual(derived, resolved.hash);
   }
 
-  async verifyLegacy(pin: string): Promise<boolean> {
-    const stored = await this.readStored();
-    if (!stored || !isLegacyPin(stored)) {
+  async verifyLegacy(pin: string, stored?: StoredPin | null): Promise<boolean> {
+    const resolved = stored ?? (await this.readStored());
+    if (!resolved || !isLegacyPin(resolved)) {
       return false;
     }
     try {
-      const decrypted = LegacyPinService.decrypt(stored.encryptedPin);
+      const decrypted = LegacyPinService.decrypt(resolved.encryptedPin);
       return decrypted === pin;
     } catch {
       return false;
