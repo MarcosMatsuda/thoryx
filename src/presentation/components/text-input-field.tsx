@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, TextInputProps } from "react-native";
 import { tokens } from "@presentation/theme/design-tokens";
 
 interface TextInputFieldProps {
@@ -6,7 +6,10 @@ interface TextInputFieldProps {
   value?: string;
   placeholder?: string;
   onChangeText?: (text: string) => void;
-  keyboardType?: "default" | "numeric" | "email-address";
+  keyboardType?: TextInputProps["keyboardType"];
+  autoCapitalize?: TextInputProps["autoCapitalize"];
+  returnKeyType?: TextInputProps["returnKeyType"];
+  onSubmitEditing?: TextInputProps["onSubmitEditing"];
 }
 
 export function TextInputField({
@@ -15,6 +18,9 @@ export function TextInputField({
   placeholder,
   onChangeText,
   keyboardType = "default",
+  autoCapitalize,
+  returnKeyType,
+  onSubmitEditing,
 }: TextInputFieldProps) {
   return (
     <View className="mb-4">
@@ -28,6 +34,9 @@ export function TextInputField({
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
+        returnKeyType={returnKeyType}
+        onSubmitEditing={onSubmitEditing}
       />
     </View>
   );

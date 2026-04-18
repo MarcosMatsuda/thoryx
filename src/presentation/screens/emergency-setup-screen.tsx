@@ -51,6 +51,9 @@ export function EmergencySetupScreen() {
   const [isSaving, setIsSaving] = useState(false);
   const [showContactSheet, setShowContactSheet] = useState(false);
   const [isAddingPrimaryContact, setIsAddingPrimaryContact] = useState(false);
+  const [editingContact, setEditingContact] = useState<EmergencyContact | null>(
+    null,
+  );
 
   useEffect(() => {
     if (emergencyInfo) {
@@ -86,8 +89,13 @@ export function EmergencySetupScreen() {
     }
   };
 
-  const handleAddContact = (contact: EmergencyContact) => {
-    setContacts([...contacts, contact]);
+  const handleSaveContact = (contact: EmergencyContact) => {
+    setContacts((current) => {
+      const exists = current.some((c) => c.id === contact.id);
+      return exists
+        ? current.map((c) => (c.id === contact.id ? contact : c))
+        : [...current, contact];
+    });
   };
 
   const handleRemoveContact = (contactId: string) => {
@@ -95,8 +103,20 @@ export function EmergencySetupScreen() {
   };
 
   const openAddContactSheet = (isPrimary: boolean) => {
+    setEditingContact(null);
     setIsAddingPrimaryContact(isPrimary);
     setShowContactSheet(true);
+  };
+
+  const openEditContactSheet = (contact: EmergencyContact) => {
+    setEditingContact(contact);
+    setIsAddingPrimaryContact(contact.isPrimary);
+    setShowContactSheet(true);
+  };
+
+  const closeContactSheet = () => {
+    setShowContactSheet(false);
+    setEditingContact(null);
   };
 
   const handleSave = async () => {
@@ -308,6 +328,7 @@ export function EmergencySetupScreen() {
                   fullName={contact.fullName}
                   relationship={contact.relationship}
                   phoneNumber={contact.phoneNumber}
+                  onEdit={() => openEditContactSheet(contact)}
                   onRemove={() => handleRemoveContact(contact.id)}
                   isPrimary={contact.isPrimary}
                 />
@@ -363,9 +384,10 @@ export function EmergencySetupScreen() {
 
         <AddContactBottomSheet
           visible={showContactSheet}
-          onClose={() => setShowContactSheet(false)}
-          onSave={handleAddContact}
+          onClose={closeContactSheet}
+          onSave={handleSaveContact}
           isPrimary={isAddingPrimaryContact}
+          initialContact={editingContact}
         />
       </View>
     </SafeAreaView>

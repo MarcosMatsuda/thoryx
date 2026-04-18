@@ -66,6 +66,10 @@ export function PinConfirmationBottomSheet({
       visible={visible}
       transparent
       animationType="slide"
+      // Without overFullScreen, Modal on iPad defaults to `pageSheet`, which
+      // renders as a centered floating card instead of a true bottom sheet.
+      presentationStyle="overFullScreen"
+      statusBarTranslucent
       onRequestClose={handleClose}
     >
       <Pressable
@@ -73,7 +77,7 @@ export function PinConfirmationBottomSheet({
         onPress={handleClose}
       >
         <Pressable
-          className="bg-light-bg dark:bg-background-primary rounded-t-3xl h-[80%]"
+          className="w-full bg-light-bg dark:bg-background-primary rounded-t-3xl h-[80%]"
           onPress={(e) => e.stopPropagation()}
         >
           <View className="flex-1 w-full max-w-[500px] self-center">
