@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,7 +26,7 @@ interface DocumentCameraModalProps {
 // same frame. Passport is a separate, taller format and intentionally
 // not targeted here.
 const DOCUMENT_ASPECT_RATIO = 85.6 / 54;
-const GUIDE_WIDTH = 320;
+const GUIDE_WIDTH = 360;
 const GUIDE_HEIGHT = Math.round(GUIDE_WIDTH / DOCUMENT_ASPECT_RATIO);
 
 export function DocumentCameraModal({
@@ -34,6 +35,7 @@ export function DocumentCameraModal({
   onCapture,
 }: DocumentCameraModalProps) {
   const { t } = useTranslation();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -64,24 +66,25 @@ export function DocumentCameraModal({
         return;
       }
 
-      // Center-crop the photo to the ID-1 aspect ratio the guide shows.
-      // The full frame is captured; the guide is only a visual reference,
-      // so we derive the crop from the photo's actual dimensions.
+      // Map the on-screen guide rectangle into the captured photo so we
+      // save exactly what the user framed inside the dashed outline.
+      //
+      // CameraView renders in "cover" mode: the photo is scaled so its
+      // smallest dimension matches the screen, and the overflow on the
+      // other axis is cropped from the preview. We derive the scale
+      // factor from whichever axis is filling the screen, then express
+      // the guide's on-screen size in photo pixels.
       const { width: w, height: h } = photo;
-      let cropWidth: number;
-      let cropHeight: number;
-      if (w / h > DOCUMENT_ASPECT_RATIO) {
-        // Photo is wider than the target — pillar-crop the sides.
-        cropHeight = h;
-        cropWidth = Math.round(h * DOCUMENT_ASPECT_RATIO);
-      } else {
-        // Photo is taller than the target (typical portrait phone capture) —
-        // letter-crop top/bottom.
-        cropWidth = w;
-        cropHeight = Math.round(w / DOCUMENT_ASPECT_RATIO);
-      }
-      const originX = Math.max(0, Math.round((w - cropWidth) / 2));
-      const originY = Math.max(0, Math.round((h - cropHeight) / 2));
+      const photoAspect = w / h;
+      const screenAspect = screenWidth / screenHeight;
+      const photoPxPerScreenPx =
+        photoAspect > screenAspect ? h / screenHeight : w / screenWidth;
+      const guidePhotoWidth = Math.round(GUIDE_WIDTH * photoPxPerScreenPx);
+      const guidePhotoHeight = Math.round(GUIDE_HEIGHT * photoPxPerScreenPx);
+      const originX = Math.max(0, Math.round((w - guidePhotoWidth) / 2));
+      const originY = Math.max(0, Math.round((h - guidePhotoHeight) / 2));
+      const cropWidth = Math.min(w - originX, guidePhotoWidth);
+      const cropHeight = Math.min(h - originY, guidePhotoHeight);
 
       const cropped = await ImageManipulator.manipulateAsync(
         photo.uri,
