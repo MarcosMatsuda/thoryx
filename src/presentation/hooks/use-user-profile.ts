@@ -3,7 +3,7 @@ import { UserProfileInput } from "@domain/entities/user-profile.entity";
 import { useProfileStore } from "@stores/profile.store";
 
 export function useUserProfile() {
-  const { profile, isLoading, error, loadProfile, saveProfile } =
+  const { profile, isLoading, hasLoaded, error, loadProfile, saveProfile } =
     useProfileStore();
 
   useEffect(() => {
@@ -13,6 +13,7 @@ export function useUserProfile() {
   return {
     profile,
     isLoading,
+    hasLoaded,
     error,
     saveProfile,
     reloadProfile: loadProfile,

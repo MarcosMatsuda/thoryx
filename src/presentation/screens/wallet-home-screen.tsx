@@ -35,21 +35,25 @@ export function WalletHomeScreen() {
   const {
     profile,
     isLoading: profileLoading,
+    hasLoaded: profileHasLoaded,
     reloadProfile,
   } = useUserProfile();
   const { customDocumentTypes } = useDocumentsStore();
 
   const [profileChecked, setProfileChecked] = useState(false);
 
-  // Only redirect to profile-setup after profile has been loaded at least once
+  // Gate on hasLoaded rather than !isLoading — the store starts with
+  // isLoading=false, so checking !isLoading would fire this redirect
+  // before the first load has even begun and wrongly send users who
+  // already have a profile back to the setup screen.
   useEffect(() => {
-    if (profileLoading) return;
+    if (!profileHasLoaded) return;
     if (profileChecked) return;
     setProfileChecked(true);
     if (!profile) {
       router.push("/profile-setup");
     }
-  }, [profile, profileLoading, profileChecked]);
+  }, [profile, profileHasLoaded, profileChecked, router]);
 
   useFocusEffect(
     React.useCallback(() => {

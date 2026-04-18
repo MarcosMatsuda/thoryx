@@ -10,6 +10,11 @@ import { SaveUserProfileUseCase } from "@domain/use-cases/save-user-profile.use-
 interface ProfileState {
   profile: UserProfile | null;
   isLoading: boolean;
+  // `hasLoaded` flips to true once loadProfile has resolved at least
+  // once (success OR error). Screens that redirect on a missing profile
+  // (e.g. wallet-home → /profile-setup) must gate on this flag so they
+  // don't fire before the load has even started.
+  hasLoaded: boolean;
   error: string | null;
   loadProfile: () => Promise<void>;
   saveProfile: (
@@ -21,6 +26,7 @@ interface ProfileState {
 export const useProfileStore = create<ProfileState>((set, get) => ({
   profile: null,
   isLoading: false,
+  hasLoaded: false,
   error: null,
 
   loadProfile: async () => {
@@ -30,10 +36,14 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       const repository = new UserProfileRepositoryImpl();
       const getUserProfileUseCase = new GetUserProfileUseCase(repository);
       const profile = await getUserProfileUseCase.execute();
-      set({ profile, isLoading: false });
+      set({ profile, isLoading: false, hasLoaded: true });
     } catch (error) {
       console.error("Error loading profile:", error);
-      set({ error: "Failed to load profile", isLoading: false });
+      set({
+        error: "Failed to load profile",
+        isLoading: false,
+        hasLoaded: true,
+      });
     }
   },
 
@@ -45,7 +55,11 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       const result = await saveUserProfileUseCase.execute(input);
 
       if (result.success && result.profile) {
-        set({ profile: result.profile, isLoading: false });
+        set({
+          profile: result.profile,
+          isLoading: false,
+          hasLoaded: true,
+        });
         return { success: true, message: result.message };
       } else {
         set({ error: result.message, isLoading: false });
@@ -60,6 +74,6 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   },
 
   reset: () => {
-    set({ profile: null, isLoading: false, error: null });
+    set({ profile: null, isLoading: false, hasLoaded: false, error: null });
   },
 }));
