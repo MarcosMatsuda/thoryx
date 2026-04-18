@@ -177,7 +177,26 @@
     "changePin": "Alterar PIN",
     "changePinSuccess": "PIN alterado com sucesso",
     "emergencyDetails": "Emergency Details",
-    "unlockWallet": "Desbloquear Carteira"
+    "unlockWallet": "Desbloquear Carteira",
+    "lockedTitle": "Muitas tentativas",
+    "lockedMessage": "Tente novamente em {{time}}",
+    "attemptsRemaining": "{{count}} tentativa restante antes do bloqueio",
+    "attemptsRemaining_plural": "{{count}} tentativas restantes antes do bloqueio",
+    "pinResponsibility": {
+      "title": "Antes de criar seu PIN",
+      "intro": "A Thoryx é um cofre. Tudo que você guarda aqui fica no seu aparelho, cifrado, e só você tem a chave.",
+      "warningTitle": "Não há como recuperar o PIN",
+      "warningBody": "Se você esquecer seu PIN, seus documentos ficarão permanentemente inacessíveis.",
+      "bullets": [
+        "Seu PIN não sai do aparelho",
+        "Não há recuperação por email",
+        "Não há chave mestra",
+        "Nem a Thoryx pode te ajudar"
+      ],
+      "recommendation": "Recomendamos guardar uma cópia do seu PIN em um gerenciador de senhas (Apple Keychain, 1Password, Bitwarden).",
+      "checkbox": "Entendi e assumo a responsabilidade de lembrar meu PIN.",
+      "continue": "Continuar"
+    }
   },
   "profile": {
     "welcomeTitle": "Bem-vindo ao Thoryx",

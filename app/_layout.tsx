@@ -15,6 +15,7 @@ import { initLanguage } from "@shared/i18n";
 import { useEffect } from "react";
 import { useThemeStore } from "@stores/theme.store";
 import { useColorScheme as useNativeWindColorScheme } from "nativewind";
+import { FirstLaunchService } from "@infrastructure/first-launch/first-launch.service";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,6 +24,9 @@ export default function RootLayout() {
   usePreventScreenCapture();
 
   useEffect(() => {
+    FirstLaunchService.handleIfFresh().catch(() => {
+      // Non-fatal: residual cleanup errors shouldn't block boot
+    });
     initLanguage();
     loadTheme();
   }, []);
@@ -44,6 +48,10 @@ export default function RootLayout() {
           <Stack.Screen name="splash" options={{ headerShown: false }} />
           <Stack.Screen name="unlock" options={{ headerShown: false }} />
           <Stack.Screen name="pin-setup" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="pin-responsibility"
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="(tabs)"
             options={{

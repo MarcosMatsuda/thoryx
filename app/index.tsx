@@ -1,37 +1,47 @@
 import { SplashScreen } from "@presentation/screens/splash-screen";
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
+import { PinResponsibilityRepositoryImpl } from "@data/repositories/pin-responsibility.repository.impl";
 import { CheckPinExistsUseCase } from "@domain/use-cases/check-pin-exists.use-case";
+import { CheckPinResponsibilityUseCase } from "@domain/use-cases/check-pin-responsibility.use-case";
 import { useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
+type InitialRoute = "/unlock" | "/pin-setup" | "/pin-responsibility";
 
 export default function IndexScreen() {
   const router = useRouter();
   const [splashDone, setSplashDone] = useState(false);
-  const [hasPinSaved, setHasPinSaved] = useState<boolean | null>(null);
+  const [nextRoute, setNextRoute] = useState<InitialRoute | null>(null);
 
   useEffect(() => {
-    const checkPin = async () => {
+    const resolveRoute = async (): Promise<InitialRoute> => {
       try {
-        const repository = new PinRepositoryImpl();
-        const useCase = new CheckPinExistsUseCase(repository);
-        const exists = await useCase.execute();
-        setHasPinSaved(exists);
+        const pinRepo = new PinRepositoryImpl();
+        const hasPin = await new CheckPinExistsUseCase(pinRepo).execute();
+        if (hasPin) {
+          return "/unlock";
+        }
+        const responsibilityRepo = new PinResponsibilityRepositoryImpl();
+        const accepted = await new CheckPinResponsibilityUseCase(
+          responsibilityRepo,
+        ).execute();
+        return accepted ? "/pin-setup" : "/pin-responsibility";
       } catch {
-        setHasPinSaved(false);
+        return "/pin-responsibility";
       }
     };
 
-    checkPin();
+    resolveRoute().then(setNextRoute);
 
     const timer = setTimeout(() => setSplashDone(true), 2000);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (splashDone && hasPinSaved !== null) {
-      router.replace(hasPinSaved ? "/unlock" : "/pin-setup");
+    if (splashDone && nextRoute) {
+      router.replace(nextRoute);
     }
-  }, [splashDone, hasPinSaved, router]);
+  }, [splashDone, nextRoute, router]);
 
   return <SplashScreen />;
 }

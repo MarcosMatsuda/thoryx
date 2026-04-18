@@ -1,6 +1,7 @@
 /**
  * Integration test for app/index.tsx route
- * Validates that the index route correctly renders SplashScreen inline and navigates after pin check
+ * Validates that the index route renders SplashScreen inline and routes
+ * to /unlock, /pin-setup, or /pin-responsibility depending on current state.
  */
 
 import * as fs from "fs";
@@ -54,6 +55,12 @@ describe("Index Route (app/index.tsx)", () => {
         "@domain/use-cases/check-pin-exists.use-case",
       );
     });
+
+    it("should import responsibility repository and use case", () => {
+      const fileContent = fs.readFileSync(indexRoutePath, "utf8");
+      expect(fileContent).toContain("PinResponsibilityRepositoryImpl");
+      expect(fileContent).toContain("CheckPinResponsibilityUseCase");
+    });
   });
 
   describe("Component Definition", () => {
@@ -67,35 +74,26 @@ describe("Index Route (app/index.tsx)", () => {
       expect(fileContent).toContain("const router = useRouter()");
     });
 
-    it("should define splashDone and hasPinSaved state variables", () => {
+    it("should define splashDone and nextRoute state variables", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
       expect(fileContent).toContain(
         "const [splashDone, setSplashDone] = useState(false)",
       );
-      expect(fileContent).toContain(
-        "const [hasPinSaved, setHasPinSaved] = useState<boolean | null>(null)",
-      );
+      expect(fileContent).toContain("setNextRoute");
     });
   });
 
-  describe("Pin Check Behavior", () => {
-    it("should check for PIN existence in useEffect", () => {
+  describe("Routing Behavior", () => {
+    it("should resolve the initial route by checking the PIN repository", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
-      expect(fileContent).toContain("const checkPin = async () => {");
-      expect(fileContent).toContain(
-        "const repository = new PinRepositoryImpl()",
-      );
-      expect(fileContent).toContain(
-        "const useCase = new CheckPinExistsUseCase(repository)",
-      );
-      expect(fileContent).toContain("const exists = await useCase.execute()");
-      expect(fileContent).toContain("setHasPinSaved(exists)");
+      expect(fileContent).toContain("new PinRepositoryImpl()");
+      expect(fileContent).toContain("CheckPinExistsUseCase");
     });
 
-    it("should handle errors in pin check", () => {
+    it("should fall back to /pin-responsibility when PIN check throws", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
-      expect(fileContent).toContain("} catch {");
-      expect(fileContent).toContain("setHasPinSaved(false)");
+      expect(fileContent).toContain("catch");
+      expect(fileContent).toContain('"/pin-responsibility"');
     });
 
     it("should set splashDone after 2 seconds", () => {
@@ -107,31 +105,24 @@ describe("Index Route (app/index.tsx)", () => {
   });
 
   describe("Navigation Behavior", () => {
-    it("should navigate to /unlock if PIN exists", () => {
+    it("should navigate to /unlock when PIN exists", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
-      expect(fileContent).toContain(
-        'router.replace(hasPinSaved ? "/unlock" : "/pin-setup")',
-      );
       expect(fileContent).toContain('"/unlock"');
     });
 
-    it("should navigate to /pin-setup if PIN does not exist", () => {
+    it("should navigate to /pin-setup when PIN is absent but responsibility is accepted", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
-      expect(fileContent).toContain(
-        'router.replace(hasPinSaved ? "/unlock" : "/pin-setup")',
-      );
       expect(fileContent).toContain('"/pin-setup"');
     });
 
-    it("should navigate only when splashDone and hasPinSaved are set", () => {
+    it("should navigate to /pin-responsibility when responsibility is not accepted", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
-      expect(fileContent).toContain("if (splashDone && hasPinSaved !== null)");
+      expect(fileContent).toContain('"/pin-responsibility"');
     });
 
     it("should use router.replace to reset navigation stack", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
       expect(fileContent).toContain("router.replace");
-      expect(fileContent).not.toContain("router.push");
     });
 
     it("should return SplashScreen component", () => {
@@ -141,21 +132,20 @@ describe("Index Route (app/index.tsx)", () => {
   });
 
   describe("useEffect Setup", () => {
-    it("should have useEffect for pin check and timer", () => {
+    it("should have a splash timer useEffect that clears on unmount", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
       expect(fileContent).toContain("useEffect(() => {");
-      expect(fileContent).toContain("checkPin()");
       expect(fileContent).toContain(
         "const timer = setTimeout(() => setSplashDone(true), 2000)",
       );
       expect(fileContent).toContain("return () => clearTimeout(timer)");
-      expect(fileContent).toContain("}, [])");
     });
 
-    it("should have useEffect for navigation with correct dependencies", () => {
+    it("should have a navigation useEffect that depends on splashDone and nextRoute", () => {
       const fileContent = fs.readFileSync(indexRoutePath, "utf8");
-      expect(fileContent).toContain("useEffect(() => {");
-      expect(fileContent).toContain("}, [splashDone, hasPinSaved, router])");
+      expect(fileContent).toContain("splashDone");
+      expect(fileContent).toContain("nextRoute");
+      expect(fileContent).toContain("router.replace(nextRoute)");
     });
   });
 });

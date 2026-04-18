@@ -1,90 +1,169 @@
-import { Pin, PinInput } from "@domain/entities/pin.entity";
+import * as SecureStore from "expo-secure-store";
+import {
+  Pin,
+  PinInput,
+  StoredPin,
+  isLegacyPin,
+} from "@domain/entities/pin.entity";
 import { PinRepository } from "@domain/repositories/pin.repository";
+import {
+  Pbkdf2Service,
+  PBKDF2_ITERATIONS,
+} from "@infrastructure/security/pbkdf2.service";
+import { LegacyPinService } from "@infrastructure/security/legacy-pin.service";
 import { SecureStorageAdapter } from "@infrastructure/storage/secure-storage.adapter";
-import { EncryptionService } from "@infrastructure/security/encryption.service";
+
+const PIN_STORAGE_KEY = "thoryx_user_pin_v2";
+const PIN_ATTEMPTS_KEY = "thoryx_pin_attempts_v2";
+const LEGACY_MMKV_SCOPE = "pin-storage";
+const LEGACY_MMKV_KEY = "user_pin";
+const LEGACY_MMKV_ENCRYPTION_KEY = "thoryx-pin-encryption-key-2026-v1";
+
+interface SerializedPin {
+  id: string;
+  version?: number;
+  salt?: string;
+  iterations?: number;
+  hash?: string;
+  encryptedPin?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function deserialize(raw: string): StoredPin {
+  const parsed = JSON.parse(raw) as SerializedPin;
+  const base = {
+    id: parsed.id,
+    createdAt: new Date(parsed.createdAt),
+    updatedAt: new Date(parsed.updatedAt),
+  };
+
+  if (parsed.version === 2 && parsed.salt && parsed.hash && parsed.iterations) {
+    return {
+      ...base,
+      version: 2,
+      salt: parsed.salt,
+      iterations: parsed.iterations,
+      hash: parsed.hash,
+    };
+  }
+
+  if (parsed.encryptedPin) {
+    return {
+      ...base,
+      version: 1,
+      encryptedPin: parsed.encryptedPin,
+    };
+  }
+
+  throw new Error("Unrecognized PIN schema");
+}
+
+function serialize(pin: Pin): string {
+  return JSON.stringify({
+    id: pin.id,
+    version: pin.version,
+    salt: pin.salt,
+    iterations: pin.iterations,
+    hash: pin.hash,
+    createdAt: pin.createdAt.toISOString(),
+    updatedAt: pin.updatedAt.toISOString(),
+  });
+}
 
 export class PinRepositoryImpl implements PinRepository {
-  private storage: SecureStorageAdapter;
-  private readonly PIN_KEY = "user_pin";
-
-  constructor() {
-    this.storage = new SecureStorageAdapter(
-      "pin-storage",
-      "thoryx-pin-encryption-key-2026-v1",
+  private getLegacyStorage(): SecureStorageAdapter {
+    return new SecureStorageAdapter(
+      LEGACY_MMKV_SCOPE,
+      LEGACY_MMKV_ENCRYPTION_KEY,
     );
   }
 
   async save(pinInput: PinInput): Promise<Pin> {
-    try {
-      const encryptedPin = await EncryptionService.encrypt(pinInput.pin);
-
-      const pin: Pin = {
-        id: "user_pin",
-        encryptedPin,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      await this.storage.set(this.PIN_KEY, JSON.stringify(pin));
-
-      return pin;
-    } catch (error) {
-      console.error("Error saving PIN:", error);
-      throw new Error("Failed to save PIN");
-    }
+    const salt = await Pbkdf2Service.generateSalt();
+    const hash = await Pbkdf2Service.derivePinHash(
+      pinInput.pin,
+      salt,
+      PBKDF2_ITERATIONS,
+    );
+    const now = new Date();
+    const pin: Pin = {
+      id: "user_pin",
+      version: 2,
+      salt,
+      iterations: PBKDF2_ITERATIONS,
+      hash,
+      createdAt: now,
+      updatedAt: now,
+    };
+    await SecureStore.setItemAsync(PIN_STORAGE_KEY, serialize(pin));
+    await this.deleteLegacy();
+    return pin;
   }
 
   async verify(pin: string): Promise<boolean> {
-    try {
-      const pinJson = await this.storage.get(this.PIN_KEY);
-      if (!pinJson) {
-        console.log("No PIN found in storage");
-        return false;
-      }
-
-      const savedPin: Pin = JSON.parse(pinJson);
-
-      // Check if encryptedPin is valid
-      if (!savedPin.encryptedPin || typeof savedPin.encryptedPin !== "string") {
-        console.error("Invalid encrypted PIN format, clearing storage");
-        await this.delete();
-        return false;
-      }
-
-      const decryptedPin = await EncryptionService.decrypt(
-        savedPin.encryptedPin,
-      );
-
-      return decryptedPin === pin;
-    } catch (error) {
-      console.error("Error verifying PIN:", error);
-      // If decryption fails, clear the corrupted PIN
-      try {
-        await this.delete();
-        console.log("Cleared corrupted PIN from storage");
-      } catch (deleteError) {
-        console.error("Error clearing corrupted PIN:", deleteError);
-      }
+    const stored = await this.readStored();
+    if (!stored || isLegacyPin(stored)) {
       return false;
+    }
+    const derived = await Pbkdf2Service.derivePinHash(
+      pin,
+      stored.salt,
+      stored.iterations,
+    );
+    return Pbkdf2Service.timingSafeEqual(derived, stored.hash);
+  }
+
+  async verifyLegacy(pin: string): Promise<boolean> {
+    const stored = await this.readStored();
+    if (!stored || !isLegacyPin(stored)) {
+      return false;
+    }
+    try {
+      const decrypted = LegacyPinService.decrypt(stored.encryptedPin);
+      return decrypted === pin;
+    } catch {
+      return false;
+    }
+  }
+
+  async readStored(): Promise<StoredPin | null> {
+    const current = await SecureStore.getItemAsync(PIN_STORAGE_KEY);
+    if (current) {
+      try {
+        return deserialize(current);
+      } catch {
+        await SecureStore.deleteItemAsync(PIN_STORAGE_KEY);
+      }
+    }
+
+    const legacyRaw = await this.getLegacyStorage().get(LEGACY_MMKV_KEY);
+    if (!legacyRaw) {
+      return null;
+    }
+    try {
+      return deserialize(legacyRaw);
+    } catch {
+      return null;
     }
   }
 
   async exists(): Promise<boolean> {
-    try {
-      const pinJson = await this.storage.get(this.PIN_KEY);
-      return pinJson !== null;
-    } catch (error) {
-      console.error("Error checking PIN existence:", error);
-      return false;
-    }
+    const stored = await this.readStored();
+    return stored !== null;
   }
 
   async delete(): Promise<void> {
+    await SecureStore.deleteItemAsync(PIN_STORAGE_KEY);
+    await SecureStore.deleteItemAsync(PIN_ATTEMPTS_KEY);
+    await this.deleteLegacy();
+  }
+
+  private async deleteLegacy(): Promise<void> {
     try {
-      await this.storage.delete(this.PIN_KEY);
-    } catch (error) {
-      console.error("Error deleting PIN:", error);
-      throw new Error("Failed to delete PIN");
+      await this.getLegacyStorage().delete(LEGACY_MMKV_KEY);
+    } catch {
+      // ignore — legacy storage may be unavailable
     }
   }
 }

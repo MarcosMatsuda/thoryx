@@ -177,7 +177,26 @@
     "changePin": "Change PIN",
     "changePinSuccess": "PIN changed successfully",
     "emergencyDetails": "Emergency Details",
-    "unlockWallet": "Unlock Wallet"
+    "unlockWallet": "Unlock Wallet",
+    "lockedTitle": "Too many attempts",
+    "lockedMessage": "Try again in {{time}}",
+    "attemptsRemaining": "{{count}} attempt remaining before lockout",
+    "attemptsRemaining_plural": "{{count}} attempts remaining before lockout",
+    "pinResponsibility": {
+      "title": "Before creating your PIN",
+      "intro": "Thoryx is a vault. Everything you store here lives on your device, encrypted, and only you hold the key.",
+      "warningTitle": "There is no PIN recovery",
+      "warningBody": "If you forget your PIN, your documents will become permanently inaccessible.",
+      "bullets": [
+        "Your PIN never leaves the device",
+        "No email recovery",
+        "No master key",
+        "Not even Thoryx can help you"
+      ],
+      "recommendation": "We recommend saving a copy of your PIN in a password manager (Apple Keychain, 1Password, Bitwarden).",
+      "checkbox": "I understand and accept the responsibility of remembering my PIN.",
+      "continue": "Continue"
+    }
   },
   "profile": {
     "welcomeTitle": "Welcome to Thoryx",

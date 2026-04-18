@@ -10,7 +10,8 @@ import {
   BackButton,
 } from "@presentation/components/thoryx-header";
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
-import { VerifyPinUseCase } from "@domain/use-cases/verify-pin.use-case";
+import { PinAttemptsRepositoryImpl } from "@data/repositories/pin-attempts.repository.impl";
+import { VerifyPinWithLockoutUseCase } from "@domain/use-cases/verify-pin-with-lockout.use-case";
 import { SavePinUseCase } from "@domain/use-cases/save-pin.use-case";
 import { useTranslation } from "react-i18next";
 
@@ -67,8 +68,10 @@ export function ChangePinScreen() {
     }
 
     try {
-      const repository = new PinRepositoryImpl();
-      const verifyPinUseCase = new VerifyPinUseCase(repository);
+      const verifyPinUseCase = new VerifyPinWithLockoutUseCase(
+        new PinRepositoryImpl(),
+        new PinAttemptsRepositoryImpl(),
+      );
 
       const result = await verifyPinUseCase.execute(currentPin);
 
