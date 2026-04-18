@@ -69,7 +69,7 @@
     "savedSuccess": "Document saved securely",
     "capturePhoto": "Take Photo",
     "documentPhotoGuide": "Align the document inside the rectangle",
-    "documentPhotoHint": "Fill the frame, good lighting, hold the phone steady"
+    "documentPhotoHint": "Pinch to resize the frame to your document"
   },
   "documentDetails": {
     "title": "Document Details",

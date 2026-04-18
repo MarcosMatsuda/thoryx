@@ -9,6 +9,15 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
 import { ChevronLeft, RefreshCw } from "lucide-react-native";
@@ -31,6 +40,9 @@ const GUIDE_HORIZONTAL_MARGIN = 16;
 // Cap for tablets — above ~480 the guide dominates the viewfinder and
 // hurts framing on large portrait screens.
 const GUIDE_MAX_WIDTH = 480;
+// Absolute pinch bounds so the user can't shrink the guide into
+// invisibility or blow it past the edge of the camera preview.
+const GUIDE_MIN_PT = 200;
 
 export function DocumentCameraModal({
   visible,
@@ -44,11 +56,43 @@ export function DocumentCameraModal({
   const [isCapturing, setIsCapturing] = useState(false);
   const [facing, setFacing] = useState<"front" | "back">("back");
 
-  const guideWidth = Math.min(
+  const baseWidth = Math.min(
     screenWidth - GUIDE_HORIZONTAL_MARGIN * 2,
     GUIDE_MAX_WIDTH,
   );
-  const guideHeight = Math.round(guideWidth / DOCUMENT_ASPECT_RATIO);
+  const minScale = GUIDE_MIN_PT / baseWidth;
+  const maxScale = (screenWidth - GUIDE_HORIZONTAL_MARGIN) / baseWidth;
+
+  const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
+
+  const pinchGesture = Gesture.Pinch()
+    .onUpdate((event) => {
+      const next = savedScale.value * event.scale;
+      scale.value =
+        next < minScale ? minScale : next > maxScale ? maxScale : next;
+    })
+    .onEnd(() => {
+      savedScale.value = scale.value;
+    });
+
+  const animatedGuideStyle = useAnimatedStyle(() => {
+    const width = baseWidth * scale.value;
+    return {
+      width,
+      height: width / DOCUMENT_ASPECT_RATIO,
+    };
+  });
+
+  // Reset the guide size whenever the modal is reopened so a new
+  // capture session doesn't inherit the previous zoom.
+  useEffect(() => {
+    if (visible) {
+      scale.value = 1;
+      savedScale.value = 1;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
 
   useEffect(() => {
     if (
@@ -68,9 +112,6 @@ export function DocumentCameraModal({
     setIsCapturing(true);
     try {
       const photo = await cameraRef.current.takePictureAsync({
-        // Max-fidelity capture. The ImageManipulator pass below still
-        // re-encodes at 0.9 JPEG so storage stays bounded, but the crop
-        // is taken from the highest-resolution source the sensor gives.
         quality: 1,
         skipProcessing: false,
       });
@@ -78,9 +119,12 @@ export function DocumentCameraModal({
         return;
       }
 
-      // Map the on-screen guide rectangle into the captured photo so we
-      // save exactly what the user framed inside the dashed outline.
-      //
+      // Read the current pinch-adjusted guide size so the crop follows
+      // whatever the user framed at capture time.
+      const currentScale = scale.value;
+      const currentGuideWidth = baseWidth * currentScale;
+      const currentGuideHeight = currentGuideWidth / DOCUMENT_ASPECT_RATIO;
+
       // CameraView renders in "cover" mode: the photo is scaled so its
       // smallest dimension matches the screen, and the overflow on the
       // other axis is cropped from the preview. We derive the scale
@@ -91,8 +135,10 @@ export function DocumentCameraModal({
       const screenAspect = screenWidth / screenHeight;
       const photoPxPerScreenPx =
         photoAspect > screenAspect ? h / screenHeight : w / screenWidth;
-      const guidePhotoWidth = Math.round(guideWidth * photoPxPerScreenPx);
-      const guidePhotoHeight = Math.round(guideHeight * photoPxPerScreenPx);
+      const guidePhotoWidth = Math.round(currentGuideWidth * photoPxPerScreenPx);
+      const guidePhotoHeight = Math.round(
+        currentGuideHeight * photoPxPerScreenPx,
+      );
       const originX = Math.max(0, Math.round((w - guidePhotoWidth) / 2));
       const originY = Math.max(0, Math.round((h - guidePhotoHeight) / 2));
       const cropWidth = Math.min(w - originX, guidePhotoWidth);
@@ -135,112 +181,120 @@ export function DocumentCameraModal({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View className="flex-1 bg-black">
-        {permission?.granted ? (
-          <CameraView
-            ref={cameraRef}
-            style={StyleSheet.absoluteFill}
-            facing={facing}
-            autofocus="on"
-          >
-            <View
-              pointerEvents="none"
-              className="flex-1 items-center justify-center"
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <View className="flex-1 bg-black">
+          {permission?.granted ? (
+            <CameraView
+              ref={cameraRef}
+              style={StyleSheet.absoluteFill}
+              facing={facing}
+              autofocus="on"
             >
-              <View
-                style={{
-                  width: guideWidth,
-                  height: guideHeight,
-                  borderRadius: 12,
-                  borderWidth: 3,
-                  borderColor: "rgba(255,255,255,0.9)",
-                  borderStyle: "dashed",
-                }}
-              />
-              <Text className="text-white text-base font-semibold mt-6 mx-8 text-center">
-                {t("addDocument.documentPhotoGuide")}
+              <GestureDetector gesture={pinchGesture}>
+                <View className="flex-1 items-center justify-center">
+                  <Animated.View
+                    style={[
+                      animatedGuideStyle,
+                      {
+                        borderRadius: 12,
+                        borderWidth: 3,
+                        borderColor: "rgba(255,255,255,0.9)",
+                        borderStyle: "dashed",
+                      },
+                    ]}
+                  />
+                  <Text
+                    pointerEvents="none"
+                    className="text-white text-base font-semibold mt-6 mx-8 text-center"
+                  >
+                    {t("addDocument.documentPhotoGuide")}
+                  </Text>
+                  <Text
+                    pointerEvents="none"
+                    className="text-white/80 text-sm mt-2 mx-8 text-center"
+                  >
+                    {t("addDocument.documentPhotoHint")}
+                  </Text>
+                </View>
+              </GestureDetector>
+            </CameraView>
+          ) : (
+            <View className="flex-1 items-center justify-center px-8">
+              <Text className="text-white text-center mb-4 text-base">
+                {permission === null
+                  ? t("common.loading")
+                  : t("addDocument.cameraPermissionMsg")}
               </Text>
-              <Text className="text-white/80 text-sm mt-2 mx-8 text-center">
-                {t("addDocument.documentPhotoHint")}
-              </Text>
-            </View>
-          </CameraView>
-        ) : (
-          <View className="flex-1 items-center justify-center px-8">
-            <Text className="text-white text-center mb-4 text-base">
-              {permission === null
-                ? t("common.loading")
-                : t("addDocument.cameraPermissionMsg")}
-            </Text>
-            {permission && !permission.granted && permission.canAskAgain && (
-              <Pressable
-                accessibilityRole="button"
-                onPress={requestPermission}
-                className="bg-primary-main px-6 py-3 rounded-xl"
-              >
-                <Text className="text-white font-semibold">
-                  {t("common.continue")}
-                </Text>
-              </Pressable>
-            )}
-          </View>
-        )}
-
-        <SafeAreaView
-          edges={["top"]}
-          pointerEvents="box-none"
-          className="absolute top-0 left-0 right-0"
-        >
-          <View className="flex-row justify-between items-center px-4 py-2">
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("common.close")}
-              className="w-10 h-10 items-center justify-center bg-black/50 rounded-full"
-              onPress={onClose}
-            >
-              <ChevronLeft color="white" size={24} />
-            </Pressable>
-            {permission?.granted && (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t("profile.flipCamera")}
-                className="w-10 h-10 items-center justify-center bg-black/50 rounded-full"
-                onPress={handleFlipFacing}
-              >
-                <RefreshCw color="white" size={20} />
-              </Pressable>
-            )}
-          </View>
-        </SafeAreaView>
-
-        <SafeAreaView
-          edges={["bottom"]}
-          pointerEvents="box-none"
-          className="absolute bottom-0 left-0 right-0"
-        >
-          <View className="items-center pb-8">
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("addDocument.capturePhoto")}
-              accessibilityState={{ disabled: isCapturing }}
-              disabled={isCapturing || !permission?.granted}
-              onPress={handleCapture}
-              className="w-20 h-20 rounded-full items-center justify-center"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.25)",
-                borderWidth: 4,
-                borderColor: "white",
-              }}
-            >
-              {isCapturing ? (
-                <ActivityIndicator color={tokens.colors.text.primary} />
-              ) : (
-                <View className="w-14 h-14 rounded-full bg-white" />
+              {permission && !permission.granted && permission.canAskAgain && (
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={requestPermission}
+                  className="bg-primary-main px-6 py-3 rounded-xl"
+                >
+                  <Text className="text-white font-semibold">
+                    {t("common.continue")}
+                  </Text>
+                </Pressable>
               )}
-            </Pressable>
-          </View>
-        </SafeAreaView>
-      </View>
+            </View>
+          )}
+
+          <SafeAreaView
+            edges={["top"]}
+            pointerEvents="box-none"
+            className="absolute top-0 left-0 right-0"
+          >
+            <View className="flex-row justify-between items-center px-4 py-2">
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t("common.close")}
+                className="w-10 h-10 items-center justify-center bg-black/50 rounded-full"
+                onPress={onClose}
+              >
+                <ChevronLeft color="white" size={24} />
+              </Pressable>
+              {permission?.granted && (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t("profile.flipCamera")}
+                  className="w-10 h-10 items-center justify-center bg-black/50 rounded-full"
+                  onPress={handleFlipFacing}
+                >
+                  <RefreshCw color="white" size={20} />
+                </Pressable>
+              )}
+            </View>
+          </SafeAreaView>
+
+          <SafeAreaView
+            edges={["bottom"]}
+            pointerEvents="box-none"
+            className="absolute bottom-0 left-0 right-0"
+          >
+            <View className="items-center pb-8">
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t("addDocument.capturePhoto")}
+                accessibilityState={{ disabled: isCapturing }}
+                disabled={isCapturing || !permission?.granted}
+                onPress={handleCapture}
+                className="w-20 h-20 rounded-full items-center justify-center"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.25)",
+                  borderWidth: 4,
+                  borderColor: "white",
+                }}
+              >
+                {isCapturing ? (
+                  <ActivityIndicator color={tokens.colors.text.primary} />
+                ) : (
+                  <View className="w-14 h-14 rounded-full bg-white" />
+                )}
+              </Pressable>
+            </View>
+          </SafeAreaView>
+        </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
