@@ -3,7 +3,7 @@ import { PinDot } from "@presentation/components/pin-dot";
 import { ToggleOption } from "@presentation/components/toggle-option";
 import { PinConfirmationBottomSheet } from "@presentation/components/pin-confirmation-bottom-sheet";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { PinRepositoryImpl } from "@data/repositories/pin.repository.impl";
@@ -26,48 +26,55 @@ export function PinSetupScreen() {
   const [pin, setPin] = useState("");
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
 
   const handleKeyPress = (value: string) => {
+    if (isSaving) return;
     if (pin.length < PIN_LENGTH) {
       setPin(pin + value);
     }
   };
 
   const handleBackspace = () => {
+    if (isSaving) return;
     setPin(pin.slice(0, -1));
   };
 
   const handleToggleBiometric = () => {
+    if (isSaving) return;
     setBiometricEnabled(!biometricEnabled);
   };
 
   const handleConfirm = () => {
-    if (pin.length === PIN_LENGTH) {
+    if (pin.length === PIN_LENGTH && !isSaving) {
       setShowConfirmation(true);
     }
   };
 
   const handleFinishSetup = async (confirmedPin: string) => {
-    if (pin === confirmedPin) {
-      try {
-        const repository = new PinRepositoryImpl();
-        const savePinUseCase = new SavePinUseCase(repository);
+    if (pin !== confirmedPin) {
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const repository = new PinRepositoryImpl();
+      const savePinUseCase = new SavePinUseCase(repository);
 
-        const result = await savePinUseCase.execute({ pin });
+      const result = await savePinUseCase.execute({ pin });
 
-        if (result.success) {
-          // Save biometric preference
-          await settingsStorage.set(
-            BIOMETRY_ENABLED_KEY,
-            biometricEnabled ? "true" : "false",
-          );
-          setShowConfirmation(false);
-          router.push("/(tabs)");
-        }
-      } catch (error) {
-        console.error("Error saving PIN:", error);
+      if (result.success) {
+        await settingsStorage.set(
+          BIOMETRY_ENABLED_KEY,
+          biometricEnabled ? "true" : "false",
+        );
+        setShowConfirmation(false);
+        router.push("/(tabs)");
       }
+    } catch (error) {
+      console.error("Error saving PIN:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -164,6 +171,23 @@ export function PinSetupScreen() {
         onConfirm={handleFinishSetup}
         originalPin={pin}
       />
+
+      {isSaving && (
+        <View
+          accessibilityRole="progressbar"
+          className="absolute inset-0 items-center justify-center bg-black/60"
+        >
+          <View className="items-center gap-3 rounded-2xl bg-background-primary px-8 py-6">
+            <ActivityIndicator
+              size="large"
+              color={tokens.colors.primary.main}
+            />
+            <Text className="text-base font-semibold text-text-primary">
+              {t("auth.saving")}
+            </Text>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

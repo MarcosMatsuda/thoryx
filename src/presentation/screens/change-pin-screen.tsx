@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { View, Text, Pressable, Alert } from "react-native";
+import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { tokens } from "@presentation/theme/design-tokens";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { NumericKeypad } from "@presentation/components/numeric-keypad";
@@ -26,10 +27,17 @@ export function ChangePinScreen() {
   const [currentPin, setCurrentPin] = useState("");
   const [newPin, setNewPin] = useState("");
   const [error, setError] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const isBusy = isVerifying || isSaving;
 
   useEffect(() => {
-    if (step === "current" && currentPin.length === PIN_LENGTH) {
+    if (
+      step === "current" &&
+      currentPin.length === PIN_LENGTH &&
+      !isVerifying
+    ) {
       handleVerifyCurrentPin();
     }
   }, [currentPin]);
@@ -41,6 +49,7 @@ export function ChangePinScreen() {
   }, [newPin]);
 
   const handleKeyPress = (value: string) => {
+    if (isBusy) return;
     if (step === "current") {
       if (currentPin.length < PIN_LENGTH) {
         setCurrentPin(currentPin + value);
@@ -54,6 +63,7 @@ export function ChangePinScreen() {
   };
 
   const handleBackspace = () => {
+    if (isBusy) return;
     if (step === "current") {
       setCurrentPin(currentPin.slice(0, -1));
       setError(false);
@@ -67,6 +77,7 @@ export function ChangePinScreen() {
       return;
     }
 
+    setIsVerifying(true);
     try {
       const verifyPinUseCase = new VerifyPinWithLockoutUseCase(
         new PinRepositoryImpl(),
@@ -91,31 +102,37 @@ export function ChangePinScreen() {
         setCurrentPin("");
         setError(false);
       }, 1000);
+    } finally {
+      setIsVerifying(false);
     }
   };
 
   const handleConfirmNewPin = async (confirmedPin: string) => {
-    if (newPin === confirmedPin) {
-      try {
-        const repository = new PinRepositoryImpl();
-        const savePinUseCase = new SavePinUseCase(repository);
+    if (newPin !== confirmedPin) {
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const repository = new PinRepositoryImpl();
+      const savePinUseCase = new SavePinUseCase(repository);
 
-        const result = await savePinUseCase.execute({ pin: newPin });
+      const result = await savePinUseCase.execute({ pin: newPin });
 
-        if (result.success) {
-          setShowConfirmation(false);
-          Alert.alert(t("common.success"), t("auth.changePinSuccess"), [
-            {
-              text: t("common.ok"),
-              onPress: () => router.back(),
-            },
-          ]);
-        } else {
-          Alert.alert(t("common.error"), result.message || t("common.error"));
-        }
-      } catch {
-        Alert.alert(t("common.error"), t("common.error"));
+      if (result.success) {
+        setShowConfirmation(false);
+        Alert.alert(t("common.success"), t("auth.changePinSuccess"), [
+          {
+            text: t("common.ok"),
+            onPress: () => router.back(),
+          },
+        ]);
+      } else {
+        Alert.alert(t("common.error"), result.message || t("common.error"));
       }
+    } catch {
+      Alert.alert(t("common.error"), t("common.error"));
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -174,8 +191,19 @@ export function ChangePinScreen() {
             </Text>
           </View>
 
-          {/* Error Message */}
-          {error && (
+          {isBusy && (
+            <View className="flex-row items-center justify-center mb-4 gap-2">
+              <ActivityIndicator
+                size="small"
+                color={tokens.colors.primary.main}
+              />
+              <Text className="text-sm font-semibold text-primary-main">
+                {isSaving ? t("auth.saving") : t("auth.verifying")}
+              </Text>
+            </View>
+          )}
+
+          {!isBusy && error && (
             <View className="items-center mb-4">
               <View className="flex-row items-center">
                 <Text className="text-sm font-semibold text-status-error">

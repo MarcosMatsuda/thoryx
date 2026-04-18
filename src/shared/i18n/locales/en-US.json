@@ -178,6 +178,8 @@
     "changePinSuccess": "PIN changed successfully",
     "emergencyDetails": "Emergency Details",
     "unlockWallet": "Unlock Wallet",
+    "verifying": "Verifying...",
+    "saving": "Saving...",
     "lockedTitle": "Too many attempts",
     "lockedMessage": "Try again in {{time}}",
     "attemptsRemaining": "{{count}} attempt remaining before lockout",

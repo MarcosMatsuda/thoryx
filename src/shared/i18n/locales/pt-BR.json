@@ -178,6 +178,8 @@
     "changePinSuccess": "PIN alterado com sucesso",
     "emergencyDetails": "Emergency Details",
     "unlockWallet": "Desbloquear Carteira",
+    "verifying": "Verificando...",
+    "saving": "Salvando...",
     "lockedTitle": "Muitas tentativas",
     "lockedMessage": "Tente novamente em {{time}}",
     "attemptsRemaining": "{{count}} tentativa restante antes do bloqueio",
