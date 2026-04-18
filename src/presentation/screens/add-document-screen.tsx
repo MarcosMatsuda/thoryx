@@ -2,9 +2,9 @@ import { View, Text, ScrollView, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DropdownInput } from "@presentation/components/dropdown-input";
 import { DynamicDocumentForm } from "@presentation/components/dynamic-document-form";
+import { DocumentCameraModal } from "@presentation/components/document-camera-modal";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect, useMemo } from "react";
-import * as ImagePicker from "expo-image-picker";
 import { DocumentRepositoryImpl } from "@data/repositories/document.repository.impl";
 import { SaveDocumentUseCase } from "@domain/use-cases/save-document.use-case";
 import { DeleteDocumentUseCase } from "@domain/use-cases/delete-document.use-case";
@@ -49,6 +49,7 @@ export function AddDocumentScreen() {
   const [photos, setPhotos] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [cameraSlot, setCameraSlot] = useState<string | null>(null);
 
   const typeDefinition: DocumentTypeDefinition | undefined = useMemo(
     () => getDocumentTypeById(selectedTypeId, customDocumentTypes),
@@ -100,31 +101,13 @@ export function AddDocumentScreen() {
     setFields((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleTakePhoto = async (slot: string) => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        t("addDocument.cameraPermission"),
-        t("addDocument.cameraPermissionMsg"),
-      );
-      return;
-    }
+  const handleTakePhoto = (slot: string) => {
+    setCameraSlot(slot);
+  };
 
-    try {
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: "images",
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 0.8,
-      });
-
-      if (!result.canceled && result.assets[0]) {
-        setPhotos((prev) => ({ ...prev, [slot]: result.assets[0].uri }));
-      }
-    } catch (error) {
-      console.error("Error taking photo:", error);
-      Alert.alert(t("common.error"), t("addDocument.photoError"));
-    }
+  const handlePhotoCaptured = (uri: string) => {
+    if (!cameraSlot) return;
+    setPhotos((prev) => ({ ...prev, [cameraSlot]: uri }));
   };
 
   const handleDeleteDocument = async () => {
@@ -274,6 +257,12 @@ export function AddDocumentScreen() {
           </Pressable>
         </ScrollView>
       </View>
+
+      <DocumentCameraModal
+        visible={cameraSlot !== null}
+        onClose={() => setCameraSlot(null)}
+        onCapture={handlePhotoCaptured}
+      />
     </SafeAreaView>
   );
 }
