@@ -13,6 +13,9 @@ import { APP_CONFIG } from "@shared/constants/app";
 import { useTranslation } from "react-i18next";
 import { setStoredLanguage } from "@shared/i18n/language-detector";
 import { useThemeStore, ThemeMode } from "@stores/theme.store";
+import { useDocumentsStore } from "@stores/documents.store";
+import { useCardsStore } from "@stores/cards.store";
+import { useProfileStore } from "@stores/profile.store";
 import {
   ChevronRight,
   KeyRound,
@@ -248,15 +251,19 @@ export function SettingsScreen() {
           style: "destructive",
           onPress: async () => {
             try {
-              // Use AuthService to clear all data consistently
               const authService = new AuthService();
               await authService.clearAllData();
 
-              // Also clear the local settings storage
-              await storage.clear();
+              // Reset in-memory Zustand caches so the app doesn't repaint
+              // the home with stale documents/cards/profile during navigation.
+              useDocumentsStore.getState().reset();
+              useCardsStore.getState().reset();
+              useProfileStore.getState().reset();
 
-              router.replace("/pin-setup");
-              Alert.alert(t("common.success"), t("common.success"));
+              // Send the user through the same gate a fresh install sees,
+              // so they re-acknowledge the no-recovery warning before the
+              // new PIN is set.
+              router.replace("/pin-responsibility");
             } catch (error) {
               console.error("Error clearing data:", error);
               Alert.alert(t("common.error"), t("common.error"));
