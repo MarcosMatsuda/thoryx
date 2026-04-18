@@ -38,7 +38,12 @@ export function ProfilePhotoCameraModal({
   const [facing, setFacing] = useState<"front" | "back">("front");
 
   useEffect(() => {
-    if (visible && permission && !permission.granted && permission.canAskAgain) {
+    if (
+      visible &&
+      permission &&
+      !permission.granted &&
+      permission.canAskAgain
+    ) {
       requestPermission();
     }
   }, [visible, permission, requestPermission]);
