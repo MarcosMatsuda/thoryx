@@ -13,6 +13,9 @@ export interface Document {
 }
 
 export interface DocumentInput {
+  // When present, `save` updates the existing document in-place and
+  // preserves `createdAt`. Absent means a new document is created.
+  id?: string;
   typeId: string;
   typeName: string;
   fields: Record<string, string>;

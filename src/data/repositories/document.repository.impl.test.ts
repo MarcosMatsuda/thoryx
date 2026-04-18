@@ -252,4 +252,75 @@ describe("DocumentRepositoryImpl", () => {
       expect(ImageProcessingService.decryptAndDecode).toHaveBeenCalledTimes(2);
     });
   });
+
+  describe("Save existing document (edit flow)", () => {
+    it("updates the document in-place when input carries an id that exists", async () => {
+      const existing = createMockDocument({
+        id: "doc_existing",
+        createdAt: new Date("2026-01-01"),
+        isAutoLockEnabled: true,
+      });
+      mockStorage.get.mockResolvedValue(JSON.stringify([existing]));
+
+      const result = await repository.save({
+        id: "doc_existing",
+        typeId: "RG",
+        typeName: "RG novo",
+        fields: { fullName: "Ana Mudou" },
+        photos: { front: "newphotouri" },
+      });
+
+      expect(result.id).toBe("doc_existing");
+      expect(result.typeId).toBe("RG");
+      expect(result.fields.fullName).toBe("Ana Mudou");
+      // createdAt is preserved, not replaced
+      expect(result.createdAt.toISOString()).toBe(
+        new Date("2026-01-01").toISOString(),
+      );
+      // isAutoLockEnabled is preserved from the existing record
+      expect(result.isAutoLockEnabled).toBe(true);
+
+      // Storage was called with a single-entry array (no duplicate)
+      const persisted = JSON.parse(
+        (mockStorage.set as jest.Mock).mock.calls[0][1],
+      );
+      expect(persisted.length).toBe(1);
+      expect(persisted[0].id).toBe("doc_existing");
+    });
+
+    it("creates a new record when the id does not match any existing document", async () => {
+      const existing = createMockDocument({ id: "doc_a" });
+      mockStorage.get.mockResolvedValue(JSON.stringify([existing]));
+
+      const result = await repository.save({
+        id: "doc_missing",
+        typeId: "CNH",
+        typeName: "CNH",
+        fields: {},
+        photos: { front: "uri" },
+      });
+
+      // Fell through to the create path, so it got a fresh doc_* id
+      expect(result.id).toMatch(/^doc_\d+$/);
+      expect(result.id).not.toBe("doc_missing");
+
+      const persisted = JSON.parse(
+        (mockStorage.set as jest.Mock).mock.calls[0][1],
+      );
+      expect(persisted.length).toBe(2);
+    });
+
+    it("creates a new record when no id is supplied", async () => {
+      const existing = createMockDocument({ id: "doc_a" });
+      mockStorage.get.mockResolvedValue(JSON.stringify([existing]));
+
+      const result = await repository.save(mockDocumentInput);
+
+      expect(result.id).not.toBe("doc_a");
+      const persisted = JSON.parse(
+        (mockStorage.set as jest.Mock).mock.calls[0][1],
+      );
+      expect(persisted.length).toBe(2);
+    });
+  });
 });

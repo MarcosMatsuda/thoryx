@@ -50,24 +50,42 @@ export class DocumentRepositoryImpl implements DocumentRepository {
         }
       }
 
-      const id = `doc_${Date.now()}`;
+      const documents = await this.findAll();
+      const existingIndex = input.id
+        ? documents.findIndex((doc) => doc.id === input.id)
+        : -1;
+      const now = new Date();
 
-      const document: Document = {
-        id,
+      if (existingIndex !== -1) {
+        const existing = documents[existingIndex];
+        const updated: Document = {
+          id: existing.id,
+          typeId: input.typeId,
+          typeName: input.typeName,
+          fields: { ...input.fields },
+          photos: encryptedPhotos,
+          isAutoLockEnabled: existing.isAutoLockEnabled,
+          createdAt: existing.createdAt,
+          updatedAt: now,
+        };
+        documents[existingIndex] = updated;
+        await this.storage.set(this.DOCUMENTS_KEY, JSON.stringify(documents));
+        return updated;
+      }
+
+      const created: Document = {
+        id: `doc_${Date.now()}`,
         typeId: input.typeId,
         typeName: input.typeName,
         fields: { ...input.fields },
         photos: encryptedPhotos,
         isAutoLockEnabled: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
       };
-
-      const documents = await this.findAll();
-      documents.push(document);
+      documents.push(created);
       await this.storage.set(this.DOCUMENTS_KEY, JSON.stringify(documents));
-
-      return document;
+      return created;
     } catch (error) {
       console.error("Error saving document:", error);
       throw new Error("Failed to save document");
