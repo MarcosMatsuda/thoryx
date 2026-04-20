@@ -45,9 +45,7 @@ export function DocumentPhotoCarousel({
       >
         <Pressable
           style={{ width: photoWidth, marginRight: 16 }}
-          onPress={
-            onPhotoPress ? () => onPhotoPress(frontPhotoUri) : undefined
-          }
+          onPress={onPhotoPress ? () => onPhotoPress(frontPhotoUri) : undefined}
           accessibilityRole={onPhotoPress ? "button" : undefined}
         >
           <Image
@@ -59,9 +57,7 @@ export function DocumentPhotoCarousel({
         </Pressable>
         <Pressable
           style={{ width: photoWidth }}
-          onPress={
-            onPhotoPress ? () => onPhotoPress(backPhotoUri) : undefined
-          }
+          onPress={onPhotoPress ? () => onPhotoPress(backPhotoUri) : undefined}
           accessibilityRole={onPhotoPress ? "button" : undefined}
         >
           <Image
