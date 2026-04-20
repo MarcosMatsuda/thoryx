@@ -14,6 +14,12 @@ export interface VerifyPinWithLockoutResult {
 }
 
 const PIN_LENGTH = 6;
+// How long to wait before running the opportunistic re-hash. The save
+// runs PBKDF2 again (~200-800ms on Hermes) on the same JS thread as the
+// UI, so firing it immediately after a successful verify competes with
+// navigation and the wallet-home first render. A short delay lets the
+// unlock flow settle before CPU gets hogged in the background.
+const REHASH_DEFER_MS = 2000;
 
 export class VerifyPinWithLockoutUseCase {
   constructor(
@@ -75,11 +81,24 @@ export class VerifyPinWithLockoutUseCase {
           migrated = true;
         } else if (stored.iterations !== PBKDF2_ITERATIONS) {
           // Opportunistically re-hash with the current iteration count so
-          // future unlocks are faster. Fire-and-forget: don't block unlock
-          // UX on this. If the save fails, the next login just retries.
-          void this.pinRepository.save({ pin }).catch(() => undefined);
+          // future unlocks are faster. Defer by a couple of seconds so
+          // the PBKDF2 work doesn't fight the wallet-home first render
+          // for the JS thread. Log failures in dev so we notice if the
+          // re-hash ever silently stops updating and leaves users stuck
+          // on the slower iteration count forever.
+          setTimeout(() => {
+            this.pinRepository.save({ pin }).catch((err) => {
+              if (__DEV__) {
+                console.warn("[PinVerify] opportunistic re-hash failed", err);
+              }
+            });
+          }, REHASH_DEFER_MS);
         }
-        await this.attemptsRepository.reset();
+        // Avoid a redundant SecureStore round-trip when the counter is
+        // already at zero (the common case — most unlocks are clean).
+        if (currentAttempts.count !== 0 || currentAttempts.lockedUntil !== null) {
+          await this.attemptsRepository.reset();
+        }
         return {
           success: true,
           lockedUntil: null,

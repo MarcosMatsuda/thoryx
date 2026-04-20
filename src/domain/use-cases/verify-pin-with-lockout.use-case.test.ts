@@ -60,7 +60,7 @@ describe("VerifyPinWithLockoutUseCase", () => {
   const NOW = 1_700_000_000_000;
   const now = () => NOW;
 
-  it("returns success and resets attempts when PIN is correct (v2)", async () => {
+  it("returns success and resets attempts when there were previous bad tries", async () => {
     const pinRepo = mockPinRepository(V2_PIN);
     pinRepo.verify.mockResolvedValue(true);
     const attemptsRepo = mockAttemptsRepository({
@@ -77,10 +77,30 @@ describe("VerifyPinWithLockoutUseCase", () => {
     expect(attemptsRepo.reset).toHaveBeenCalled();
   });
 
+  it("skips the reset round-trip on a clean success (count already 0)", async () => {
+    const pinRepo = mockPinRepository(V2_PIN);
+    pinRepo.verify.mockResolvedValue(true);
+    const attemptsRepo = mockAttemptsRepository({
+      count: 0,
+      lastAttemptAt: 0,
+      lockedUntil: null,
+    });
+
+    const useCase = new VerifyPinWithLockoutUseCase(pinRepo, attemptsRepo, now);
+    const result = await useCase.execute("123456");
+
+    expect(result.success).toBe(true);
+    expect(attemptsRepo.reset).not.toHaveBeenCalled();
+  });
+
   it("migrates legacy PIN to v2 on successful verification", async () => {
     const pinRepo = mockPinRepository(LEGACY_PIN);
     pinRepo.verifyLegacy.mockResolvedValue(true);
-    const attemptsRepo = mockAttemptsRepository();
+    const attemptsRepo = mockAttemptsRepository({
+      count: 2,
+      lastAttemptAt: 0,
+      lockedUntil: null,
+    });
 
     const useCase = new VerifyPinWithLockoutUseCase(pinRepo, attemptsRepo, now);
     const result = await useCase.execute("123456");
@@ -191,7 +211,8 @@ describe("VerifyPinWithLockoutUseCase", () => {
     expect(pinRepo.save).not.toHaveBeenCalled();
   });
 
-  it("fires a background re-hash when stored iterations differ from current default", async () => {
+  it("defers the background re-hash so it doesn't compete with the post-unlock render", async () => {
+    jest.useFakeTimers();
     const pinRepo = mockPinRepository(V2_PIN_OLD);
     pinRepo.verify.mockResolvedValue(true);
     const attemptsRepo = mockAttemptsRepository();
@@ -199,8 +220,13 @@ describe("VerifyPinWithLockoutUseCase", () => {
     const useCase = new VerifyPinWithLockoutUseCase(pinRepo, attemptsRepo, now);
     const result = await useCase.execute("123456");
 
+    // The success return comes back immediately; the save is queued but
+    // hasn't fired yet, so the caller is free to navigate.
     expect(result.success).toBe(true);
-    expect(result.migrated).toBe(false);
+    expect(pinRepo.save).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(2000);
     expect(pinRepo.save).toHaveBeenCalledWith({ pin: "123456" });
+    jest.useRealTimers();
   });
 });

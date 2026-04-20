@@ -87,12 +87,20 @@ export function UnlockWalletScreen() {
   const verifyPin = useCallback(
     async (value: string) => {
       setIsVerifyingPin(true);
+      // Dev-only instrumentation so slow unlocks on real devices can be
+      // inspected from Metro logs without attaching a profiler.
+      const startedAt = __DEV__ ? Date.now() : 0;
       try {
         const useCase = new VerifyPinWithLockoutUseCase(
           pinRepository,
           attemptsRepository,
         );
         const result = await useCase.execute(value);
+        if (__DEV__) {
+          console.log(
+            `[PinUnlock] verify took ${Date.now() - startedAt}ms success=${result.success}`,
+          );
+        }
         if (result.success) {
           setError(false);
           router.replace("/(tabs)");
