@@ -96,7 +96,10 @@ export class VerifyPinWithLockoutUseCase {
         }
         // Avoid a redundant SecureStore round-trip when the counter is
         // already at zero (the common case — most unlocks are clean).
-        if (currentAttempts.count !== 0 || currentAttempts.lockedUntil !== null) {
+        if (
+          currentAttempts.count !== 0 ||
+          currentAttempts.lockedUntil !== null
+        ) {
           await this.attemptsRepository.reset();
         }
         return {
