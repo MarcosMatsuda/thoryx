@@ -25,7 +25,7 @@ else
 fi
 
 echo ""
-echo "   Starting Expo..."
+echo "   Building & launching on connected iPad..."
 echo ""
 
-npx expo start
+npx expo run:ios --device
