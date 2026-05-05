@@ -225,7 +225,7 @@ describe("VerifyPinWithLockoutUseCase", () => {
     expect(result.success).toBe(true);
     expect(pinRepo.save).not.toHaveBeenCalled();
 
-    jest.advanceTimersByTime(2000);
+    jest.advanceTimersByTime(150);
     expect(pinRepo.save).toHaveBeenCalledWith({ pin: "123456" });
     jest.useRealTimers();
   });

@@ -14,12 +14,12 @@ export interface VerifyPinWithLockoutResult {
 }
 
 const PIN_LENGTH = 6;
-// How long to wait before running the opportunistic re-hash. The save
-// runs PBKDF2 again (~200-800ms on Hermes) on the same JS thread as the
-// UI, so firing it immediately after a successful verify competes with
-// navigation and the wallet-home first render. A short delay lets the
-// unlock flow settle before CPU gets hogged in the background.
-const REHASH_DEFER_MS = 2000;
+// Tiny defer before the opportunistic re-hash. Native PBKDF2 finishes
+// in ~100ms even at 200k iterations, so this is just a margin for the
+// router transition to settle — not a CPU-contention workaround like
+// the previous 2s delay (which existed when PBKDF2 ran in pure JS and
+// would block the UI for several seconds).
+const REHASH_DEFER_MS = 100;
 
 export class VerifyPinWithLockoutUseCase {
   constructor(
@@ -80,18 +80,36 @@ export class VerifyPinWithLockoutUseCase {
           await this.pinRepository.save({ pin });
           migrated = true;
         } else if (stored.iterations !== PBKDF2_ITERATIONS) {
-          // Opportunistically re-hash with the current iteration count so
-          // future unlocks are faster. Defer by a couple of seconds so
-          // the PBKDF2 work doesn't fight the wallet-home first render
-          // for the JS thread. Log failures in dev so we notice if the
-          // re-hash ever silently stops updating and leaves users stuck
-          // on the slower iteration count forever.
+          // Opportunistically re-hash so subsequent unlocks use the
+          // current iteration count. With native PBKDF2 the work is
+          // ~100ms; the short REHASH_DEFER_MS is just to let the router
+          // transition land first. Log failures in dev so we notice if
+          // the re-hash ever silently stops updating and leaves users
+          // stuck on the previous iteration count forever.
+          if (__DEV__) {
+            console.log(
+              `[PinVerify] scheduling re-hash in ${REHASH_DEFER_MS}ms (storedIter=${stored.iterations} → ${PBKDF2_ITERATIONS})`,
+            );
+          }
           setTimeout(() => {
-            this.pinRepository.save({ pin }).catch((err) => {
-              if (__DEV__) {
-                console.warn("[PinVerify] opportunistic re-hash failed", err);
-              }
-            });
+            if (__DEV__) {
+              console.log("[PinVerify] re-hash starting now");
+            }
+            const tStart = __DEV__ ? Date.now() : 0;
+            this.pinRepository
+              .save({ pin })
+              .then(() => {
+                if (__DEV__) {
+                  console.log(
+                    `[PinVerify] re-hash done in ${Date.now() - tStart}ms`,
+                  );
+                }
+              })
+              .catch((err) => {
+                if (__DEV__) {
+                  console.warn("[PinVerify] opportunistic re-hash failed", err);
+                }
+              });
           }, REHASH_DEFER_MS);
         }
         // Avoid a redundant SecureStore round-trip when the counter is

@@ -10,6 +10,8 @@ const config = {
       },
       testMatch: ["<rootDir>/src/**/*.test.ts"],
       moduleNameMapper: {
+        "^react-native-quick-crypto$":
+          "<rootDir>/src/__mocks__/react-native-quick-crypto.js",
         "^@domain/(.*)$": "<rootDir>/src/domain/$1",
         "^@data/(.*)$": "<rootDir>/src/data/$1",
         "^@infrastructure/(.*)$": "<rootDir>/src/infrastructure/$1",
@@ -29,6 +31,8 @@ const config = {
       testMatch: ["<rootDir>/src/**/*.test.tsx"],
       moduleNameMapper: {
         "^expo/src/winter(/.*)?$": "<rootDir>/src/__mocks__/expo-winter.js",
+        "^react-native-quick-crypto$":
+          "<rootDir>/src/__mocks__/react-native-quick-crypto.js",
         "^@domain/(.*)$": "<rootDir>/src/domain/$1",
         "^@data/(.*)$": "<rootDir>/src/data/$1",
         "^@infrastructure/(.*)$": "<rootDir>/src/infrastructure/$1",
