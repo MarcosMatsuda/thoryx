@@ -42,7 +42,9 @@ function pbkdf2Async(
         reject(err ?? new Error("pbkdf2 returned no derived key"));
         return;
       }
-      resolve(new Uint8Array(derived.buffer, derived.byteOffset, derived.byteLength));
+      resolve(
+        new Uint8Array(derived.buffer, derived.byteOffset, derived.byteLength),
+      );
     });
   });
 }

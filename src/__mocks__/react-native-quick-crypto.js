@@ -31,7 +31,8 @@ function pickHash(digest) {
 function toBytes(input) {
   if (input instanceof Uint8Array) return input;
   if (typeof input === "string") return new TextEncoder().encode(input);
-  if (input && typeof input.byteLength === "number") return new Uint8Array(input);
+  if (input && typeof input.byteLength === "number")
+    return new Uint8Array(input);
   throw new Error("Unsupported input type in mock");
 }
 
