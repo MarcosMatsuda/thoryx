@@ -87,7 +87,8 @@
     "typescript": "~5.9.2"
   },
   "overrides": {
-    "jest-watch-typeahead": "^3.0.1"
+    "jest-watch-typeahead": "^3.0.1",
+    "@xmldom/xmldom": "^0.9.10"
   },
   "private": true
 }
