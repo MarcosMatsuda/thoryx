@@ -1,17 +1,17 @@
-import { pbkdf2Async } from "@noble/hashes/pbkdf2";
-import { sha256 } from "@noble/hashes/sha256";
+import { pbkdf2 } from "react-native-quick-crypto";
 import * as Crypto from "expo-crypto";
 
-// 50k iterations on a pure-JS PBKDF2 implementation is the pragmatic ceiling
-// for Hermes debug builds where every verify runs interpreted. Combined with
-// our persistent lockout schedule (capped at 24h) and hardware-bound salt in
-// the Keychain/Keystore, the iteration count is not the limiting defense
-// against a realistic attacker — the lockout is. Higher values (100k–210k)
-// made the unlock overlay sit for seconds in dev builds without adding a
-// meaningful security margin for a 6-digit PIN.
-export const PBKDF2_ITERATIONS = 50_000;
+// Native PBKDF2 via JSI/OpenSSL (react-native-quick-crypto). Verify on a
+// modern device runs in well under 300ms even at 200k iterations, so we
+// can hold a security margin closer to the OWASP recommendation without
+// the multi-second JS-thread stalls the pure-JS implementation produced.
+// The lockout schedule (capped at 24h) plus a hardware-bound salt remain
+// the primary defense against online brute force; the iteration count
+// raises the cost of an offline attack against a leaked hash.
+export const PBKDF2_ITERATIONS = 200_000;
 const SALT_BYTES = 16;
 const KEY_BYTES = 32;
+const DIGEST = "sha256";
 
 function toHex(bytes: Uint8Array): string {
   let out = "";
@@ -30,6 +30,25 @@ function fromHex(hex: string): Uint8Array {
   return out;
 }
 
+function pbkdf2Async(
+  password: string,
+  salt: Uint8Array,
+  iterations: number,
+  keylen: number,
+): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    pbkdf2(password, salt, iterations, keylen, DIGEST, (err, derived) => {
+      if (err || !derived) {
+        reject(err ?? new Error("pbkdf2 returned no derived key"));
+        return;
+      }
+      resolve(
+        new Uint8Array(derived.buffer, derived.byteOffset, derived.byteLength),
+      );
+    });
+  });
+}
+
 export class Pbkdf2Service {
   static async generateSalt(): Promise<string> {
     const bytes = await Crypto.getRandomBytesAsync(SALT_BYTES);
@@ -42,13 +61,7 @@ export class Pbkdf2Service {
     iterations: number = PBKDF2_ITERATIONS,
   ): Promise<string> {
     const salt = fromHex(saltHex);
-    const derived = await pbkdf2Async(sha256, pin, salt, {
-      c: iterations,
-      dkLen: KEY_BYTES,
-      // Yield to the JS event loop every 10ms so UI re-renders and touch
-      // events stay responsive during the ~1-2s key derivation.
-      asyncTick: 10,
-    });
+    const derived = await pbkdf2Async(pin, salt, iterations, KEY_BYTES);
     return toHex(derived);
   }
 

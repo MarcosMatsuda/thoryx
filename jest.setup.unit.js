@@ -1,5 +1,9 @@
 // Unit test setup - mocks for Node.js environment
 
+// React Native exposes __DEV__ as a global at runtime; the unit test env
+// runs in plain Node, so define it here to keep dev-only branches happy.
+global.__DEV__ = false;
+
 // Mock expo-secure-store
 jest.mock("expo-secure-store", () => ({
   getItemAsync: jest.fn(() => Promise.resolve(null)),
